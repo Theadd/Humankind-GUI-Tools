@@ -34,7 +34,7 @@ namespace DevTools.Humankind.GUITools
             // PopupToolWindow.Open<AutoTurnToolWindow>(w => autoTurn = w);
             // PopupToolWindow.Open<MilitaryToolsWindow>(w => militaryTools = w);
             
-            PopupToolWindow.Open<FramerateToolWindow>(w => framerateTools = w);
+            // PopupToolWindow.Open<AIToolWindow>(w => aiTools = w);
             Loggr.Log("FOUR", ConsoleColor.DarkYellow);
 
             AccessTools.PropertySetter(typeof(GodMode), "Enabled")?.Invoke(null, new object[] { false });
@@ -60,6 +60,7 @@ namespace DevTools.Humankind.GUITools
             militaryTools?.Close();
             resourceTools?.Close();
             framerateTools?.Close();
+            aiTools?.Close();
             //armyTools?.Close();
             techTools?.Close();
 
@@ -71,6 +72,7 @@ namespace DevTools.Humankind.GUITools
         private static MilitaryToolsWindow militaryTools;
         private static ResourceToolsWindow resourceTools;
         private static FramerateToolWindow framerateTools;
+        private static AIToolWindow aiTools;
         public static MainToolbar Toolbar { get; set; }
     }
 

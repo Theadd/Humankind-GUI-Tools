@@ -20,8 +20,8 @@ namespace DevTools.Humankind.GUITools.UI
         public TechnologyToolsWindow TechnologyTool { get; set; } = null;
         public MilitaryToolsWindow MilitaryTool { get; set; } = null;
         public ResourceToolsWindow ResourceTool { get; set; } = null;
-        
         public FramerateToolWindow FramerateTool { get; set; } = null;
+        public AIToolWindow AITool { get; set; } = null;
 
         #endregion FloatingToolWindow derived classes
 
@@ -57,7 +57,8 @@ namespace DevTools.Humankind.GUITools.UI
                 
                 GUILayout.Label("E X P <color=#000000AA>E R I M E N T A L</color>", "PopupWindow.Sidebar.Heading");
 
-                OnDrawTool<AIWindow>("AI");
+                if (DrawItem<AIToolWindow>(AITool, "AI Tools"))
+                    Open<AIToolWindow>(window => AITool = window);
                 
             GUILayout.EndVertical();
             GUI.backgroundColor = Color.white;
