@@ -1,0 +1,25 @@
+{
+    "version": "2.0.0", 
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet", "runOptions": {"runOn": "default"},
+            "type": "shell", 
+            "args": [
+                "build",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile",
+            "options": {"cwd": "${cwd}"}
+        }
+    ]
+}
