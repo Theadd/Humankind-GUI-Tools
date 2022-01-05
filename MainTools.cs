@@ -7,6 +7,7 @@ using DevTools.Humankind.GUITools.UI;
 using HarmonyLib;
 using Amplitude.Mercury.Presentation;
 using BepInEx;
+using BepInEx.Configuration;
 using DevTools.Humankind.GUITools.UI.PauseMenu;
 
 namespace DevTools.Humankind.GUITools
@@ -23,19 +24,19 @@ namespace DevTools.Humankind.GUITools
             
             PopupToolWindow.Open<MainToolbar>(w => Toolbar = w);
             PopupToolWindow.Open<InGameMenuWindow>(w => InGameMenu = w);
-
-            // AccessTools.PropertySetter(typeof(GodMode), "Enabled")?.Invoke(null, new object[] { false });
    
             HumankindDevTools.RegisterAction(
-                new BepInEx.Configuration.KeyboardShortcut(UnityEngine.KeyCode.Insert), 
+                new KeyboardShortcut(UnityEngine.KeyCode.Insert), 
                 "ToggleHideAllGUITools", 
                 ToggleHideAllUIWindows);
+            
+            // Maps [ESC] key to: GodMode.Enabled = false
+            HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Escape), "CancelGodMode", CancelGodMode);
         }
 
-        public static void ToggleHideAllUIWindows()
-        {
-            FloatingToolWindow.HideAllGUITools = !FloatingToolWindow.HideAllGUITools;
-        }
+        public static void ToggleHideAllUIWindows() => FloatingToolWindow.HideAllGUITools = !FloatingToolWindow.HideAllGUITools;
+
+        public static void CancelGodMode() => AccessTools.PropertySetter(typeof(GodMode), "Enabled")?.Invoke(null, new object[] { false });
 
         public static void Unload() {
             Toolbar?.Close();
@@ -49,7 +50,11 @@ namespace DevTools.Humankind.GUITools
                 .Where(path => path.Substring(scriptsPath.Length, 5) != "\\obj\\");
 
             Loggr.Log(string.Join("\n", files), ConsoleColor.DarkYellow);
+
+            // Draw a colored border for all UIOverlays backing a FloatingToolWindow derived class
             UIOverlay.DEBUG_DRAW_OVERLAY = true;
+            // More verbose console output
+            Modding.Humankind.DevTools.DevTools.QuietMode = false;
         }
     }
 }

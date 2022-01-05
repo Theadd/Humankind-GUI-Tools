@@ -1,9 +1,7 @@
 ﻿using Modding.Humankind.DevTools;
-using Modding.Humankind.DevTools.Core;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
 using UnityEngine;
 using Amplitude.Framework.Overlay;
-using DevTools.Humankind.GUITools.UI.BuiltIn;
 
 namespace DevTools.Humankind.GUITools.UI
 {
@@ -21,6 +19,9 @@ namespace DevTools.Humankind.GUITools.UI
         public MilitaryToolsWindow MilitaryTool { get; set; } = null;
         public ResourceToolsWindow ResourceTool { get; set; } = null;
         public FramerateToolWindow FramerateTool { get; set; } = null;
+        // public GPUProfilerToolWindow GPUProfilerTool { get; set; } = null;
+        public MemoryProfilerToolWindow MemoryProfilerTool { get; set; } = null;
+        public ArmyToolsWindow ArmyTools { get; set; } = null;
         public AIToolWindow AITool { get; set; } = null;
 
         #endregion FloatingToolWindow derived classes
@@ -29,37 +30,68 @@ namespace DevTools.Humankind.GUITools.UI
         {
             GUILayout.BeginVertical((GUIStyle) "PopupWindow.Sidebar.Highlight"); 
         
-                GUILayout.Label("<color=#000000AA>C H E A T I N G</color>   T O O L S", "PopupWindow.Sidebar.Heading");
-                
+                if (GlobalSettings.CheatingTools.Value)
+                {
+                    GUILayout.Label("<color=#000000AA>C H E A T I N G</color>   T O O L S",
+                        "PopupWindow.Sidebar.Heading");
 
-                if (DrawItem<MilitaryToolsWindow>(MilitaryTool, "Military"))
-                    Open<MilitaryToolsWindow>(window => MilitaryTool = window);
+                    if (GlobalSettings.MilitaryTool.Value)
+                        if (DrawItem<MilitaryToolsWindow>(MilitaryTool, "Military"))
+                            Open<MilitaryToolsWindow>(window => MilitaryTool = window);
 
-                if (DrawItem<TechnologyToolsWindow>(TechnologyTool, "Technology"))
-                    Open<TechnologyToolsWindow>(window => TechnologyTool = window);
+                    if (GlobalSettings.ArmyTool.Value)
+                        if (DrawItem<ArmyToolsWindow>(ArmyTools, "Army Tools"))
+                        Open<ArmyToolsWindow>(window => ArmyTools = window);
 
-                if (DrawItem<ResourceToolsWindow>(ResourceTool, "Resources"))
-                    Open<ResourceToolsWindow>(window => ResourceTool = window);
-                
-                OnDrawTool<AffinityUtilsWindow>("Cultural Affinity");
-                
-                GUILayout.Label("<color=#000000AA>P R O F I L I N G</color>   T O O L S", "PopupWindow.Sidebar.Heading");
-            
-                if (DrawItem<FramerateToolWindow>(FramerateTool, "Framerate"))
-                    Open<FramerateToolWindow>(window => FramerateTool = window);
-                
-                GUILayout.Label("<color=#000000AA>D E V E L O P E R</color>   T O O L S", "PopupWindow.Sidebar.Heading");
+                    if (GlobalSettings.TechnologyTool.Value)
+                        if (DrawItem<TechnologyToolsWindow>(TechnologyTool, "Technology"))
+                        Open<TechnologyToolsWindow>(window => TechnologyTool = window);
 
-                if (DrawItem<AutoTurnToolWindow>(AutoTurnTool, "Auto Turn <color=#00CC00AA>**HOT**</color>"))
-                    Open<AutoTurnToolWindow>(window => AutoTurnTool = window);
+                    if (GlobalSettings.ResourcesTool.Value)
+                        if (DrawItem<ResourceToolsWindow>(ResourceTool, "Resources"))
+                        Open<ResourceToolsWindow>(window => ResourceTool = window);
+
+                    // OnDrawTool<AffinityUtilsWindow>("Cultural Affinity");
+                }
+                
+                if (GlobalSettings.ProfilingTools.Value)
+                {
+                    GUILayout.Label("<color=#000000AA>P R O F I L I N G</color>   T O O L S",
+                        "PopupWindow.Sidebar.Heading");
                     
-                OnDrawTool<ArchetypesWindow>("Archetypes");
-                
-                GUILayout.Label("E X P <color=#000000AA>E R I M E N T A L</color>", "PopupWindow.Sidebar.Heading");
+                    if (GlobalSettings.FramerateTool.Value)
+                        if (DrawItem<FramerateToolWindow>(FramerateTool, "Framerate"))
+                            Open<FramerateToolWindow>(window => FramerateTool = window);
 
-                if (DrawItem<AIToolWindow>(AITool, "AI Tools"))
-                    Open<AIToolWindow>(window => AITool = window);
+                    if (GlobalSettings.GPUProfilerTool.Value)
+                        if (DrawItem<FramerateToolWindow>(FramerateTool, "GPU Profiler"))
+                            Open<FramerateToolWindow>(window => FramerateTool = window);
+                    
+                    if (GlobalSettings.MemoryProfilerTool.Value)
+                        if (DrawItem<MemoryProfilerToolWindow>(MemoryProfilerTool, "Memory Profiler"))
+                            Open<MemoryProfilerToolWindow>(window => MemoryProfilerTool = window);
+                }
                 
+                if (GlobalSettings.DeveloperTools.Value)
+                {
+                    GUILayout.Label("<color=#000000AA>D E V E L O P E R</color>   T O O L S",
+                        "PopupWindow.Sidebar.Heading");
+
+                    if (GlobalSettings.AutoTurnTool.Value)
+                        if (DrawItem<AutoTurnToolWindow>(AutoTurnTool, "Auto Turn <color=#00CC00AA>**HOT**</color>"))
+                            Open<AutoTurnToolWindow>(window => AutoTurnTool = window);
+
+                    // OnDrawTool<ArchetypesWindow>("Archetypes");
+                }
+                
+                if (GlobalSettings.ExperimentalTools.Value)
+                {
+                    GUILayout.Label("E X P <color=#000000AA>E R I M E N T A L</color>", "PopupWindow.Sidebar.Heading");
+
+                    if (GlobalSettings.AITool.Value)
+                        if (DrawItem<AIToolWindow>(AITool, "AI Tools"))
+                            Open<AIToolWindow>(window => AITool = window);
+                }
             GUILayout.EndVertical();
             GUI.backgroundColor = Color.white;
 
@@ -132,6 +164,9 @@ namespace DevTools.Humankind.GUITools.UI
             TechnologyTool?.Close();
             MilitaryTool?.Close();
             ResourceTool?.Close();
+            FramerateTool?.Close();
+            AITool?.Close();
+            ArmyTools?.Close();
             base.Close();
         }
     }

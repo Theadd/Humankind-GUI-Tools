@@ -423,6 +423,7 @@
       <Private>false</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup />
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\*" />
+  </ItemGroup>
 </Project>

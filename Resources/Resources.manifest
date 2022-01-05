@@ -1,0 +1,7 @@
+ManifestFileVersion: 0
+CRC: 1824198412
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: bundled-resources
+      Dependencies: {}

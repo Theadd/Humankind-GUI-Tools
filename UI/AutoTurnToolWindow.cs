@@ -15,21 +15,9 @@ namespace DevTools.Humankind.GUITools.UI
     public class AutoTurnToolWindow : FloatingToolWindow
     {
         private static readonly string[] TurnSelectionGridEntries = new string[6]
-        {
-    "5",
-    "10",
-    "25",
-    "75",
-    "150",
-    "Custom"
-        };
+            { "5", "10", "25", "75", "150", "Custom" };
         private static readonly string[] DurationSelectionGridEntries = new string[4]
-        {
-    "0",
-    "2",
-    "5",
-    "15"
-        };
+            { "0", "2", "5", "15" };
 
         private bool advancedOptions = true;
         private bool stopOnError;
