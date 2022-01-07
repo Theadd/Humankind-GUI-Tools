@@ -19,7 +19,7 @@ namespace DevTools.Humankind.GUITools.UI
         public override Rect WindowRect { get; set; } = new Rect(980f, 150f, 410f, 300f);
         public override bool ShouldBeVisible => true;
         public override bool ShouldRestoreLastWindowPosition => true;
-        public Texture2D HeaderImage { get; set; } = Texture2D.blackTexture;//Modding.Humankind.DevTools.DevTools.Assets.Load<Texture2D>("GameplayOrientation_Warmonger");
+        public Texture2D HeaderImage { get; set; } = Modding.Humankind.DevTools.DevTools.Assets.Load<Texture2D>("GameplayOrientation_Warmonger");
         public string GUITooltip { get; private set; } = "";
         public ArmyToolSettings Settings => Controller.Settings;
         private readonly ArmyController Controller = new ArmyController();

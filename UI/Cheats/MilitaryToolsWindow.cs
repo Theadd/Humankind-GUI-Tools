@@ -14,13 +14,13 @@ using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.Core;
 using UnityEngine;
 using HarmonyLib;
+using SharedAssets = DevTools.Humankind.SharedAssets.SharedAssets;
 
 namespace DevTools.Humankind.GUITools.UI
 {
     public class MilitaryToolsWindow : FloatingToolWindow
     {
         private string[] unitDefinitions = new string[0];
-        private string[] localizedUnitNames = new string[0];
         private string[] unitDefinitionsFiltered = new string[0];
         private List<UnitDefinition> unitList = new List<UnitDefinition>();
         private float damageAmount = 0.1f;
@@ -61,6 +61,9 @@ namespace DevTools.Humankind.GUITools.UI
             OnDrawWindowContent();
         }
 
+        private Texture selectedUnitTexture = Utils.TransparentTexture;
+        private String selectedUnitLocalizedName = string.Empty;
+
         protected void OnDrawWindowContent()
         {
             GUILayout.BeginVertical((GUIStyle)"Widget.ClientArea", GUILayout.ExpandWidth(true));
@@ -90,16 +93,9 @@ namespace DevTools.Humankind.GUITools.UI
 
                         int count = this.unitList.Count;
                         unitDefinitions = new string[count];
-                        localizedUnitNames = new string[count];
                         for (int index = 0; index < count; ++index){
                             unitDefinitions[index] = unitList[index].name;
-                            // localizedUnitNames[index] = R.Text.GetLocalizedTitle((new Amplitude.StaticString(this.unitList[index].name)));
                         }
-                        /*Loggr.Log(unitList[8].Name);
-                        Loggr.Log(unitList[8].Name.ToString());
-                        Loggr.Log(unitList[8].name);
-                        Loggr.Log(localizedUnitNames[8]);
-                        Loggr.Log(unitDefinitions[8]);*/
                         Array.Sort<string>(this.unitDefinitions,
                             new Comparison<string>(MilitaryToolsWindow
                                 .CompareUnitDefinitions));
@@ -108,8 +104,6 @@ namespace DevTools.Humankind.GUITools.UI
                     this.unitDefinitionsFiltered =
                         ((IEnumerable<string>)this.unitDefinitions).ToArray<string>();
 
-                    localizedUnitNames = unitDefinitions.Select(uname =>
-                        R.Text.GetLocalizedTitle((new Amplitude.StaticString(uname)))).ToArray();
                 }
 
                 string unitNameFilter1 = this.unitNameFilter;
@@ -136,22 +130,56 @@ namespace DevTools.Humankind.GUITools.UI
                     }
                 }
 
-                int selectedUnit = this.selectedUnit;
+                int lastSelectedUnit = this.selectedUnit;
                 this.unitDefinitionPosition = GUILayout.BeginScrollView(this.unitDefinitionPosition,
                     GUILayout.Height(140f));
                 this.selectedUnit =
                     GUILayout.SelectionGrid(this.selectedUnit, this.unitDefinitionsFiltered, 1);
                 GUILayout.EndScrollView();
-                bool flag = selectedUnit != this.selectedUnit && this.selectedUnit >= 0 &&
+                bool flag = lastSelectedUnit != this.selectedUnit && this.selectedUnit >= 0 &&
                             this.selectedUnit < this.unitDefinitionsFiltered.Length;
+                string selectedUnitName = selectedUnit >= 0 && selectedUnit < unitDefinitionsFiltered.Length ? this.unitDefinitionsFiltered[this.selectedUnit] : "";
+
                 this.sendToGodCursor &= GodMode.Enabled;
                 if (this.sendToGodCursor)
                     this.sendToGodCursor &=
                         Amplitude.Mercury.Presentation.Presentation.PresentationCursorController
                             .CurrentCursor is DefaultCursor;
                 bool sendToGodCursor = this.sendToGodCursor;
-                this.sendToGodCursor =
-                    GUILayout.Toggle(this.sendToGodCursor, "Send to God Cursor") | flag;
+
+                GUILayout.Space(8f);
+                GUILayout.BeginHorizontal();
+                    GUILayout.Space(8f);
+
+                    if (flag)
+                    {
+                        var sprite = Utils.LoadUnitSprite(selectedUnitName);
+                        selectedUnitTexture = sprite == null ? Texture2D.blackTexture : sprite.texture;
+                        selectedUnitLocalizedName = R.Text.GetLocalizedTitle(new Amplitude.StaticString(selectedUnitName));
+
+                        Loggr.Log(sprite);
+                    }
+                    GUILayout.BeginVertical("Checkbox", GUILayout.Width(64f), GUILayout.Height(64f));
+                        GUI.DrawTexture(GUILayoutUtility.GetRect(64f, 64f),
+                            selectedUnitTexture, ScaleMode.StretchToFill, true, 1f, new Color(1f, 1f, 1f, 0.9f), 0,0);
+                    GUILayout.EndVertical();
+                    GUILayout.BeginVertical(GUILayout.Height(62f));
+                        GUILayout.BeginHorizontal();
+                            GUILayout.Label(selectedUnitLocalizedName);
+                            GUILayout.FlexibleSpace();
+                            this.sendToGodCursor = GUILayout.Toggle(this.sendToGodCursor, "Send to God Cursor") | flag;
+                        GUILayout.EndHorizontal();
+                        GUILayout.FlexibleSpace();
+                        GUILayout.TextField(selectedUnitName);
+                    GUILayout.EndVertical();
+                    
+                    GUILayout.Space(8f);
+                GUILayout.EndHorizontal();
+                GUILayout.Space(4f);
+                GUILayout.BeginHorizontal();
+
+                
+                
                 if (this.sendToGodCursor != sendToGodCursor | flag)
                 {
                     if (this.sendToGodCursor)
@@ -166,9 +194,18 @@ namespace DevTools.Humankind.GUITools.UI
                         }
                     }
                     else
+                    {
                         Amplitude.Mercury.Presentation.Presentation.PresentationCursorController
                             .ChangeToDefaultCursor();
+                        SetGodMode(false);
+                    }
                 }
+
+                
+                
+
+                GUILayout.EndHorizontal();
+
 
                 GUILayout.Space(20f);
                 GUILayout.Label("ARMY TOOLS");

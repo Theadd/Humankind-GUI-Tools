@@ -1,0 +1,15 @@
+S:\Program Files\Steam\steamapps\common\Humankind\BepInEx\scripts\DevTools.Humankind.GUITools.dll
+S:\Program Files\Steam\steamapps\common\Humankind\scripts\obj\Debug\DevTools.Humankind.GUITools.csproj.AssemblyReference.cache
+S:\Program Files\Steam\steamapps\common\Humankind\scripts\obj\Debug\DevTools.Humankind.GUITools.GeneratedMSBuildEditorConfig.editorconfig
+S:\Program Files\Steam\steamapps\common\Humankind\scripts\obj\Debug\DevTools.Humankind.GUITools.AssemblyInfoInputs.cache
+S:\Program Files\Steam\steamapps\common\Humankind\scripts\obj\Debug\DevTools.Humankind.GUITools.AssemblyInfo.cs
+S:\Program Files\Steam\steamapps\common\Humankind\scripts\obj\Debug\DevTools.Humankind.GUITools.csproj.CoreCompileInputs.cache
+S:\Program Files\Steam\steamapps\common\Humankind\scripts\obj\Debug\DevTools.Humankind.GUITools.csproj.CopyComplete
+S:\Program Files\Steam\steamapps\common\Humankind\scripts\obj\Debug\DevTools.Humankind.GUITools.dll
+S:\Program Files\Steam\steamapps\common\Humankind\scripts_WORKING\obj\Debug\DevTools.Humankind.GUITools.csproj.AssemblyReference.cache
+S:\Program Files\Steam\steamapps\common\Humankind\scripts_WORKING\obj\Debug\DevTools.Humankind.GUITools.GeneratedMSBuildEditorConfig.editorconfig
+S:\Program Files\Steam\steamapps\common\Humankind\scripts_WORKING\obj\Debug\DevTools.Humankind.GUITools.AssemblyInfoInputs.cache
+S:\Program Files\Steam\steamapps\common\Humankind\scripts_WORKING\obj\Debug\DevTools.Humankind.GUITools.AssemblyInfo.cs
+S:\Program Files\Steam\steamapps\common\Humankind\scripts_WORKING\obj\Debug\DevTools.Humankind.GUITools.csproj.CoreCompileInputs.cache
+S:\Program Files\Steam\steamapps\common\Humankind\scripts_WORKING\obj\Debug\DevTools.Humankind.GUITools.csproj.CopyComplete
+S:\Program Files\Steam\steamapps\common\Humankind\scripts_WORKING\obj\Debug\DevTools.Humankind.GUITools.dll

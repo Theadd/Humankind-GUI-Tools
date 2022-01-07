@@ -2,42 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="61297adf-c92e-4f90-a685-c5558d61f937" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/MainTools.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.DevTools.Humankind.GUITools.dir/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.scripts.dir/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.scripts.dir/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.scripts.dir/.idea/indexLayout.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vs/DevTools.Humankind.GUITools/DesignTimeBuild/.dtbcache.v2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vs/DevTools.Humankind.GUITools/project-colors.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vs/DevTools.Humankind.GUITools/v17/.futdcache.v1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vs/DevTools.Humankind.GUITools/v17/.suo" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/tasks.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.DevTools.Humankind.GUITools.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DevTools.Humankind.GUITools.dir/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DevTools.Humankind.GUITools.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/DevTools.Humankind.GUITools.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GUITools.cs" beforeDir="false" afterPath="$PROJECT_DIR$/GUITools.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UI/AIToolWindow.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UI/ArmyTools/ArmyController.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UI/ArmyTools/ArmyToolsWindow.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UI/ArmyTools/ArmyUtils.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UI/ArmyTools/ToolSettings.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UI/AutoTurnToolWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/UI/AutoTurnToolWindow.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UI/BasicToolWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/UI/BasicToolWindow.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UI/Common/CustomSetting.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UI/Common/ScrollableGrid.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UI/Common/StyledUI.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UI/FramerateToolWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/UI/Profiling/FramerateToolWindow.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MainTools.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MainTools.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UI/Cheats/ArmyToolsWindowPack.cs" beforeDir="false" afterPath="$PROJECT_DIR$/UI/Cheats/ArmyToolsWindowPack.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UI/Common/Settings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/UI/Common/Settings.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UI/InGameMenu/InGameMenuWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/UI/InGameMenu/InGameMenuWindow.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UI/MainToolbar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/UI/MainToolbar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UI/MilitaryToolsWindow.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UI/ResourceToolsWindow.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UI/TechnologyToolsWindow.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UI/Profiling/GPUProfilerToolWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/UI/Profiling/GPUProfilerToolWindow.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/obj/Debug/DevTools.Humankind.GUITools.GeneratedMSBuildEditorConfig.editorconfig" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/DevTools.Humankind.GUITools.GeneratedMSBuildEditorConfig.editorconfig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/obj/Debug/DevTools.Humankind.GUITools.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/DevTools.Humankind.GUITools.assets.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/obj/Debug/DevTools.Humankind.GUITools.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/DevTools.Humankind.GUITools.csproj.AssemblyReference.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Debug/DevTools.Humankind.GUITools.csproj.CoreCompileInputs.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Debug/DevTools.Humankind.GUITools.csproj.FileListAbsolute.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Debug/DevTools.Humankind.GUITools.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/obj/rider.project.restore.info" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,16 +23,30 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2658deca167f4830b692c17b56d8464527000/9d/dc5baa5b/GUILayoutUtility.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/23c82cada6174aeea1f2659206cab34d1c600/e4/fe9d17b0/KeyboardShortcut.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3d402390e627421d8fa02ae41d0b8f33321400/e3/d34b3f0d/LootInfo.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3d8ba73c8ae44014b17df789068d227e79200/73/3bdee5c1/GainType.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2031488213494187ad8fdf6a91d614ad117000/d9/b4932804/KeyCode.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2658deca167f4830b692c17b56d8464527000/b2/2b41aedd/GUILayout.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/5b4473aae0e64c82b794e549db201e9654c600/68/6b7943ae/LoadSavesScreen.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2658deca167f4830b692c17b56d8464527000/52/df663acb/GUI.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ee94c15f86904f0da87d8e6bdfc4b00a9b200/30/acd4d5c2/PopupWindow.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/Documents/Humankind Mod Tool/Projects/Modding.Humankind.DevTools/src/DeveloperTools/UI/PopupToolWindow.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ee94c15f86904f0da87d8e6bdfc4b00a9b200/4a/2c1faad7/Behaviour.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3d402390e627421d8fa02ae41d0b8f33321400/6d/2117cb1e/GameSnapshot.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2658deca167f4830b692c17b56d8464527000/9d/dc5baa5b/GUILayoutUtility.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2658deca167f4830b692c17b56d8464527000/b2/2b41aedd/GUILayout.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3d402390e627421d8fa02ae41d0b8f33321400/e9/aaa5938e/DebugControl.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3d8ba73c8ae44014b17df789068d227e79200/b9/09cea078/Gain.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3d8ba73c8ae44014b17df789068d227e79200/a5/0a93515e/SimulationEventEffect.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/5b4473aae0e64c82b794e549db201e9654c600/9e/0a67f592/PauseMenuModalWindow.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="238FF8TeKPvw5AuTIRgSXZhGIJB" />
@@ -91,7 +81,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1641107701043</updated>
-      <workItem from="1641107708683" duration="38861000" />
+      <workItem from="1641107708683" duration="39459000" />
+      <workItem from="1641439743575" duration="11297000" />
     </task>
     <servers />
   </component>
@@ -99,7 +90,7 @@
     <option name="version" value="3" />
   </component>
   <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
-  <component name="UnityProjectConfiguration" hasMinimizedUI="null" />
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -111,6 +102,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />

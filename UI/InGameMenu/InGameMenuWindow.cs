@@ -23,6 +23,13 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
 
         public override Rect WindowRect { get; set; } = new Rect(Screen.width - FixedWidth, 0, FixedWidth, Screen.height);
 
+        protected override void Awake()
+        {
+            base.Awake();
+            OnReadPlayerPreferences();
+            MainTools.Toolbar.RestoreVisibleWindows();
+        }
+
         protected override IEnumerator Start()
         {
             while (InGameMenuController.PauseMenuWindow == null || InGameMenuController.Background == null)
@@ -31,8 +38,6 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
                 
                 yield return new WaitForSeconds(1.5f);
             }
-            
-            // return base.Start(); 
         }
 
         public override void OnGUIStyling()
@@ -112,7 +117,7 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
                 GUILayout.Space(8f);
                 GlobalSettings.WindowTitleBar.Draw(/*"PopupWindow.RowEven"*/);
                 GUILayout.Space(8f);
-                GlobalSettings.ToolbarWindow.Draw(/*"PopupWindow.Rown"*/);
+                GlobalSettings.HideToolbarWindow.Draw(/*"PopupWindow.Rown"*/);
                 
                     
             GUILayout.EndVertical();
@@ -156,6 +161,9 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
             GUILayout.BeginVertical();
             GUI.enabled = enableDeveloperTools;
             GlobalSettings.AutoTurnTool.Draw();
+            GlobalSettings.CivicsTool.Draw();
+            GlobalSettings.CollectiblesTool.Draw();
+            GlobalSettings.DiplomacyTool.Draw();
             GUI.enabled = false;
             GlobalSettings.ArchetypesTool.Draw();
             GUI.enabled = true;

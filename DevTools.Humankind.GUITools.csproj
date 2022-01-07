@@ -13,13 +13,14 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <OutputPath>..\BepInEx\scripts</OutputPath>
     <DebugType>embedded</DebugType>
-    <DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
     <HUMANKIND_GAME_PATH>..</HUMANKIND_GAME_PATH>
     <HUMANKIND_REFERENCED_LIBRARIES_PATH>$(USERPROFILE)\Documents\Humankind Mod Tool\References</HUMANKIND_REFERENCED_LIBRARIES_PATH>
     <DevToolsPATH>..\BepInEx\scripts\Modding.Humankind.DevTools.dll</DevToolsPATH>
     <DevToolsPATH Condition="!Exists('$(DevToolsPATH)')">..\BepInEx\plugins\Modding.Humankind.DevTools.dll</DevToolsPATH>
+    <SharedAssetsPATH>..\BepInEx\plugins\DevTools.Humankind.SharedAssets.dll</SharedAssetsPATH>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BepInEx">
@@ -422,8 +423,12 @@
       <HintPath>$(DevToolsPATH)</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="DevTools.Humankind.SharedAssets">
+      <HintPath>$(SharedAssetsPATH)</HintPath>
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
-  <ItemGroup>
+  <!--<ItemGroup>
     <EmbeddedResource Include="Resources\*" />
-  </ItemGroup>
+  </ItemGroup>-->
 </Project>
