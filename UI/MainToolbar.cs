@@ -1,4 +1,5 @@
-﻿using Modding.Humankind.DevTools;
+﻿using System;
+using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
 using UnityEngine;
 using Amplitude.Framework.Overlay;
@@ -19,12 +20,36 @@ namespace DevTools.Humankind.GUITools.UI
         public MilitaryToolsWindow MilitaryTool { get; set; } = null;
         public ResourceToolsWindow ResourceTool { get; set; } = null;
         public FramerateToolWindow FramerateTool { get; set; } = null;
+        // public ProfilerToolWindow ProfilerTool { get; set; } = null;
         // public GPUProfilerToolWindow GPUProfilerTool { get; set; } = null;
         public MemoryProfilerToolWindow MemoryProfilerTool { get; set; } = null;
+        public GraphicsToolsWindow GraphicsTool { get; set; } = null;
         public ArmyToolsWindow ArmyTools { get; set; } = null;
         public AIToolWindow AITool { get; set; } = null;
+        public BattleAIToolWindow BattleAITool { get; set; } = null;
+        public CivicsToolWindow CivicsTool { get; set; } = null;
+        public CollectiblesToolWindow CollectiblesTool { get; set; } = null;
+        public DiplomacyToolWindow DiplomacyTool { get; set; } = null;
 
         #endregion FloatingToolWindow derived classes
+
+        public void RestoreVisibleWindows()
+        {
+            if (GlobalSettings.AutoTurnTool.Value && WasVisible<AutoTurnToolWindow>()) Open<AutoTurnToolWindow>(window => AutoTurnTool = window);
+            if (GlobalSettings.TechnologyTool.Value && WasVisible<TechnologyToolsWindow>()) Open<TechnologyToolsWindow>(window => TechnologyTool = window);
+            if (GlobalSettings.MilitaryTool.Value && WasVisible<MilitaryToolsWindow>()) Open<MilitaryToolsWindow>(window => MilitaryTool = window);
+            if (GlobalSettings.ResourcesTool.Value && WasVisible<ResourceToolsWindow>()) Open<ResourceToolsWindow>(window => ResourceTool = window);
+            if (GlobalSettings.FramerateTool.Value && WasVisible<FramerateToolWindow>()) Open<FramerateToolWindow>(window => FramerateTool = window);
+            if (GlobalSettings.MemoryProfilerTool.Value && WasVisible<MemoryProfilerToolWindow>()) Open<MemoryProfilerToolWindow>(window => MemoryProfilerTool = window);
+            if (GlobalSettings.GraphicsTool.Value && WasVisible<GraphicsToolsWindow>()) Open<GraphicsToolsWindow>(window => GraphicsTool = window);
+            if (GlobalSettings.ArmyTool.Value && WasVisible<ArmyToolsWindow>()) Open<ArmyToolsWindow>(window => ArmyTools = window);
+            if (GlobalSettings.AITool.Value && WasVisible<AIToolWindow>()) Open<AIToolWindow>(window => AITool = window);
+            if (GlobalSettings.BattleAITool.Value && WasVisible<BattleAIToolWindow>()) Open<BattleAIToolWindow>(window => BattleAITool = window);
+            if (GlobalSettings.CivicsTool.Value && WasVisible<CivicsToolWindow>()) Open<CivicsToolWindow>(window => CivicsTool = window);
+            if (GlobalSettings.CollectiblesTool.Value && WasVisible<CollectiblesToolWindow>()) Open<CollectiblesToolWindow>(window => CollectiblesTool = window);
+            if (GlobalSettings.DiplomacyTool.Value && WasVisible<DiplomacyToolWindow>()) Open<DiplomacyToolWindow>(window => DiplomacyTool = window);
+        
+        }
 
         public override void OnDrawUI()
         {
@@ -54,24 +79,6 @@ namespace DevTools.Humankind.GUITools.UI
                     // OnDrawTool<AffinityUtilsWindow>("Cultural Affinity");
                 }
                 
-                if (GlobalSettings.ProfilingTools.Value)
-                {
-                    GUILayout.Label("<color=#000000AA>P R O F I L I N G</color>   T O O L S",
-                        "PopupWindow.Sidebar.Heading");
-                    
-                    if (GlobalSettings.FramerateTool.Value)
-                        if (DrawItem<FramerateToolWindow>(FramerateTool, "Framerate"))
-                            Open<FramerateToolWindow>(window => FramerateTool = window);
-
-                    if (GlobalSettings.GPUProfilerTool.Value)
-                        if (DrawItem<FramerateToolWindow>(FramerateTool, "GPU Profiler"))
-                            Open<FramerateToolWindow>(window => FramerateTool = window);
-                    
-                    if (GlobalSettings.MemoryProfilerTool.Value)
-                        if (DrawItem<MemoryProfilerToolWindow>(MemoryProfilerTool, "Memory Profiler"))
-                            Open<MemoryProfilerToolWindow>(window => MemoryProfilerTool = window);
-                }
-                
                 if (GlobalSettings.DeveloperTools.Value)
                 {
                     GUILayout.Label("<color=#000000AA>D E V E L O P E R</color>   T O O L S",
@@ -81,7 +88,44 @@ namespace DevTools.Humankind.GUITools.UI
                         if (DrawItem<AutoTurnToolWindow>(AutoTurnTool, "Auto Turn <color=#00CC00AA>**HOT**</color>"))
                             Open<AutoTurnToolWindow>(window => AutoTurnTool = window);
 
+                    if (GlobalSettings.CivicsTool.Value)
+                        if (DrawItem<CivicsToolWindow>(CivicsTool, "Civics Tool"))
+                            Open<CivicsToolWindow>(window => CivicsTool = window);
+                        
+                    if (GlobalSettings.CollectiblesTool.Value)
+                        if (DrawItem<CollectiblesToolWindow>(CollectiblesTool, "Collectibles"))
+                            Open<CollectiblesToolWindow>(window => CollectiblesTool = window);
+                        
+                    if (GlobalSettings.DiplomacyTool.Value)
+                        if (DrawItem<DiplomacyToolWindow>(DiplomacyTool, "Diplomacy"))
+                            Open<DiplomacyToolWindow>(window => DiplomacyTool = window);
+
                     // OnDrawTool<ArchetypesWindow>("Archetypes");
+                }
+
+                if (GlobalSettings.ProfilingTools.Value)
+                {
+                    GUILayout.Label("<color=#000000AA>P R O F I L I N G</color>   T O O L S",
+                        "PopupWindow.Sidebar.Heading");
+                    
+                    if (GlobalSettings.FramerateTool.Value)
+                        if (DrawItem<FramerateToolWindow>(FramerateTool, "Framerate"))
+                            Open<FramerateToolWindow>(window => FramerateTool = window);
+
+                    // if (GlobalSettings.GPUProfilerTool.Value)
+                    //     if (DrawItem<GPUProfilerToolWindow>(GPUProfilerTool, "GPU Profiler"))
+                    //         Open<GPUProfilerToolWindow>(window => GPUProfilerTool = window);
+
+                
+                    if (DrawItem<GraphicsToolsWindow>(GraphicsTool, "Graphics Tool"))
+                        Open<GraphicsToolsWindow>(window => GraphicsTool = window);
+
+                    // if (DrawItem<ProfilerToolWindow>(ProfilerTool, "Profiler"))
+                    //     Open<ProfilerToolWindow>(window => ProfilerTool = window);
+                    
+                    if (GlobalSettings.MemoryProfilerTool.Value)
+                        if (DrawItem<MemoryProfilerToolWindow>(MemoryProfilerTool, "Memory Profiler"))
+                            Open<MemoryProfilerToolWindow>(window => MemoryProfilerTool = window);
                 }
                 
                 if (GlobalSettings.ExperimentalTools.Value)
@@ -91,6 +135,10 @@ namespace DevTools.Humankind.GUITools.UI
                     if (GlobalSettings.AITool.Value)
                         if (DrawItem<AIToolWindow>(AITool, "AI Tools"))
                             Open<AIToolWindow>(window => AITool = window);
+                    
+                    if (DrawItem<BattleAIToolWindow>(BattleAITool, "Battle AI Tool"))
+                        Open<BattleAIToolWindow>(window => BattleAITool = window);
+                    
                 }
             GUILayout.EndVertical();
             GUI.backgroundColor = Color.white;
@@ -158,16 +206,24 @@ namespace DevTools.Humankind.GUITools.UI
             GUILayout.EndHorizontal();
         }
 
-        public override void Close()
+        public override void Close(bool saveVisibilityStateBeforeClosing = false)
         {
-            AutoTurnTool?.Close();
-            TechnologyTool?.Close();
-            MilitaryTool?.Close();
-            ResourceTool?.Close();
-            FramerateTool?.Close();
-            AITool?.Close();
-            ArmyTools?.Close();
-            base.Close();
+            var s = saveVisibilityStateBeforeClosing;
+
+            AutoTurnTool?.Close(s);
+            TechnologyTool?.Close(s);
+            MilitaryTool?.Close(s);
+            ResourceTool?.Close(s);
+            FramerateTool?.Close(s);
+            MemoryProfilerTool?.Close(s);
+            GraphicsTool?.Close(s);
+            ArmyTools?.Close(s);
+            AITool?.Close(s);
+            BattleAITool?.Close(s);
+            CivicsTool?.Close(s);
+            CollectiblesTool?.Close(s);
+            DiplomacyTool?.Close(s);
+            base.Close(false);
         }
     }
 }
