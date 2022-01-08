@@ -1,0 +1,11 @@
+# Visual Studio, VSCode, Rider
+/.vs/
+/.idea/
+/.vscode/
+
+# auto-generated
+/obj/
+/bin/Debug/
+
+# CUSTOM
+/*.DotSettings.user
