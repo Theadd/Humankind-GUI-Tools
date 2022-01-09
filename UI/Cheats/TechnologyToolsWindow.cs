@@ -17,7 +17,7 @@ namespace DevTools.Humankind.GUITools.UI
     {
         public override string WindowTitle { get; set; } = "TECHNOLOGY TOOLS";
         public override string WindowGUIStyle { get; set; } = "PopupWindow";
-        public override bool ShouldBeVisible => HumankindGame.IsGameLoaded;
+        public override bool ShouldBeVisible => HumankindGame.IsGameLoaded && !GlobalSettings.ShouldHideTools;
         public override bool ShouldRestoreLastWindowPosition => true;
         public override Rect WindowRect { get; set; } = new Rect(130f, 260f, 780f, 500f);
         private Vector2 scrollPosition;
@@ -48,15 +48,19 @@ namespace DevTools.Humankind.GUITools.UI
             }
         }
 
+        private Color bgColor = new Color32(255, 255, 255, 230);
+        private Color bgColorOpaque = new Color32(255, 255, 255, 255);
+
         public override void OnGUIStyling()
         {
             base.OnGUIStyling();
-            GUI.backgroundColor = new Color32(255, 255, 255, 230);
+            GUI.backgroundColor = GlobalSettings.WindowTransparency.Value ? bgColor : bgColorOpaque;
         }
 
         public override void OnDrawUI()
         {
-            WindowUtils.DrawWindowTitleBar(this);
+            if (GlobalSettings.WindowTitleBar.Value)
+                WindowUtils.DrawWindowTitleBar(this);
             GUILayout.BeginVertical("Widget.ClientArea");
 
             if (Snapshots.TechnologyScreenSnapshot != null &&

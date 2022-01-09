@@ -15,10 +15,12 @@ namespace DevTools.Humankind.GUITools
     public static class MainTools
     {
         public static bool IsDebugModeEnabled { get; set; } = true;
+
         public static MainToolbar Toolbar { get; set; }
+
         public static InGameMenuWindow InGameMenu { get; set; }
 
-        public static BasicToolWindow BasicWindow { get; set; }
+        // public static BasicToolWindow BasicWindow { get; set; }
 
         public static void Main()
         {
@@ -27,7 +29,7 @@ namespace DevTools.Humankind.GUITools
             PopupToolWindow.Open<MainToolbar>(w => Toolbar = w);
             PopupToolWindow.Open<InGameMenuWindow>(w => InGameMenu = w);
 
-            PopupToolWindow.Open<BasicToolWindow>(w => BasicWindow = w);
+            // PopupToolWindow.Open<BasicToolWindow>(w => BasicWindow = w);
    
             HumankindDevTools.RegisterAction(
                 new KeyboardShortcut(UnityEngine.KeyCode.Insert), 
@@ -43,10 +45,11 @@ namespace DevTools.Humankind.GUITools
         public static void CancelGodMode() => AccessTools.PropertySetter(typeof(GodMode), "Enabled")?.Invoke(null, new object[] { false });
 
         public static void Unload() => Unload(true);
+
         public static void Unload(bool saveState = false) {
             Toolbar?.Close(saveState);
             InGameMenu?.Close();
-            BasicWindow?.Close();
+            // BasicWindow?.Close();
         }
         
         private static void Debug()

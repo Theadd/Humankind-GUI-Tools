@@ -80,7 +80,7 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
             GUILayout.Space(IsBigScreen ? 12f : 8f);
         }
 
-        private int activeTab = 1;
+        private int activeTab = 0;
 
         private string[] tabNames = new[]
             {"<size=10><b> GLOBAL SETTINGS </b></size>", "<size=10><b> ADD/REMOVE TOOLS </b></size>"};
@@ -118,7 +118,8 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
                 GlobalSettings.WindowTitleBar.Draw(/*"PopupWindow.RowEven"*/);
                 GUILayout.Space(8f);
                 GlobalSettings.HideToolbarWindow.Draw(/*"PopupWindow.Rown"*/);
-                
+                GUILayout.Space(8f);
+                GlobalSettings.HideToolsInGameMenu.Draw(/*"PopupWindow.Rown"*/);
                     
             GUILayout.EndVertical();
         }
@@ -142,19 +143,7 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
             GUILayout.Space(8f);
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
-            
-            var enableProfilingTools = GlobalSettings.ProfilingTools.Draw();
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(48f);
-            GUILayout.BeginVertical();
-            GUI.enabled = enableProfilingTools;
-            GlobalSettings.FramerateTool.Draw();
-            GlobalSettings.GPUProfilerTool.Draw();
-            GlobalSettings.MemoryProfilerTool.Draw();
-            GUI.enabled = true;
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
-            
+
             var enableDeveloperTools = GlobalSettings.DeveloperTools.Draw();
             GUILayout.BeginHorizontal();
             GUILayout.Space(48f);
@@ -170,12 +159,26 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
             
+            var enableProfilingTools = GlobalSettings.ProfilingTools.Draw();
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(48f);
+            GUILayout.BeginVertical();
+            GUI.enabled = enableProfilingTools;
+            GlobalSettings.FramerateTool.Draw();
+            // GlobalSettings.GPUProfilerTool.Draw(); 
+            GlobalSettings.GraphicsTool.Draw();
+            GlobalSettings.MemoryProfilerTool.Draw();
+            GUI.enabled = true;
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+            
             var enableExperimentalTools = GlobalSettings.ExperimentalTools.Draw();
             GUILayout.BeginHorizontal();
             GUILayout.Space(48f);
             GUILayout.BeginVertical();
             GUI.enabled = enableExperimentalTools;
             GlobalSettings.AITool.Draw();
+            GlobalSettings.BattleAITool.Draw();
             GUI.enabled = true;
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();

@@ -8,7 +8,8 @@ namespace DevTools.Humankind.GUITools.UI
 {
     public class MainToolbar : FloatingToolWindow
     {
-        public override bool ShouldBeVisible => HumankindGame.IsGameLoaded;
+        public override bool ShouldBeVisible => !GlobalSettings.ShouldHideTools && 
+            HumankindGame.IsGameLoaded && !GlobalSettings.HideToolbarWindow.Value;
         public override bool ShouldRestoreLastWindowPosition => true;
         public override string WindowTitle { get; set; } = "TOOLBAR";
         public override Rect WindowRect { get; set; } = new Rect (30, 290, 170, 600);
@@ -116,9 +117,9 @@ namespace DevTools.Humankind.GUITools.UI
                     //     if (DrawItem<GPUProfilerToolWindow>(GPUProfilerTool, "GPU Profiler"))
                     //         Open<GPUProfilerToolWindow>(window => GPUProfilerTool = window);
 
-                
-                    if (DrawItem<GraphicsToolsWindow>(GraphicsTool, "Graphics Tool"))
-                        Open<GraphicsToolsWindow>(window => GraphicsTool = window);
+                    if (GlobalSettings.GraphicsTool.Value)
+                        if (DrawItem<GraphicsToolsWindow>(GraphicsTool, "Graphics Tool"))
+                            Open<GraphicsToolsWindow>(window => GraphicsTool = window);
 
                     // if (DrawItem<ProfilerToolWindow>(ProfilerTool, "Profiler"))
                     //     Open<ProfilerToolWindow>(window => ProfilerTool = window);
@@ -136,8 +137,9 @@ namespace DevTools.Humankind.GUITools.UI
                         if (DrawItem<AIToolWindow>(AITool, "AI Tools"))
                             Open<AIToolWindow>(window => AITool = window);
                     
-                    if (DrawItem<BattleAIToolWindow>(BattleAITool, "Battle AI Tool"))
-                        Open<BattleAIToolWindow>(window => BattleAITool = window);
+                    if (GlobalSettings.BattleAITool.Value)
+                        if (DrawItem<BattleAIToolWindow>(BattleAITool, "Battle AI Tool"))
+                            Open<BattleAIToolWindow>(window => BattleAITool = window);
                     
                 }
             GUILayout.EndVertical();

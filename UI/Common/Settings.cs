@@ -71,10 +71,7 @@ namespace DevTools.Humankind.GUITools.UI
                 Value = GUILayout.Toggle(Value, Value ? ToggleContentOn : ToggleContent, "Checkbox");
             GUILayout.EndVertical();
             GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
-            // Utils.DrawText(Name.ToUpper());
                 GUILayout.Label((GUI.enabled ? "<size=12><color=#FFFFFFBC>" : "<size=12><color=#FFFFFF88>") + Name + "</color></size>", "Text");
-            // Utils.DrawText(Name);
-                // GUILayout.Space(8f);
             GUILayout.EndVertical();
         }
     }
@@ -98,11 +95,11 @@ namespace DevTools.Humankind.GUITools.UI
             "Hide the Toolbar window.", "", false
         );
         public static CheckboxSetting HideToolsInGameMenu = new CheckboxSetting(
-            "Hide all Tool Windows in the Game Menu screen."
+            "Hide all Tool Windows in the Game Menu screen, including the Toolbar window."
         );
 
         public static CheckboxSetting CheatingTools = new CheckboxSetting(R.Text.Bold("Cheating Tools section".ToUpper()));
-        public static CheckboxSetting ProfilingTools = new CheckboxSetting(R.Text.Bold("Profiling Tools section".ToUpper()));
+        public static CheckboxSetting ProfilingTools = new CheckboxSetting(R.Text.Bold("Profiling Tools section".ToUpper()), "", null, false);
         public static CheckboxSetting DeveloperTools = new CheckboxSetting(R.Text.Bold("Developer Tools section".ToUpper()));
         public static CheckboxSetting ExperimentalTools = new CheckboxSetting(R.Text.Bold("Experimental Tools section".ToUpper()));
         public static CheckboxSetting MilitaryTool = new CheckboxSetting("Military Tool.");
