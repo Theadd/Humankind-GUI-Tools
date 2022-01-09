@@ -115,7 +115,7 @@ namespace DevTools.Humankind.GUITools.UI
         public static CheckboxSetting ArchetypesTool = new CheckboxSetting("Archetypes Tool.", "", null, false);
         public static CheckboxSetting GraphicsTool = new CheckboxSetting("Graphics Tool.", "", null, false);
         public static CheckboxSetting BattleAITool = new CheckboxSetting("Battle AI Tools.");
-        public static CheckboxSetting CivicsTool = new CheckboxSetting("Civics Tool.", "", null, false);
+        public static CheckboxSetting CivicsTool = new CheckboxSetting("Civics Tool.");
         public static CheckboxSetting CollectiblesTool = new CheckboxSetting("Curiosities Tool.", "", null, false);
         public static CheckboxSetting DiplomacyTool = new CheckboxSetting("Diplomacy Tool.", "", null, false);
 

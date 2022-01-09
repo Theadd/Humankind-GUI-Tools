@@ -61,7 +61,7 @@ namespace DevTools.Humankind.GUITools
             Loggr.Log(string.Join("\n", files), ConsoleColor.DarkYellow);
 
             // Draw a colored border for all UIOverlays backing a FloatingToolWindow derived class
-            UIOverlay.DEBUG_DRAW_OVERLAY = true;
+            UIOverlay.DEBUG_DRAW_OVERLAY = false;
             // More verbose console output
             Modding.Humankind.DevTools.DevTools.QuietMode = false;
         }

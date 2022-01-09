@@ -17,10 +17,13 @@ namespace DevTools.Humankind.GUITools.UI
             return tex;
         }
 
-        public static void DrawHorizontalLine(float alpha = 0.45f) =>
-            GUI.DrawTexture(GUILayoutUtility.GetRect(GUILayoutUtility.GetLastRect().width, 1f),
+        public static void DrawHorizontalLine(float alpha = 0.45f)
+        {
+            var r = GUILayoutUtility.GetRect(1f, 1f);
+            GUI.DrawTexture(new Rect(r.x, r.y, r.width - 3f, 1f),
                 WhiteTexture, ScaleMode.StretchToFill, true, 
                 1f, new Color(1f, 1f, 1f, alpha), 0,0);
+        }
 
         public static void DrawH1(string title)
         {
