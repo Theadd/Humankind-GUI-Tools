@@ -20,7 +20,7 @@ namespace DevTools.Humankind.GUITools.UI
         public static void DrawHorizontalLine(float alpha = 0.45f) =>
             GUI.DrawTexture(GUILayoutUtility.GetRect(GUILayoutUtility.GetLastRect().width, 1f),
                 WhiteTexture, ScaleMode.StretchToFill, true, 
-                1f, new Color(255, 255, 255, alpha), 0,0);  // TODO: FIXME 255 != 1f
+                1f, new Color(1f, 1f, 1f, alpha), 0,0);
 
         public static void DrawH1(string title)
         {

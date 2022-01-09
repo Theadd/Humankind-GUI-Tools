@@ -7,6 +7,7 @@ using Amplitude.Mercury.Simulation;
 using System;
 using UnityEngine;
 using Modding.Humankind.DevTools.Core;
+using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
 
 namespace DevTools.Humankind.GUITools.UI
@@ -21,7 +22,7 @@ namespace DevTools.Humankind.GUITools.UI
 
         public override bool ShouldRestoreLastWindowPosition => true;
 
-        public override Rect WindowRect { get; set; } = new Rect(130f, 260f, 720f, 500f);
+        public override Rect WindowRect { get; set; } = new Rect(130f, 260f, 620f, 400f);
 
         private Color bgColor = new Color32(255, 255, 255, 230);
         private Color bgColorOpaque = new Color32(255, 255, 255, 255);
@@ -39,68 +40,79 @@ namespace DevTools.Humankind.GUITools.UI
 
             OnDrawWindowClientArea(0);
         }
+        
         private Vector2 scrollPosition;
-
-        protected override void OnBecomeVisible() => base.OnBecomeVisible();
 
         protected override void OnDrawWindowClientArea(int instanceId)
         {
-            GUI.color = Color.white;
-            GUI.backgroundColor = Color.white;
-            GUILayout.BeginVertical((GUIStyle)"Widget.ClientArea", GUILayout.ExpandWidth(true));
             if (Snapshots.DiplomaticSnapshot == null)
                 return;
             using (new GUILayout.VerticalScope((GUIStyle)"Widget.ClientArea", new GUILayoutOption[1]
             {
-        GUILayout.Height(500f)
+                GUILayout.Height(300f)
             }))
             {
-                this.scrollPosition = GUILayout.BeginScrollView(this.scrollPosition);
-                using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
+                using (new GUILayout.HorizontalScope(/*"PopupWindow.SectionHeader"*/))
                 {
-                    GUILayout.Label(" ");
-                    GUILayout.Label("Empire", GUILayout.Width(45f));
-                    GUILayout.Label(" | ");
-                    GUILayout.Label("State", GUILayout.Width(100f));
-                    GUILayout.Label(" | ");
-                    GUILayout.Label("TreatyState?", GUILayout.Width(100f));
-                    GUILayout.Label(" | ");
-                    GUILayout.Label("ForceWar?", GUILayout.Width(90f));
-                    GUILayout.Label(" | ");
-                    GUILayout.Label("Morale", GUILayout.Width(45f));
-                    GUILayout.Label(" | ");
-                    GUILayout.Label("Morale Delta", GUILayout.Width(45f));
+                    GUILayout.Label("<size=10><b>#</b></size>", GUILayout.Width(15f));
+                    GUILayout.Label("<size=10><b>EMPIRE</b></size>", "RightAlignedLabel", GUILayout.Width(85f));
+                    GUILayout.Label("<size=10><b>STATE</b></size>", GUILayout.Width(100f));
+                    GUILayout.Label("<size=10><b>TREATY STATE?</b></size>", GUILayout.Width(100f));
+                    
+                    GUILayout.FlexibleSpace();
+
+                    GUILayout.Label("<size=10><b>MORALE DELTA</b></size>", "RightAlignedLabel", GUILayout.Width(90f));
+                    GUILayout.Label("<size=10><b>MORALE</b></size>", GUILayout.Width(50f));
+
+                    GUILayout.Label("<size=10><b>ACTIONS</b></size>", "RightAlignedLabel", GUILayout.Width(90f));
+                    GUILayout.Space(15f);
                 }
+                Utils.DrawHorizontalLine(0.65f);
+
+                scrollPosition = GUILayout.BeginScrollView(
+                    scrollPosition,
+                    false,
+                    true,
+                    "horizontalscrollbar",
+                    "verticalscrollbar",
+                    "scrollview",
+                    GUILayout.Height(320f)
+                );
+
                 DiplomaticRelationSummaryInfo[] relationSummaries = Snapshots.DiplomaticSnapshot.PresentationData.LocalEmpireDiplomaticSummary.RelationSummaries;
                 for (int index1 = 0; index1 < relationSummaries.Length; ++index1)
                 {
+                    if (index1 == (int)Snapshots.GameSnapshot.PresentationData.LocalEmpireInfo.EmpireIndex)
+                        continue;
+                    
                     DiplomaticRelationSummaryInfo relationSummaryInfo = relationSummaries[index1];
-                    using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
+                    using (new GUILayout.HorizontalScope("PopupWindow.SectionHeader"))
                     {
-                        if (index1 == (int)Snapshots.GameSnapshot.PresentationData.LocalEmpireInfo.EmpireIndex)
-                        {
-                            GUILayout.Label("     You don't have diplomatic relation with yourself.");
-                            continue;
-                        }
-                        GUILayout.Label(" ");
-                        GUILayout.Label(relationSummaryInfo.OtherEmpireIndex.ToString(), GUILayout.Width(45f));
-                        GUILayout.Label(" | ");
-                        GUILayout.Label(relationSummaryInfo.CurrentState.ToString(), GUILayout.Width(100f));
-                        GUILayout.Label(" | ");
-                        GUILayout.Label(relationSummaryInfo.TreatyInfo.PropositionInfo.Status.ToString(), GUILayout.Width(100f));
-                        GUILayout.Label(" | ");
-                        if (GUILayout.Button("ForceWar", GUILayout.Width(90f)))
+                        var empire = HumankindGame.Empires[relationSummaryInfo.OtherEmpireIndex];
+
+                        GUILayout.Label("<size=10><b>" + relationSummaryInfo.OtherEmpireIndex + "</b></size>", GUILayout.Width(15f));
+                        GUILayout.Label("<size=10><b>" + R.Text.Color(empire.PersonaName, empire.PrimaryColor) + "</b></size>", "RightAlignedLabel", GUILayout.Width(85f));
+                        GUILayout.Label("<size=10><b>" + relationSummaryInfo.CurrentState.ToString().ToUpper() + "</b></size>", GUILayout.Width(100f));
+                        GUILayout.Label("<size=10><b>" + relationSummaryInfo.TreatyInfo.PropositionInfo.Status.ToString().ToUpper() + "</b></size>", GUILayout.Width(100f));
+                        
+                        GUILayout.FlexibleSpace();
+
+                        GUILayout.Label("<size=10><b>" + relationSummaryInfo.LocalEmpireMoral.MoralDelta.ToString() + "</b></size>", "RightAlignedLabel", GUILayout.Width(90f));
+                        GUILayout.Label("<size=10><b>" + relationSummaryInfo.LocalEmpireMoral.Moral.ToString() + "</b></size>", GUILayout.Width(50f));
+
+                        if (GUILayout.Button("<size=10><b>FORCE WAR</b></size>", GUILayout.Width(90f)))
                             SandboxManager.PostOrder((EditorOrder)new EditorOrderForceWar()
                             {
                                 LeftEmpireIndex = relationSummaryInfo.OwnerEmpireIndex,
                                 RightEmpireIndex = index1
                             });
-                        GUILayout.Label(" | ");
-                        GUILayout.Label(relationSummaryInfo.LocalEmpireMoral.Moral.ToString(), GUILayout.Width(45f));
-                        GUILayout.Label(" | ");
-                        GUILayout.Label(relationSummaryInfo.LocalEmpireMoral.MoralDelta.ToString(), GUILayout.Width(45f));
                     }
-                    using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(24f);
+                    GUILayout.BeginVertical();
+                    GUI.color = new Color(0, 0, 0, 0.75f);
+                    using (new GUILayout.HorizontalScope())
                     {
                         if (relationSummaryInfo.OwnerCurrentAIBehaviourState == AIBehaviourState.Unknown)
                         {
@@ -137,7 +149,7 @@ namespace DevTools.Humankind.GUITools.UI
                             GUILayout.Label(text);
                         }
                     }
-                    using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
+                    using (new GUILayout.HorizontalScope())
                     {
                         if (relationSummaryInfo.OwnerCurrentAIBehaviourState != AIBehaviourState.Unknown)
                         {
@@ -162,12 +174,17 @@ namespace DevTools.Humankind.GUITools.UI
                             }
                         }
                     }
-                    if (relationSummaryInfo.CrisisInfo.CrisisStatus == CrisisInfo.Status.OnGoing && GUILayout.Button("Force Stall for time", (GUIStyle)"PopupWindow.Button"))
+                    if (relationSummaryInfo.CrisisInfo.CrisisStatus == CrisisInfo.Status.OnGoing && GUILayout.Button("<size=10><b>FORCE STALL FOR TIME</b></size>", (GUIStyle)"PopupWindow.Button"))
                         SandboxManager.PostOrder((Order)new OrderDiplomaticAction()
                         {
                             DiplomaticAction = DiplomaticAction.StallForTime,
                             OtherEmpireIndex = relationSummaryInfo.OtherEmpireIndex
                         });
+                    GUI.color = Color.white;
+                    GUILayout.Space(12f);
+                    GUILayout.EndVertical();
+                    GUILayout.Space(24f);
+                    GUILayout.EndHorizontal();
                 }
                 GUILayout.EndScrollView();
             }
