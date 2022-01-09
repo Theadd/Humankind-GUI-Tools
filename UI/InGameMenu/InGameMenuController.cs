@@ -50,8 +50,8 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
                 OnShowingEvent();
             else if (newState == UIAbstractShowable.VisibilityState.Hiding)
                 OnHidingEvent();
-            else
-                Loggr.Log("Next VisibilityState unknown yet: " + newState + ", coming from: " + oldState);
+            // else
+            //     Loggr.Log("Next VisibilityState unknown yet: " + newState + ", coming from: " + oldState);
         }
 
         private static void OnShowingEvent()

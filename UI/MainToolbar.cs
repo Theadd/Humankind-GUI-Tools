@@ -13,6 +13,7 @@ namespace DevTools.Humankind.GUITools.UI
         public override bool ShouldRestoreLastWindowPosition => true;
         public override string WindowTitle { get; set; } = "TOOLBAR";
         public override Rect WindowRect { get; set; } = new Rect (30, 290, 170, 600);
+        private Color activeBackground = new Color(0.8f, 0.7f, 0.9f, 0.7f);
         
         #region FloatingToolWindow derived classes
 
@@ -54,97 +55,126 @@ namespace DevTools.Humankind.GUITools.UI
 
         public override void OnDrawUI()
         {
-            GUILayout.BeginVertical((GUIStyle) "PopupWindow.Sidebar.Highlight"); 
+            // GUI.backgroundColor = new Color(0.1f, 0.1f, 0.1f, 1f);
+            GUI.backgroundColor = Color.black;
+            GUILayout.BeginVertical((GUIStyle) "PopupWindow.Sidebar.Heading"); 
         
-                if (GlobalSettings.CheatingTools.Value)
-                {
-                    GUILayout.Label("<color=#000000AA>C H E A T I N G</color>   T O O L S",
-                        "PopupWindow.Sidebar.Heading");
-
-                    if (GlobalSettings.MilitaryTool.Value)
-                        if (DrawItem<MilitaryToolsWindow>(MilitaryTool, "Military"))
-                            Open<MilitaryToolsWindow>(window => MilitaryTool = window);
-
-                    if (GlobalSettings.ArmyTool.Value)
-                        if (DrawItem<ArmyToolsWindow>(ArmyTools, "Army Tools"))
-                        Open<ArmyToolsWindow>(window => ArmyTools = window);
-
-                    if (GlobalSettings.TechnologyTool.Value)
-                        if (DrawItem<TechnologyToolsWindow>(TechnologyTool, "Technology"))
-                        Open<TechnologyToolsWindow>(window => TechnologyTool = window);
-
-                    if (GlobalSettings.ResourcesTool.Value)
-                        if (DrawItem<ResourceToolsWindow>(ResourceTool, "Resources"))
-                        Open<ResourceToolsWindow>(window => ResourceTool = window);
-
-                    // OnDrawTool<AffinityUtilsWindow>("Cultural Affinity");
-                }
                 
-                if (GlobalSettings.DeveloperTools.Value)
-                {
-                    GUILayout.Label("<color=#000000AA>D E V E L O P E R</color>   T O O L S",
-                        "PopupWindow.Sidebar.Heading");
-
-                    if (GlobalSettings.AutoTurnTool.Value)
-                        if (DrawItem<AutoTurnToolWindow>(AutoTurnTool, "Auto Turn <color=#00CC00AA>**HOT**</color>"))
-                            Open<AutoTurnToolWindow>(window => AutoTurnTool = window);
-
-                    if (GlobalSettings.CivicsTool.Value)
-                        if (DrawItem<CivicsToolWindow>(CivicsTool, "Civics Tool"))
-                            Open<CivicsToolWindow>(window => CivicsTool = window);
-                        
-                    if (GlobalSettings.CollectiblesTool.Value)
-                        if (DrawItem<CollectiblesToolWindow>(CollectiblesTool, "Collectibles"))
-                            Open<CollectiblesToolWindow>(window => CollectiblesTool = window);
-                        
-                    if (GlobalSettings.DiplomacyTool.Value)
-                        if (DrawItem<DiplomacyToolWindow>(DiplomacyTool, "Diplomacy"))
-                            Open<DiplomacyToolWindow>(window => DiplomacyTool = window);
-
-                    // OnDrawTool<ArchetypesWindow>("Archetypes");
-                }
-
-                if (GlobalSettings.ProfilingTools.Value)
-                {
-                    GUILayout.Label("<color=#000000AA>P R O F I L I N G</color>   T O O L S",
-                        "PopupWindow.Sidebar.Heading");
-                    
-                    if (GlobalSettings.FramerateTool.Value)
-                        if (DrawItem<FramerateToolWindow>(FramerateTool, "Framerate"))
-                            Open<FramerateToolWindow>(window => FramerateTool = window);
-
-                    // if (GlobalSettings.GPUProfilerTool.Value)
-                    //     if (DrawItem<GPUProfilerToolWindow>(GPUProfilerTool, "GPU Profiler"))
-                    //         Open<GPUProfilerToolWindow>(window => GPUProfilerTool = window);
-
-                    if (GlobalSettings.GraphicsTool.Value)
-                        if (DrawItem<GraphicsToolsWindow>(GraphicsTool, "Graphics Tool"))
-                            Open<GraphicsToolsWindow>(window => GraphicsTool = window);
-
-                    // if (DrawItem<ProfilerToolWindow>(ProfilerTool, "Profiler"))
-                    //     Open<ProfilerToolWindow>(window => ProfilerTool = window);
-                    
-                    if (GlobalSettings.MemoryProfilerTool.Value)
-                        if (DrawItem<MemoryProfilerToolWindow>(MemoryProfilerTool, "Memory Profiler"))
-                            Open<MemoryProfilerToolWindow>(window => MemoryProfilerTool = window);
-                }
+                OnDrawCheatingTools();
+                GUI.backgroundColor = Color.black;
+                OnDrawDeveloperTools();
+                GUI.backgroundColor = Color.black;
+                OnDrawProfilingTools();
+                GUI.backgroundColor = Color.black;
+                OnDrawExperimentalTools();
                 
-                if (GlobalSettings.ExperimentalTools.Value)
-                {
-                    GUILayout.Label("E X P <color=#000000AA>E R I M E N T A L</color>", "PopupWindow.Sidebar.Heading");
-
-                    if (GlobalSettings.AITool.Value)
-                        if (DrawItem<AIToolWindow>(AITool, "AI Tools"))
-                            Open<AIToolWindow>(window => AITool = window);
-                    
-                    if (GlobalSettings.BattleAITool.Value)
-                        if (DrawItem<BattleAIToolWindow>(BattleAITool, "Battle AI Tool"))
-                            Open<BattleAIToolWindow>(window => BattleAITool = window);
-                    
-                }
+                
             GUILayout.EndVertical();
             GUI.backgroundColor = Color.white;
 
+        }
+
+        private void OnDrawCheatingTools()
+        {
+            if (GlobalSettings.CheatingTools.Value)
+            {
+                GUILayout.Label("<color=#000000AA>C H E A T I N G</color>   T O O L S",
+                    "PopupWindow.Sidebar.Heading");
+
+                GUI.backgroundColor = activeBackground;
+                if (GlobalSettings.MilitaryTool.Value)
+                    if (DrawItem<MilitaryToolsWindow>(MilitaryTool, "Military"))
+                        Open<MilitaryToolsWindow>(window => MilitaryTool = window);
+
+                if (GlobalSettings.ArmyTool.Value)
+                    if (DrawItem<ArmyToolsWindow>(ArmyTools, "Army Tools"))
+                    Open<ArmyToolsWindow>(window => ArmyTools = window);
+
+                if (GlobalSettings.TechnologyTool.Value)
+                    if (DrawItem<TechnologyToolsWindow>(TechnologyTool, "Technology"))
+                    Open<TechnologyToolsWindow>(window => TechnologyTool = window);
+
+                if (GlobalSettings.ResourcesTool.Value)
+                    if (DrawItem<ResourceToolsWindow>(ResourceTool, "Resources"))
+                    Open<ResourceToolsWindow>(window => ResourceTool = window);
+
+                // OnDrawTool<AffinityUtilsWindow>("Cultural Affinity");
+            }
+        }
+
+        private void OnDrawDeveloperTools()
+        {
+            if (GlobalSettings.DeveloperTools.Value)
+            {
+                GUILayout.Label("<color=#000000AA>D E V E L O P E R</color>   T O O L S",
+                    "PopupWindow.Sidebar.Heading");
+
+                GUI.backgroundColor = activeBackground;
+                if (GlobalSettings.AutoTurnTool.Value)
+                    if (DrawItem<AutoTurnToolWindow>(AutoTurnTool, "Auto Turn <color=#00CC00AA>**HOT**</color>"))
+                        Open<AutoTurnToolWindow>(window => AutoTurnTool = window);
+
+                if (GlobalSettings.CivicsTool.Value)
+                    if (DrawItem<CivicsToolWindow>(CivicsTool, "Civics Tool"))
+                        Open<CivicsToolWindow>(window => CivicsTool = window);
+                    
+                if (GlobalSettings.CollectiblesTool.Value)
+                    if (DrawItem<CollectiblesToolWindow>(CollectiblesTool, "Collectibles"))
+                        Open<CollectiblesToolWindow>(window => CollectiblesTool = window);
+                    
+                if (GlobalSettings.DiplomacyTool.Value)
+                    if (DrawItem<DiplomacyToolWindow>(DiplomacyTool, "Diplomacy"))
+                        Open<DiplomacyToolWindow>(window => DiplomacyTool = window);
+
+                // OnDrawTool<ArchetypesWindow>("Archetypes");
+            }
+        }
+
+        private void OnDrawProfilingTools()
+        {
+            if (GlobalSettings.ProfilingTools.Value)
+            {
+                GUILayout.Label("<color=#000000AA>P R O F I L I N G</color>   T O O L S",
+                    "PopupWindow.Sidebar.Heading");
+                
+                GUI.backgroundColor = activeBackground; 
+                if (GlobalSettings.FramerateTool.Value)
+                    if (DrawItem<FramerateToolWindow>(FramerateTool, "Framerate"))
+                        Open<FramerateToolWindow>(window => FramerateTool = window);
+
+                // if (GlobalSettings.GPUProfilerTool.Value)
+                //     if (DrawItem<GPUProfilerToolWindow>(GPUProfilerTool, "GPU Profiler"))
+                //         Open<GPUProfilerToolWindow>(window => GPUProfilerTool = window);
+
+                if (GlobalSettings.GraphicsTool.Value)
+                    if (DrawItem<GraphicsToolsWindow>(GraphicsTool, "Graphics Tool"))
+                        Open<GraphicsToolsWindow>(window => GraphicsTool = window);
+
+                // if (DrawItem<ProfilerToolWindow>(ProfilerTool, "Profiler"))
+                //     Open<ProfilerToolWindow>(window => ProfilerTool = window);
+                
+                if (GlobalSettings.MemoryProfilerTool.Value)
+                    if (DrawItem<MemoryProfilerToolWindow>(MemoryProfilerTool, "Memory Profiler"))
+                        Open<MemoryProfilerToolWindow>(window => MemoryProfilerTool = window);
+            }
+        }
+
+        private void OnDrawExperimentalTools()
+        {
+            if (GlobalSettings.ExperimentalTools.Value)
+            {
+                GUILayout.Label("E X P <color=#000000AA>E R I M E N T A L</color>", "PopupWindow.Sidebar.Heading");
+
+                GUI.backgroundColor = activeBackground;
+                if (GlobalSettings.AITool.Value)
+                    if (DrawItem<AIToolWindow>(AITool, "AI Tools"))
+                        Open<AIToolWindow>(window => AITool = window);
+                
+                if (GlobalSettings.BattleAITool.Value)
+                    if (DrawItem<BattleAIToolWindow>(BattleAITool, "Battle AI Tool"))
+                        Open<BattleAIToolWindow>(window => BattleAITool = window);
+                
+            }
         }
         
         /// <summary>
