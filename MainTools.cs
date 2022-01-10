@@ -20,7 +20,7 @@ namespace DevTools.Humankind.GUITools
 
         public static InGameMenuWindow InGameMenu { get; set; }
 
-        // public static BasicToolWindow BasicWindow { get; set; }
+        public static BasicToolWindow BasicWindow { get; set; }
 
         public static void Main()
         {
@@ -29,14 +29,14 @@ namespace DevTools.Humankind.GUITools
             PopupToolWindow.Open<MainToolbar>(w => Toolbar = w);
             PopupToolWindow.Open<InGameMenuWindow>(w => InGameMenu = w);
 
-            // PopupToolWindow.Open<BasicToolWindow>(w => BasicWindow = w);
+            HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Home), "ToggleBasicToolWindow", ToggleBasicToolWindow);
    
             HumankindDevTools.RegisterAction(
                 new KeyboardShortcut(UnityEngine.KeyCode.Insert), 
                 "ToggleHideAllGUITools", 
                 ToggleHideAllUIWindows);
             
-            // Maps [ESC] key to: GodMode.Enabled = false
+            // Maps [ESC] key to: GodMode.Enabled = false 
             HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Escape), "CancelGodMode", CancelGodMode);
         }
 
@@ -44,12 +44,24 @@ namespace DevTools.Humankind.GUITools
 
         public static void CancelGodMode() => AccessTools.PropertySetter(typeof(GodMode), "Enabled")?.Invoke(null, new object[] { false });
 
+        public static void ToggleBasicToolWindow()
+        {
+            if (BasicWindow == null)
+            {
+                PopupToolWindow.Open<BasicToolWindow>(w => BasicWindow = w);
+                return;
+            }
+
+            BasicWindow.Close();
+            BasicWindow = null;
+        }
+
         public static void Unload() => Unload(true);
 
         public static void Unload(bool saveState = false) {
             Toolbar?.Close(saveState);
             InGameMenu?.Close();
-            // BasicWindow?.Close();
+            BasicWindow?.Close();
         }
         
         private static void Debug()
@@ -60,9 +72,9 @@ namespace DevTools.Humankind.GUITools
 
             Loggr.Log(string.Join("\n", files), ConsoleColor.DarkYellow);
 
-            // Draw a colored border for all UIOverlays backing a FloatingToolWindow derived class
+            // If true, draws a colored border for all UIOverlays backing a FloatingToolWindow derived class
             UIOverlay.DEBUG_DRAW_OVERLAY = false;
-            // More verbose console output
+            // If true, adds more verbosity to console output
             Modding.Humankind.DevTools.DevTools.QuietMode = false;
         }
     }

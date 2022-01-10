@@ -23,6 +23,27 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
 
         public override Rect WindowRect { get; set; } = new Rect(Screen.width - FixedWidth, 0, FixedWidth, Screen.height);
 
+        private GUIStyle CenteredLink { get; set; } = new GUIStyle(UIManager.DefaultSkin.FindStyle("Link")) {
+            alignment = TextAnchor.MiddleCenter,
+            margin = new RectOffset(4, 4, 4, 0),
+            padding = new RectOffset(4, 4, 3, 0)
+        };
+        private GUIStyle CenteredText { get; set; } = new GUIStyle(UIManager.DefaultSkin.FindStyle("Link")) {
+            alignment = TextAnchor.MiddleCenter,
+            margin = new RectOffset(4, 4, 0, 4),
+            padding = new RectOffset(4, 4, 0, 3)
+        };
+
+        private GUIStyle CustomTooltip { get; set; } = new GUIStyle(UIManager.DefaultSkin.FindStyle("Tooltip")) {
+            alignment = TextAnchor.LowerCenter,
+            stretchHeight = true,
+            fixedHeight = 32f,
+            normal = new GUIStyleState() {
+                background = null,
+                textColor = Color.white
+            }
+        };
+
         protected override void Awake()
         {
             base.Awake();
@@ -189,13 +210,18 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
         private void OnDrawTooltip()
         {
             GUILayout.BeginVertical(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(false), GUILayout.Height(82f), GUILayout.MaxHeight(82f));
-            GUILayout.Label(
-                ("<size=4>\n</size><size=10><b>  Showcasing</b> a fully featured demo of an " + 
-                 "<b>in-game<size=3>\n\n</size>  Tool</b> made with <color=#1199EECC><b>Humankind Modding DevTools</b></color>" + 
-                 "</size><size=3>\n</size>").ToUpper(), "Text");
-            GUILayout.FlexibleSpace();
-            GUI.color = new Color(1f, 1f, 1f, 0.5f);
-            GUILayout.Label(R.Text.Size(R.Text.Bold(GUI.tooltip.ToUpper()), 9), "Tooltip");
+
+            GUI.backgroundColor = Color.black;
+            GUILayout.BeginVertical("PopupWindow.Sidebar.Heading", GUILayout.ExpandHeight(false));
+            if (GUILayout.Button(("<size=10>Check out " + BlueText("<b>Humankind GUI Tools</b>") + " on <b>GitHub</b>!</size>").ToUpper(), CenteredLink))
+            {
+                Application.OpenURL("https://github.com/Theadd/Humankind-GUI-Tools");
+            }
+            GUILayout.Label("<size=10>It's <b>Open Source</b>! Feel free to contribute!</size>", CenteredText);
+            GUILayout.EndVertical();
+            GUI.backgroundColor = Color.white;
+
+            GUILayout.Label(R.Text.Size((GUI.tooltip ?? "").ToUpper(), 9), CustomTooltip);
             GUI.color = Color.white;
             GUILayout.EndVertical();
         }

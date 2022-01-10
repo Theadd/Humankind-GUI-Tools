@@ -161,7 +161,7 @@ namespace DevTools.Humankind.GUITools.UI
                         selectedUnitTexture = sprite == null ? Texture2D.blackTexture : sprite.texture;
                         selectedUnitLocalizedName = R.Text.GetLocalizedTitle(new Amplitude.StaticString(selectedUnitName));
 
-                        Loggr.Log(sprite);
+                        // Loggr.Log(sprite);
                     }
                     GUILayout.BeginVertical("Checkbox", GUILayout.Width(64f), GUILayout.Height(64f));
                         GUI.DrawTexture(GUILayoutUtility.GetRect(64f, 64f),
@@ -212,7 +212,7 @@ namespace DevTools.Humankind.GUITools.UI
 
 
                 GUILayout.Space(20f);
-                GUILayout.Label("ARMY TOOLS");
+                GUILayout.Label("SELECTED ARMY", "PopupWindow.SectionHeader");
                 if (Snapshots.ArmyCursorSnapshot != null)
                 {
                     if (Amplitude.Mercury.Presentation.Presentation.PresentationCursorController
@@ -227,8 +227,8 @@ namespace DevTools.Humankind.GUITools.UI
                                     .GetArmy((ulong)currentCursor15.EntityGUID);
                         GUILayout.BeginHorizontal();
                         GUILayout.Label(
-                            string.Format("Army selected : {0}", (object)this.selectedArmy));
-                        if (GUILayout.Button("Disband Unit"))
+                            string.Format("<size=10><b>{0}</b></size>", (object)this.selectedArmy));
+                        if (GUILayout.Button("<size=10><b>DISBAND</b></size>"))
                         {
                             if (currentCursor15.SelectedUnitCount <= 0)
                                 currentCursor15.SelectAll();
@@ -241,16 +241,21 @@ namespace DevTools.Humankind.GUITools.UI
                                     unitGUIDsToDisband),
                                 (int)Snapshots.ArmyCursorSnapshot.PresentationData.EmpireIndex);
                         }
-
+                        GUILayout.Space(8f);
                         GUILayout.EndHorizontal();
                         GUILayout.Space(5f);
                         GUILayout.BeginHorizontal();
                         GUILayout.BeginVertical();
-                        GUILayout.Label("Army Awake State");
-                        GUILayout.FlexibleSpace();
+                        GUILayout.Label("<b>Army Awake State</b>");
+                        Utils.DrawHorizontalLine();
+                        // GUILayout.FlexibleSpace();
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Space(8f);
                         int awakeState = (int)Snapshots.ArmyCursorSnapshot.PresentationData.AwakeState;
                         int num = GUILayout.SelectionGrid(awakeState,
                             System.Enum.GetNames(typeof(AwakeState)), 3, GUILayout.ExpandWidth(true));
+                        GUILayout.Space(8f);
+                        GUILayout.EndHorizontal();
                         if (num != awakeState)
                             SandboxManager.PostOrder((Order)new OrderChangeEntityAwakeState()
                             {
@@ -260,9 +265,12 @@ namespace DevTools.Humankind.GUITools.UI
                         GUILayout.EndVertical();
                         GUILayout.EndHorizontal();
                         GUILayout.Space(5f);
+                        GUILayout.Label("<b>Army Actions</b>");
+                        Utils.DrawHorizontalLine();
+                        GUILayout.Space(8f);
                         GUILayout.BeginHorizontal();
-                        this.damageAmount = GUILayout.HorizontalSlider(this.damageAmount, 0.1f, 0.9f);
-                        if (GUILayout.Button("Damage Unit"))
+                        this.damageAmount = GUILayout.HorizontalSlider(this.damageAmount, 0.1f, 0.9f, GUILayout.Width(120f));
+                        if (GUILayout.Button("<size=10><b>DAMAGE UNIT BY " + ((int)(this.damageAmount * 100)) + "%</b></size>"))
                         {
                             if (currentCursor15.SelectedUnitCount <= 0)
                                 currentCursor15.SelectAll();
@@ -278,15 +286,17 @@ namespace DevTools.Humankind.GUITools.UI
                                 postOrderTicket.UponCompletion((System.Action)(() =>
                                    this.selectedArmy.DoUpdateMesh(false, false)));
                         }
-
+                        GUILayout.Space(8f);
                         GUILayout.EndHorizontal();
                         GUILayout.Space(5f);
                         GUILayout.BeginHorizontal();
+                        GUILayout.Space(8f);
                         int result;
-                        if (int.TryParse(GUILayout.TextField(this.experienceAmount.ToString()),
+                        if (int.TryParse(GUILayout.TextField(this.experienceAmount.ToString(), GUILayout.Width(120f)),
                             out result))
                             this.experienceAmount = result;
-                        if (GUILayout.Button("Add Experience to Unit(s)"))
+                        GUILayout.Space(4f);
+                        if (GUILayout.Button("<size=10><b>ADD " + ((int)this.experienceAmount) + " EXPERIENCE</b></size>"))
                         {
                             if (currentCursor15.SelectedUnitCount <= 0)
                                 currentCursor15.SelectAll();
@@ -303,11 +313,12 @@ namespace DevTools.Humankind.GUITools.UI
                                 (int)Snapshots.ArmyCursorSnapshot.PresentationData.EmpireIndex);
                         }
 
+                        GUILayout.Space(8f);
                         GUILayout.EndHorizontal();
                         GUILayout.Space(5f);
                         GUILayout.BeginHorizontal();
-                        this.movementRatio = GUILayout.HorizontalSlider(this.movementRatio, 0.0f, 1f);
-                        if (GUILayout.Button("Change Movement Ratio"))
+                        this.movementRatio = GUILayout.HorizontalSlider(this.movementRatio, 0.0f, 1f, GUILayout.Width(120f));
+                        if (GUILayout.Button("<size=10><b>CHANGE MOVEMENT RATIO TO " + ((int)(this.movementRatio * 100)) + "%</b></size>"))
                         {
                             SimulationEntityGUID[] unitGUIDs;
                             if (currentCursor15.SelectedUnitCount > 0)
@@ -330,7 +341,7 @@ namespace DevTools.Humankind.GUITools.UI
                                     unitGUIDs, this.movementRatio),
                                 (int)Snapshots.ArmyCursorSnapshot.PresentationData.EmpireIndex);
                         }
-
+                        GUILayout.Space(8f);
                         GUILayout.EndHorizontal();
                         GUILayout.Space(5f);
                         GUILayout.BeginHorizontal();
@@ -349,6 +360,7 @@ namespace DevTools.Humankind.GUITools.UI
                                 .ChangeToDestinationAirportSelectionCursor(
                                     (SimulationEntityGUID)this.selectedArmy.SimulationEntityGuid);
                         GUI.enabled = true;
+                        GUILayout.Space(8f);
                         GUILayout.EndHorizontal();
                     }
                     else
@@ -361,7 +373,7 @@ namespace DevTools.Humankind.GUITools.UI
                     GUILayout.Label("Waiting for the army cursor snapshot...");
 
                 GUILayout.Space(20f);
-                GUILayout.Label("SQUADRON TOOLS");
+                GUILayout.Label("SELECTED SQUADRON", "PopupWindow.SectionHeader");
                 if (Snapshots.SquadronCursorSnapshot != null)
                 {
                     if (Amplitude.Mercury.Presentation.Presentation.PresentationCursorController

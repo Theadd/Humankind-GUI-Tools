@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
+using Modding.Humankind.DevTools;
 
 namespace DevTools.Humankind.GUITools.UI
 {
     public static class Utils
     {
         public static Texture2D WhiteTexture = CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 1f));
+        public static Texture2D BlackTexture = CreateSinglePixelTexture2D(new Color(0, 0, 0, 1f));
         public static Texture2D TransparentTexture = CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0f));
         
         public static Texture2D CreateSinglePixelTexture2D(Color color)
@@ -76,12 +78,9 @@ namespace DevTools.Humankind.GUITools.UI
 
         public static GUIContent GetLootInfoContent(string text)
         {
-            var sub = text.Split(' ');
+            var sub = text.Split(new char[] {' '}, 3);
             Texture tex;
             string tooltip = "";
-
-            if (sub.Length != 2)
-                return new GUIContent(text, TransparentTexture, "INVALID LOOTINFO LOCALIZATION");
 
             switch (sub[1])
             {
@@ -96,6 +95,10 @@ namespace DevTools.Humankind.GUITools.UI
                 case "[CultureColored]":
                     tex = InfluenceTexture;
                     tooltip = sub[0] + " Influence";
+                    break;
+                case "[FoodColored]":
+                    tex = FoodTexture;
+                    tooltip = sub[0] + " Food";
                     break;
                 default:
                     tex = TransparentTexture;

@@ -119,7 +119,7 @@ namespace DevTools.Humankind.GUITools.UI
                         Open<CivicsToolWindow>(window => CivicsTool = window);
                     
                 if (GlobalSettings.CollectiblesTool.Value)
-                    if (DrawItem<CollectiblesToolWindow>(CollectiblesTool, "Collectibles"))
+                    if (DrawItem<CollectiblesToolWindow>(CollectiblesTool, "Curiosities"))
                         Open<CollectiblesToolWindow>(window => CollectiblesTool = window);
                     
                 if (GlobalSettings.DiplomacyTool.Value)

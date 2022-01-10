@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Amplitude.Mercury.Presentation;
 using Modding.Humankind.DevTools.Core;
+using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
 
 namespace DevTools.Humankind.GUITools.UI
@@ -48,6 +49,8 @@ namespace DevTools.Humankind.GUITools.UI
                 .Invoke(null, new object[] {enable});
 
         private static bool curiosityCursor = false;
+
+        private int loop = 0;
 
         protected void OnDrawWindowContent()
         {
@@ -112,15 +115,21 @@ namespace DevTools.Humankind.GUITools.UI
                         for (int index2 = 0; index2 < lootCount; ++index2)
                         {
                             var lootInfoText = collectibleInfoIndex[index1].LootInfo[index2].Localization;
+                            // Loggr.Log(collectibleInfoIndex[index1].LootInfo[index2].ToString(), System.ConsoleColor.DarkGreen);
                             if (lootInfoText.Length > 0)
                             {
+                                lootInfoText = lootInfoText.Replace("<c=FFFFFF><b>", "").Replace("</b></c>", "");
                                 loot.Add(lootInfoText);
+                                if (loop <= 4)
+                                {
+                                    Loggr.Log(lootInfoText, System.ConsoleColor.DarkCyan); 
+                                }
                             }
                         }
 
                         using (new GUILayout.HorizontalScope(GUILayout.ExpandWidth(false)))
                         {
-                            GUILayout.Label("<b><size=10><color=#FFFFFF88>" + worldPosition + "</color></size></b>", "RightAlignedLabel", GUILayout.Width(45f));
+                            GUILayout.Label("<b><size=10><color=#FFFFFF88>" + worldPosition + "</color></size></b>", "RightAlignedLabel", GUILayout.Width(50f));
                             GUILayout.Label("<b><size=10>" + text1 + "</size></b>");
                             GUILayout.FlexibleSpace();
             
@@ -141,6 +150,7 @@ namespace DevTools.Humankind.GUITools.UI
                     }
                 }
             }
+            if (loop < 5) loop++;
             GUILayout.EndVertical();
             GUILayout.EndScrollView();
             GUILayout.Space(12f);
