@@ -13,6 +13,15 @@
 
 <br/>
 
+### **DOWNLOAD AND INSTALL**
+
+> This mod requires **BepInEx** to be installed in your game directory. If you don't have it, you can follow [this guide](https://gc2021.com/showthread.php?tid=4).
+
+* Download and unpack [DevTools.Humankind.GUITools.v1.1.0.zip](https://github.com/Theadd/Humankind-GUI-Tools/releases/download/v1.1.0/DevTools.Humankind.GUITools.v1.1.0.zip) into your game directory.
+* Run the game.
+
+<br/>
+
 ### **SCREENSHOT**
 
 ![SCREENSHOT](./images/Showcase.png)
