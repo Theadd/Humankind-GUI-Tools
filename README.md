@@ -46,14 +46,36 @@ Many of them are **a must have for mod developers** in order to test their mod i
 
 From those 100+ hidden tools we only had the time to test 20-25 of them, of which only ~15 of them are successfully adapted and available right now. There are still many tools to check!
 <h5>
-<sup>
 <details><summary><strong>NAMES OF THE 100+ HIDDEN TOOLS FOUND</strong></summary>
 <blockquote>
 
-`LocalizationFloatingWindow, Widget, ClockWidget, MemoryProfilerWindow, ProfilerWindow, FxComponentEvolveProfilingWindow, FxOutputLayerProfilingWindow, GPUProfilerWindow, GraphicsTools, UnityProfilerLoggingWindow, RenderPipelineAuditWindow, AffinityUtils, AI, AICursor, AirStrikeReport, Archetypes, AudioEvents, AudioScale, Avatar, BattleAI, BattleExternalSupport, BattleParticipants, BattleReport, BiomeAudio, BlackList, CameraMover, CameraSequence, ChallengeRewards, ChallengeViewer, Chat, ChoreographyActions, CityAudio, CivicsUtils, Collectible, Diplomacy, DiplomaticLog, DisplaySettings, DistrictPainter, DownloadableContent, Droppables, EffectMapperDebugger, ostModifierEvaluationDebugger, DescriptorEvaluationDebugger, DistrictEvaluationDebugger, EndGameFlow, EndTurnTimer, FameRankingUtility, FameUtils, Framerate, GameClientConnections, GameClientServer, Ideology, InputFilter, MapEditor, MapSharing, Marketing, Metadata, MilitaryCheats, MinorFaction, ModPlaylist, NarrativeEventDebugger, NetworkStatistics, NetworkSynchronization, OrderStatistics, Physics, Ping, PlayerProfile, Pollution, PresentationCursor, RansackCursor, ReligionUtils, RemoteSandboxes, ResourcesUtils, SessionSlots, SessionUsers, SettlementUtils, SnapshotStatistics, Squadrons, StateShareUtils, StatisticsAndAchievements, Surrender, TechnologyUtils, TerrainAudioModule, TerrainPicking, TimemapDebugger, Trade, TradeNodeUtils, Trophies, TutorialFakeWindow, TutorialInfo, TwitchExtension, WorldGeneration, WorldLifeDebugger, CustomMap, ScenarioEditor, BattleDebug, PawnAnimation, Pawns, CameraLayersWindow, ProceduralTerrainRendererWindow, UIVirtualScreenTester, UISettingsOverlayWindow, UIUtils, AudioOptions, AutoTurn, Dump, EmpireWideConstructionUtils, GameInfo, NetworkDebugger, SandboxStatus, TerritoryUtils`
+```
+  LocalizationFloatingWindow, Widget, ClockWidget, MemoryProfilerWindow, ProfilerWindow, 
+  FxComponentEvolveProfilingWindow, FxOutputLayerProfilingWindow, GPUProfilerWindow, 
+  GraphicsTools, UnityProfilerLoggingWindow, RenderPipelineAuditWindow, AffinityUtils, 
+  AI, AICursor, AirStrikeReport, Archetypes, AudioEvents, AudioScale, Avatar, BattleAI, 
+  BattleExternalSupport, BattleParticipants, BattleReport, BiomeAudio, BlackList, 
+  CameraMover, CameraSequence, ChallengeRewards, ChallengeViewer, Chat, ChoreographyActions, 
+  CityAudio, CivicsUtils, Collectible, Diplomacy, DiplomaticLog, DisplaySettings, 
+  DistrictPainter, DownloadableContent, Droppables, EffectMapperDebugger, 
+  CostModifierEvaluationDebugger, DescriptorEvaluationDebugger, DistrictEvaluationDebugger, 
+  EndGameFlow, EndTurnTimer, FameRankingUtility, FameUtils, Framerate, GameClientConnections, 
+  GameClientServer, Ideology, InputFilter, MapEditor, MapSharing, Marketing, Metadata, 
+  MilitaryCheats, MinorFaction, ModPlaylist, NarrativeEventDebugger, NetworkStatistics, 
+  NetworkSynchronization, OrderStatistics, Physics, Ping, PlayerProfile, Pollution, 
+  PresentationCursor, RansackCursor, ReligionUtils, RemoteSandboxes, ResourcesUtils, 
+  SessionSlots, SessionUsers, SettlementUtils, SnapshotStatistics, Squadrons, 
+  StateShareUtils, StatisticsAndAchievements, Surrender, TechnologyUtils, 
+  TerrainAudioModule, TerrainPicking, TimemapDebugger, Trade, TradeNodeUtils, Trophies, 
+  TutorialFakeWindow, TutorialInfo, TwitchExtension, WorldGeneration, WorldLifeDebugger, 
+  CustomMap, ScenarioEditor, BattleDebug, PawnAnimation, Pawns, CameraLayersWindow, 
+  ProceduralTerrainRendererWindow, UIVirtualScreenTester, UISettingsOverlayWindow, UIUtils, 
+  AudioOptions, AutoTurn, Dump, EmpireWideConstructionUtils, GameInfo, NetworkDebugger, 
+  SandboxStatus, TerritoryUtils
+```
+
 </blockquote>
 </details>
-</sup>
 </h5>
 
 <br/>
