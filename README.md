@@ -1,12 +1,12 @@
 # **HUMANKIND GUI TOOLS**
 
-**A MOD FOR THE AMPLITUDE STUDIOS <a href="https://humankind.game/" title="Humankind Official Website" target="_blank"><sub><sub><img src="https://cdn.sega.co.uk/humankind-game/public/content/media/images/vector/Humankind%20logo.svg" alt="HUMANKIND" height="22px"></sub></sub></a> GAME**
+**A MOD FOR THE AMPLITUDE STUDIOS <a href="https://humankind.game/" title="Humankind Game Official Website" target="_blank"><sub><sub><img src="https://cdn.sega.co.uk/humankind-game/public/content/media/images/vector/Humankind%20logo.svg" alt="HUMANKIND" height="22px"></sub></sub></a> GAME**
 
 ###### **PROJECT PAGE [ON GITHUB](https://github.com/Theadd/Humankind-GUI-Tools)**
 
 <br/>
 
-## **FEATURES**
+### **FEATURES**
 
 * Manage the **resources** of your empire, money, influence, strategic and luxury resources.
 * Unlock/Enact/Cancel any **civic** in the game.
@@ -17,7 +17,7 @@
 
 <br/>
 
-## **DOWNLOAD AND INSTALL**
+### **DOWNLOAD AND INSTALL**
 
 > This mod requires **BepInEx** to be installed in your game directory. If you don't have it, you can follow [this guide](https://gc2021.com/showthread.php?tid=4).
 
@@ -26,7 +26,7 @@
 
 <br/>
 
-## **SCREENSHOTS**
+### **SCREENSHOTS**
 
 ![SCREENSHOT](./images/Showcase.png)
 
@@ -38,7 +38,7 @@
 
 <br/>
 
-## **SUMMARY**
+### **SUMMARY**
 
 When decompiling the Humankind assemblies back to source code we found **100+ hidden utility tools** used by Amplitude Studios to test, profile and develop the game.
 
