@@ -27,11 +27,11 @@ namespace DevTools.Humankind.GUITools.UI
                 1f, new Color(1f, 1f, 1f, alpha), 0,0);
         }
 
-        public static void DrawH1(string title)
+        public static void DrawH1(string title, bool paddingBottom = true)
         {
             GUILayout.Label("<size=20><b><color=#FFFFFFFF>" + title.ToUpper() + "</color></b></size>");
             DrawHorizontalLine();
-            GUILayout.Space(12f);
+            if (paddingBottom) GUILayout.Space(12f);
         }
         
         public static void DrawH2(string title)

@@ -1,7 +1,10 @@
 using System;
+using System.Reflection;
 using UnityEngine;
 using Modding.Humankind.DevTools;
+using Modding.Humankind.DevTools.Core;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
+using Amplitude.Mercury.Interop;
 
 namespace DevTools.Humankind.GUITools.UI
 {
@@ -12,8 +15,24 @@ namespace DevTools.Humankind.GUITools.UI
         public override string WindowTitle { get; set; } = "BASIC TOOL WINDOW";
         public override Rect WindowRect { get; set; } = new Rect (300, 300, 900, 600);
 
+        public static FieldInfo EmpireEndGameStatusField = R.GetField<Amplitude.Mercury.Simulation.MajorEmpire>("EmpireEndGameStatus", R.NonPublicInstance);
+
+        private int loop = 0;
         public override void OnDrawUI()
         {
+            var asMajorEmpire = HumankindGame.Empires[0].Simulation;
+            EmpireEndGameStatus endGameStatus = (EmpireEndGameStatus)EmpireEndGameStatusField.GetValue(asMajorEmpire);
+
+            if (loop < 20)
+            {
+                if (loop == 16 && endGameStatus == EmpireEndGameStatus.Resigned)
+                {
+                    Loggr.Log("SETTING EmpireEndGameStatusField TO InGame");
+                    EmpireEndGameStatusField.SetValue(asMajorEmpire, EmpireEndGameStatus.InGame);
+                }
+                loop++;
+            }
+
             GUILayout.BeginVertical();
                 DrawValue("Name", Amplitude.Framework.Application.Name);
                 DrawValue("User Name", Amplitude.Framework.Application.UserName);
@@ -22,7 +41,7 @@ namespace DevTools.Humankind.GUITools.UI
                 DrawValue("Game Directory", Amplitude.Framework.Application.GameDirectory);
                 DrawValue("Game Save Directory", Amplitude.Framework.Application.GameSaveDirectory);
                 DrawValue("Current Game Language", Amplitude.Framework.Application.CurrentGameLanguage);
-                DrawValue("Version", Amplitude.Framework.Application.Version.ToString());
+                DrawValue("EmpireEndGameStatus", endGameStatus.ToString());
 
                 Utils.DrawHorizontalLine(0.6f);
 

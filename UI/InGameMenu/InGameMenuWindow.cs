@@ -68,8 +68,25 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
             WindowRect = new Rect(Screen.width - FixedWidth, 0, FixedWidth, Screen.height);
         }
 
+        private int yStart = 71;
+        private int contentHeight = 0;
+        private Vector2 contentScrollPos = Vector2.zero;
+        private static int loop = 0;
+        private static bool isLateRepaint = false;
+
+        public static void ResetLoop()
+        {
+            loop = 0;
+            isLateRepaint = false;
+        }
+
         public override void OnDrawUI()
         {
+            if (Event.current.type == EventType.Repaint)
+            {
+                isLateRepaint = loop == 0;
+                loop = loop == 20 ? 0 : loop + 1;
+            }
             // Already done in ShouldBeVisible: if (PauseMenuController.IsVisible)
             BackgroundFader.OnAnimateBackgroundColor();
             
@@ -78,9 +95,32 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
             
                 GUILayout.BeginVertical(GUILayout.ExpandHeight(true));
                     GUILayout.Space(IsBigScreen ? 52f : 38f);
+                    Utils.DrawH1("HUMANKIND GUI TOOLS", false);
+
+                    if (isLateRepaint)
+                    {
+                        yStart = (int) GUILayoutUtility.GetLastRect().y;
+                        contentHeight = Screen.height - 84 - yStart;
+                    }
+
+                    contentScrollPos = GUILayout.BeginScrollView(
+                        contentScrollPos, 
+                        false, 
+                        false, 
+                        "horizontalscrollbar",
+                        "verticalscrollbar",
+                        "scrollview",
+                        new GUILayoutOption[]
+                    {
+                        GUILayout.MaxHeight(contentHeight)
+                    });
+                    GUILayout.Space(12f);
+
                     OnDrawWindowHeader();
 
                     OnDrawWindowContent();
+
+                    GUILayout.EndScrollView();
                     
                 GUILayout.EndVertical();
 
@@ -93,10 +133,17 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
 
         private void OnDrawWindowHeader()
         {
-            Utils.DrawH1("HUMANKIND GUI TOOLS");
-            
             Utils.DrawText("Press the " + GreenText("[<size=10> INSERT </size>]") + " key to toggle the visibility " + 
                            "of all GUI windows made using the " + BlueText("Humankind Modding DevTools") + " library.");
+
+            GUILayout.Space(IsBigScreen ? 12f : 8f);
+
+            GUILayout.BeginHorizontal();
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("<size=10><b>SHOW GAME STATISTICS</b></size>"))
+                    PopupToolWindow.Open<EndGameStatisticsWindow>(w => {});
+                GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
             
             GUILayout.Space(IsBigScreen ? 12f : 8f);
         }
@@ -158,6 +205,7 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
             GlobalSettings.ArmyTool.Draw();
             GlobalSettings.TechnologyTool.Draw();
             GlobalSettings.ResourcesTool.Draw();
+            GlobalSettings.StatisticsAndAchievementsTool.Draw();
             GUI.enabled = false;
             GlobalSettings.AffinityTool.Draw();
             GUI.enabled = true;
@@ -174,6 +222,8 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
             GlobalSettings.CivicsTool.Draw();
             GlobalSettings.CollectiblesTool.Draw();
             GlobalSettings.DiplomacyTool.Draw();
+            GlobalSettings.TerrainPickingTool.Draw();
+            GlobalSettings.GameInfoTool.Draw();
             GUI.enabled = false;
             GlobalSettings.ArchetypesTool.Draw();
             GUI.enabled = true;
@@ -200,12 +250,21 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
             GUI.enabled = enableExperimentalTools;
             GlobalSettings.AITool.Draw();
             GlobalSettings.BattleAITool.Draw();
+            GlobalSettings.DistrictPainterTool.Draw();
+            GlobalSettings.SettlementTools.Draw();
+            GlobalSettings.FameTool.Draw();
+            GlobalSettings.EndGameTool.Draw();
             GUI.enabled = true;
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
             
             GUILayout.EndVertical();
         }
+
+        /*private GUIStyle noStyle = new GUIStyle(UIManager.DefaultSkin.FindStyle("PopupWindow.Sidebar.Highlight")) {
+            margin = new RectOffset(0, 0, 0, 0),
+            padding = new RectOffset(0, 0, 0, 0)
+        };*/
 
         private void OnDrawTooltip()
         {

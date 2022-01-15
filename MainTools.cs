@@ -22,12 +22,26 @@ namespace DevTools.Humankind.GUITools
 
         public static BasicToolWindow BasicWindow { get; set; }
 
+        public static GameInfoToolWindow GameInfoWindow { get; set; }
+        public static DistrictPainterToolWindow DistrictPainterWindow { get; set; }
+        public static SettlementToolsWindow SettlementWindow { get; set; }
+        public static StatisticsAndAchievementsToolWindow StatisticsAndAchievementsWindow { get; set; }
+        public static FameToolWindow FameWindow { get; set; }
+        public static EndGameToolWindow EndGameWindow { get; set; }
+
         public static void Main()
         {
             if (IsDebugModeEnabled) Debug();
             
             PopupToolWindow.Open<MainToolbar>(w => Toolbar = w);
             PopupToolWindow.Open<InGameMenuWindow>(w => InGameMenu = w);
+
+            // PopupToolWindow.Open<GameInfoToolWindow>(w => GameInfoWindow = w);
+            // PopupToolWindow.Open<DistrictPainterToolWindow>(w => DistrictPainterWindow = w);
+            // PopupToolWindow.Open<SettlementToolsWindow>(w => SettlementWindow = w);
+            // PopupToolWindow.Open<StatisticsAndAchievementsToolWindow>(w => StatisticsAndAchievementsWindow = w);
+            // PopupToolWindow.Open<FameToolWindow>(w => FameWindow = w);
+            // PopupToolWindow.Open<EndGameToolWindow>(w => EndGameWindow = w);
 
             HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Home), "ToggleBasicToolWindow", ToggleBasicToolWindow);
    
@@ -62,6 +76,12 @@ namespace DevTools.Humankind.GUITools
             Toolbar?.Close(saveState);
             InGameMenu?.Close();
             BasicWindow?.Close();
+            GameInfoWindow?.Close();
+            DistrictPainterWindow?.Close();
+            SettlementWindow?.Close();
+            StatisticsAndAchievementsWindow?.Close();
+            FameWindow?.Close();
+            EndGameWindow?.Close();
         }
         
         private static void Debug()

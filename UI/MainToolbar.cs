@@ -32,6 +32,13 @@ namespace DevTools.Humankind.GUITools.UI
         public CivicsToolWindow CivicsTool { get; set; } = null;
         public CollectiblesToolWindow CollectiblesTool { get; set; } = null;
         public DiplomacyToolWindow DiplomacyTool { get; set; } = null;
+        public TerrainPickingToolWindow TerrainPickingTool { get; set; }
+        public GameInfoToolWindow GameInfoTool { get; set; }
+        public DistrictPainterToolWindow DistrictPainterTool { get; set; }
+        public SettlementToolsWindow SettlementTools { get; set; }
+        public StatisticsAndAchievementsToolWindow StatisticsAndAchievementsTool { get; set; }
+        public FameToolWindow FameTool { get; set; }
+        public EndGameToolWindow EndGameTool { get; set; }
 
         #endregion FloatingToolWindow derived classes
 
@@ -50,6 +57,13 @@ namespace DevTools.Humankind.GUITools.UI
             if (GlobalSettings.CivicsTool.Value && WasVisible<CivicsToolWindow>()) Open<CivicsToolWindow>(window => CivicsTool = window);
             if (GlobalSettings.CollectiblesTool.Value && WasVisible<CollectiblesToolWindow>()) Open<CollectiblesToolWindow>(window => CollectiblesTool = window);
             if (GlobalSettings.DiplomacyTool.Value && WasVisible<DiplomacyToolWindow>()) Open<DiplomacyToolWindow>(window => DiplomacyTool = window);
+            if (GlobalSettings.TerrainPickingTool.Value && WasVisible<TerrainPickingToolWindow>()) Open<TerrainPickingToolWindow>(window => TerrainPickingTool = window);
+            if (GlobalSettings.GameInfoTool.Value && WasVisible<GameInfoToolWindow>()) Open<GameInfoToolWindow>(window => GameInfoTool = window);
+            if (GlobalSettings.DistrictPainterTool.Value && WasVisible<DistrictPainterToolWindow>()) Open<DistrictPainterToolWindow>(window => DistrictPainterTool = window);
+            if (GlobalSettings.SettlementTools.Value && WasVisible<SettlementToolsWindow>()) Open<SettlementToolsWindow>(window => SettlementTools = window);
+            if (GlobalSettings.StatisticsAndAchievementsTool.Value && WasVisible<StatisticsAndAchievementsToolWindow>()) Open<StatisticsAndAchievementsToolWindow>(window => StatisticsAndAchievementsTool = window);
+            if (GlobalSettings.FameTool.Value && WasVisible<FameToolWindow>()) Open<FameToolWindow>(window => FameTool = window);
+            if (GlobalSettings.EndGameTool.Value && WasVisible<EndGameToolWindow>()) Open<EndGameToolWindow>(window => EndGameTool = window);
         
         }
 
@@ -88,15 +102,19 @@ namespace DevTools.Humankind.GUITools.UI
 
                 if (GlobalSettings.ArmyTool.Value)
                     if (DrawItem<ArmyToolsWindow>(ArmyTools, "Army Tools"))
-                    Open<ArmyToolsWindow>(window => ArmyTools = window);
+                        Open<ArmyToolsWindow>(window => ArmyTools = window);
 
                 if (GlobalSettings.TechnologyTool.Value)
                     if (DrawItem<TechnologyToolsWindow>(TechnologyTool, "Technology"))
-                    Open<TechnologyToolsWindow>(window => TechnologyTool = window);
+                        Open<TechnologyToolsWindow>(window => TechnologyTool = window);
 
                 if (GlobalSettings.ResourcesTool.Value)
                     if (DrawItem<ResourceToolsWindow>(ResourceTool, "Resources"))
-                    Open<ResourceToolsWindow>(window => ResourceTool = window);
+                        Open<ResourceToolsWindow>(window => ResourceTool = window);
+                    
+                if (GlobalSettings.StatisticsAndAchievementsTool.Value)
+                    if (DrawItem<StatisticsAndAchievementsToolWindow>(StatisticsAndAchievementsTool, "Achievements"))
+                        Open<StatisticsAndAchievementsToolWindow>(window => StatisticsAndAchievementsTool = window);
 
                 // OnDrawTool<AffinityUtilsWindow>("Cultural Affinity");
             }
@@ -119,12 +137,20 @@ namespace DevTools.Humankind.GUITools.UI
                         Open<CivicsToolWindow>(window => CivicsTool = window);
                     
                 if (GlobalSettings.CollectiblesTool.Value)
-                    if (DrawItem<CollectiblesToolWindow>(CollectiblesTool, "Curiosities"))
+                    if (DrawItem<CollectiblesToolWindow>(CollectiblesTool, "Collectibles"))
                         Open<CollectiblesToolWindow>(window => CollectiblesTool = window);
                     
                 if (GlobalSettings.DiplomacyTool.Value)
                     if (DrawItem<DiplomacyToolWindow>(DiplomacyTool, "Diplomacy"))
                         Open<DiplomacyToolWindow>(window => DiplomacyTool = window);
+
+                if (GlobalSettings.TerrainPickingTool.Value)
+                    if (DrawItem<TerrainPickingToolWindow>(TerrainPickingTool, "Terrain Info"))
+                        Open<TerrainPickingToolWindow>(window => TerrainPickingTool = window);
+
+                if (GlobalSettings.GameInfoTool.Value)
+                    if (DrawItem<GameInfoToolWindow>(GameInfoTool, "Game Info"))
+                        Open<GameInfoToolWindow>(window => GameInfoTool = window);
 
                 // OnDrawTool<ArchetypesWindow>("Archetypes");
             }
@@ -173,6 +199,22 @@ namespace DevTools.Humankind.GUITools.UI
                 if (GlobalSettings.BattleAITool.Value)
                     if (DrawItem<BattleAIToolWindow>(BattleAITool, "Battle AI Tool"))
                         Open<BattleAIToolWindow>(window => BattleAITool = window);
+
+                if (GlobalSettings.DistrictPainterTool.Value)
+                    if (DrawItem<DistrictPainterToolWindow>(DistrictPainterTool, "District Painter"))
+                        Open<DistrictPainterToolWindow>(window => DistrictPainterTool = window);
+                        
+                if (GlobalSettings.SettlementTools.Value)
+                    if (DrawItem<SettlementToolsWindow>(SettlementTools, "Settlements"))
+                        Open<SettlementToolsWindow>(window => SettlementTools = window);
+                        
+                if (GlobalSettings.FameTool.Value)
+                    if (DrawItem<FameToolWindow>(FameTool, "Fame Tool"))
+                        Open<FameToolWindow>(window => FameTool = window);
+                        
+                if (GlobalSettings.EndGameTool.Value)
+                    if (DrawItem<EndGameToolWindow>(EndGameTool, "End Game Tool"))
+                        Open<EndGameToolWindow>(window => EndGameTool = window);
                 
             }
         }
@@ -255,6 +297,7 @@ namespace DevTools.Humankind.GUITools.UI
             CivicsTool?.Close(s);
             CollectiblesTool?.Close(s);
             DiplomacyTool?.Close(s);
+            TerrainPickingTool?.Close(s);
             base.Close(false);
         }
     }

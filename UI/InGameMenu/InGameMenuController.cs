@@ -16,21 +16,27 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
 
         public static Color PreviousBackgroundColor { get; private set; } = Color.clear;
 
+        public static UITransform EndGameWindowUITransform { get; private set; }
+
         public static void Resync()
         {
             var container = GameObject.Find("/WindowsRoot/InGameOverlays/PauseMenuModalWindow");
+            var endGameContainer = GameObject.Find("WindowsRoot/InGameFullscreen/EndGameWindow");
 
-            if (container != null)
+            if (container != null && endGameContainer != null)
             {
                 Container = container;
                 PauseMenuWindow = Container.transform.GetComponent<PauseMenuModalWindow>();
                 Background = Container.transform.Find("BackgroundColor")?.GetComponent<UIImage>();
+
+                EndGameWindowUITransform = endGameContainer.transform.GetComponent<UITransform>();
 
                 RegisterOnVisibilityChangeEvents();
             }
         }
 
         public static bool IsVisible => PauseMenuWindow?.Shown ?? false;
+        public static bool IsEndGameWindowVisible => EndGameWindowUITransform?.VisibleSelf ?? false;
 
         private static void RegisterOnVisibilityChangeEvents()
         {
