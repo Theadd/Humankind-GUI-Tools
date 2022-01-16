@@ -4,8 +4,11 @@ using UnityEngine;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.Core;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
+using UIToolsManager = Modding.Humankind.DevTools.DeveloperTools.UI.UIController;
 using Amplitude.Mercury.Interop;
 using Amplitude.Mercury.Sandbox;
+using Amplitude.Mercury.UI.Helpers;
+using Amplitude.Mercury.UI;
 using Amplitude.Framework;
 using Amplitude.Framework.Networking;
 using Amplitude.UI;
@@ -29,12 +32,15 @@ namespace DevTools.Humankind.GUITools.UI
 
         public UITransform QuitButtonUITransform { get; private set; }
 
-        private GUIStyle bgStyle = new GUIStyle(UIManager.DefaultSkin.FindStyle("PopupWindow.Sidebar.Highlight")) {
+        private GUIStyle bgStyle = new GUIStyle(UIToolsManager.DefaultSkin.FindStyle("PopupWindow.Sidebar.Highlight")) {
 
         };
-        private GUIStyle backButtonStyle = new GUIStyle(UIManager.DefaultSkin.toggle) {
+        private GUIStyle backButtonStyle = new GUIStyle(UIToolsManager.DefaultSkin.toggle) {
             margin = new RectOffset(1, 1, 1, 1)
         };
+
+        public static EndGameWindow EndGameWindow => endGameWindow ?? (endGameWindow = WindowsUtils.GetWindow<EndGameWindow>());
+        private static EndGameWindow endGameWindow;
 
         private int loop = 0;
         public override void OnDrawUI()
@@ -45,8 +51,6 @@ namespace DevTools.Humankind.GUITools.UI
 
                 if (!initialized)
                 {
-                    Loggr.Log("ProcessOrder OrderEmpireResign");
-                    
                     initialized = true;
                     SandboxManager.PostOrder((Order)new OrderEmpireResign());
 
@@ -63,8 +67,6 @@ namespace DevTools.Humankind.GUITools.UI
                     {
                         if ((EmpireEndGameStatus)EmpireEndGameStatusField.GetValue(HumankindGame.Empires[localEmpireIndex].Simulation) == EmpireEndGameStatus.Resigned)
                         {
-                            Loggr.Log("SETTING EmpireEndGameStatusField TO InGame");
-
                             EmpireEndGameStatusField.SetValue(HumankindGame.Empires[localEmpireIndex].Simulation, EmpireEndGameStatus.InGame);
                             isEndGameStatusRestored = true;
                         }
@@ -88,12 +90,26 @@ namespace DevTools.Humankind.GUITools.UI
                 return;
             }
 
+            if (QuitButtonUITransform.VisibleSelf)
+            {
+                wasQuitButtonVisible = true;
+                QuitButtonUITransform.VisibleSelf = false;
+            }
+
             GUILayout.BeginVertical(bgStyle);
                 GUI.backgroundColor = Color.white;
                 if (GUILayout.Button("<b>BACK TO THE GAME</b>", backButtonStyle,
                     GUILayout.Width(228f), GUILayout.Height(38f)))
                 {
                     isClosing = true;
+
+                    // redundancy on purpose
+                    if ((EmpireEndGameStatus)EmpireEndGameStatusField.GetValue(HumankindGame.Empires[localEmpireIndex].Simulation) == EmpireEndGameStatus.Resigned)
+                    {
+                        EmpireEndGameStatusField.SetValue(HumankindGame.Empires[localEmpireIndex].Simulation, EmpireEndGameStatus.InGame);
+                        isEndGameStatusRestored = true;
+                    }
+
                     Services.GetService<INetworkingService>()?.CreateMessageSender().SendLocalMessage(
                         (LocalMessage) new SandboxControlMessage(
                             (ISandboxControlInstruction) new ChangeLocalEmpireInstruction(localEmpireIndex)
@@ -104,6 +120,11 @@ namespace DevTools.Humankind.GUITools.UI
                 GUI.backgroundColor = Color.white;
 
             GUILayout.EndVertical();
+        }
+
+        public override void Close(bool saveVisibilityStateBeforeClosing = false)
+        {
+            base.Close(saveVisibilityStateBeforeClosing);
         }
     }
 }

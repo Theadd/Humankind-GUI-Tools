@@ -58,7 +58,7 @@ namespace DevTools.Humankind.GUITools.UI
             this.currentEmpireIndex = byte.MaxValue;
         }
 
-        private GUIStyle CivicHeader = new GUIStyle(UIManager.DefaultSkin.FindStyle("PopupWindow.SectionHeader")) {
+        private GUIStyle CivicHeader = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.SectionHeader")) {
             margin = new RectOffset(0, 0, 0, 0)
         };
 

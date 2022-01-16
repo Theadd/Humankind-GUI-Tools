@@ -63,7 +63,7 @@ namespace DevTools.Humankind.GUITools.UI
         [SerializeField]
         private bool moreDistrictInfo;
 
-        private GUIStyle GridHeaderStyle { get; set; } = new GUIStyle(UIManager.DefaultSkin.FindStyle("PopupWindow.Grid"))
+        private GUIStyle GridHeaderStyle { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Grid"))
         {
             alignment = TextAnchor.LowerRight,
             padding = new RectOffset(0, 4, 4, 4),

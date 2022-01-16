@@ -20,7 +20,7 @@ namespace DevTools.Humankind.GUITools.UI.BuiltIn
         void OnGUI() {
             if (IsVisible)
             {
-                GUI.skin = Skin != null ? Skin : UIManager.DefaultSkin;
+                GUI.skin = Skin != null ? Skin : UIController.DefaultSkin;
                 DrawWindow();
             }
         }

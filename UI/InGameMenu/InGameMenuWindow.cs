@@ -23,18 +23,18 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
 
         public override Rect WindowRect { get; set; } = new Rect(Screen.width - FixedWidth, 0, FixedWidth, Screen.height);
 
-        private GUIStyle CenteredLink { get; set; } = new GUIStyle(UIManager.DefaultSkin.FindStyle("Link")) {
+        private GUIStyle CenteredLink { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("Link")) {
             alignment = TextAnchor.MiddleCenter,
             margin = new RectOffset(4, 4, 4, 0),
             padding = new RectOffset(4, 4, 3, 0)
         };
-        private GUIStyle CenteredText { get; set; } = new GUIStyle(UIManager.DefaultSkin.FindStyle("Link")) {
+        private GUIStyle CenteredText { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("Link")) {
             alignment = TextAnchor.MiddleCenter,
             margin = new RectOffset(4, 4, 0, 4),
             padding = new RectOffset(4, 4, 0, 3)
         };
 
-        private GUIStyle CustomTooltip { get; set; } = new GUIStyle(UIManager.DefaultSkin.FindStyle("Tooltip")) {
+        private GUIStyle CustomTooltip { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("Tooltip")) {
             alignment = TextAnchor.LowerCenter,
             stretchHeight = true,
             fixedHeight = 32f,
@@ -66,6 +66,12 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
             base.OnGUIStyling();
             GUI.backgroundColor = new Color32(255, 255, 255, 230);
             WindowRect = new Rect(Screen.width - FixedWidth, 0, FixedWidth, Screen.height);
+        }
+
+        public static void CloseInGameMenu()
+        {
+            Amplitude.Mercury.UI.PauseMenuModalWindow window = Amplitude.Mercury.UI.Helpers.WindowsUtils.GetWindow<Amplitude.Mercury.UI.PauseMenuModalWindow>();
+            Amplitude.Mercury.UI.Helpers.WindowsUtils.UpdateWindowVisibility(window, false, false);
         }
 
         private int yStart = 71;
@@ -140,8 +146,18 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
 
             GUILayout.BeginHorizontal();
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("<size=10><b>SHOW GAME STATISTICS</b></size>"))
+                if (GUILayout.Button("<size=10><b>GAME OVERVIEW</b></size>"))
+                {
+                    PopupToolWindow.Open<GameStatsWindow>(w => {});
+                    CloseInGameMenu();
+                }
+                    
+                if (GUILayout.Button("<size=10><b>END GAME STATISTICS</b></size>"))
+                {
                     PopupToolWindow.Open<EndGameStatisticsWindow>(w => {});
+                    CloseInGameMenu();
+                }
+                    
                 GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             
@@ -261,7 +277,7 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
             GUILayout.EndVertical();
         }
 
-        /*private GUIStyle noStyle = new GUIStyle(UIManager.DefaultSkin.FindStyle("PopupWindow.Sidebar.Highlight")) {
+        /*private GUIStyle noStyle = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Sidebar.Highlight")) {
             margin = new RectOffset(0, 0, 0, 0),
             padding = new RectOffset(0, 0, 0, 0)
         };*/
@@ -311,7 +327,7 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
         public static Color TargetColor { get; set; } = new Color(0.05f, 0.1f, 0.1f, 0.65f);
         public static Color ColorVariation { get; set; } = new Color(0.3f, 0.4f, 0.1f, 0.6f);
 
-        public static float Duration { get; set; } = 5f;
+        public static float Duration { get; set; } = 2f;
 
         public static bool IsDoneAnimating => t >= 1;
 

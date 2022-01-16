@@ -44,7 +44,7 @@ namespace DevTools.Humankind.GUITools.UI
             OnDrawWindowClientArea(0);
         }
 
-        private GUIStyle ScrollViewStyle = new GUIStyle(UIManager.DefaultSkin.FindStyle("PopupWindow.ListGrid")) {
+        private GUIStyle ScrollViewStyle = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.ListGrid")) {
             margin = new RectOffset(0, 3, 0, 3),
             hover = new GUIStyleState() {
                 background = null,

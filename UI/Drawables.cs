@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Modding.Humankind.DevTools.DeveloperTools.UI;
 
 namespace DevTools.Humankind.GUITools.UI
 {
@@ -74,6 +75,302 @@ namespace DevTools.Humankind.GUITools.UI
             GUILayout.EndHorizontal();
 
             return SelectedIndex;
+        }
+    }
+
+    public abstract class DrawableGridBase
+    {
+        public float CellWidth;
+        public float CellSpace;
+        public GUILayoutOption CellSpan1;
+        public GUILayoutOption CellSpan2;
+        public GUILayoutOption CellSpan3;
+        public GUILayoutOption CellSpan4;
+        public GUILayoutOption CellSpan5;
+        public GUILayoutOption CellSpan6;
+        public GUILayoutOption CellSpan7;
+        public GUILayoutOption CellSpan8;
+        public GUILayoutOption CellSpan9;
+        public GUILayoutOption CellSpan10;
+        public GUILayoutOption CellSpan(int numCells) => GUILayout.Width(CellWidth * numCells + CellSpace * (numCells - 1));
+
+        public DrawableGridBase()
+        {
+            Resize(34f, 1f);
+        }
+
+        public DrawableGridBase(float cellWidth, float cellSpace)
+        {
+            Resize(cellWidth, cellSpace);
+        }
+
+        public DrawableGridBase Resize(float cellWidth, float cellSpace)
+        {
+            CellWidth = cellWidth;
+            CellSpace = cellSpace;
+            CellSpan1 = CellSpan(1);
+            CellSpan2 = CellSpan(2);
+            CellSpan3 = CellSpan(3);
+            CellSpan4 = CellSpan(4);
+            CellSpan5 = CellSpan(5);
+            CellSpan6 = CellSpan(6);
+            CellSpan7 = CellSpan(7);
+            CellSpan8 = CellSpan(8);
+            CellSpan9 = CellSpan(9);
+            CellSpan10 = CellSpan(10);
+
+            return this;
+        }
+    }
+
+    public class DrawableGrid<T> : DrawableGridBase where T : class
+    {
+
+        public GUIStyle RowStyle { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Row"))
+        {
+            alignment = TextAnchor.LowerRight,
+            padding = new RectOffset(0, 0, 0, 0),
+            margin = new RectOffset(0, 0, 0, 0),
+            hover = new GUIStyleState()
+            {
+                background = Utils.CreateSinglePixelTexture2D(new Color32(85, 136, 254, 70)),
+                textColor = Color.white
+            }
+        };
+
+        public GUIStyle StaticRowStyle { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Row"))
+        {
+            alignment = TextAnchor.LowerRight,
+            padding = new RectOffset(0, 0, 0, 0),
+            margin = new RectOffset(0, 0, 0, 0),
+            normal = new GUIStyleState()
+            {
+                background = null,
+                textColor = Color.white
+            },
+            hover = new GUIStyleState()
+            {
+                background = null,
+                textColor = Color.white
+            }
+        };
+
+        public GUIStyle CenteredStaticRowStyle { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Row"))
+        {
+            alignment = TextAnchor.LowerCenter,
+            padding = new RectOffset(0, 0, 0, 0),
+            margin = new RectOffset(0, 0, 0, 0),
+            normal = new GUIStyleState()
+            {
+                background = null,
+                textColor = Color.white
+            },
+            hover = new GUIStyleState()
+            {
+                background = null,
+                textColor = Color.white
+            }
+        };
+
+        public GUIStyle CellStyle { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Grid"))
+        {
+            fontSize = 12,
+            normal = new GUIStyleState() {
+                background = Utils.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.35f)),
+                textColor = Color.white
+            },
+            hover = new GUIStyleState() {
+                background = null,
+                textColor = Color.white
+            },
+        };
+
+        public GUIStyle ColorableCellStyle { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Grid"))
+        {
+            fontSize = 12,
+            normal = new GUIStyleState() {
+                background = Utils.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.65f)),
+                textColor = Color.white
+            },
+            hover = new GUIStyleState() {
+                background = Utils.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 1f)),
+                textColor = Color.white
+            }
+        };
+
+        public static readonly RectOffset RectOffsetZero = new RectOffset(0, 0, 0, 0);
+
+        public GUIStyle InlineCellContentStyle { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Grid"))
+        {
+            fontSize = 12,
+            border = RectOffsetZero,
+            padding = RectOffsetZero,
+            margin = RectOffsetZero,
+            overflow = RectOffsetZero,
+            normal = new GUIStyleState() {
+                background = null,
+                textColor = Color.white,
+            },
+            hover = new GUIStyleState() {
+                background = null,
+                textColor = Color.white,
+            },
+            stretchWidth = false
+        };
+
+        public GUIStyle RowHeaderStyle { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Grid"))
+        {
+            fontSize = 12,
+            alignment = TextAnchor.LowerRight,
+            padding = new RectOffset(0, 8, 4, 4),
+            normal = new GUIStyleState()
+            {
+                background = null,
+                textColor = Color.white
+            }
+        };
+
+        public GUIStyle CellButtonStyle { get; set; } = new GUIStyle(UIController.DefaultSkin.button) {
+            fontSize = 12,
+            margin = UIController.DefaultSkin.FindStyle("PopupWindow.Grid").margin,
+            padding = UIController.DefaultSkin.FindStyle("PopupWindow.Grid").padding,
+            normal = new GUIStyleState() {
+                background = Utils.CreateSinglePixelTexture2D(new Color32(85, 136, 254, 150)),
+                textColor = Color.white
+            },
+            hover = new GUIStyleState() {
+                background = Utils.CreateSinglePixelTexture2D(new Color32(85, 136, 254, 230)),
+                textColor = Color.white
+            },
+            active = new GUIStyleState() {
+                background = Utils.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.35f)),
+                textColor = new Color32(40, 86, 240, 255)
+            }
+        };
+
+        public DrawableGrid<T> Row(GUIStyle style, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal(style, options);
+
+            return this;
+        }
+
+        public DrawableGrid<T> Row(params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal(RowStyle, options);
+
+            return this;
+        }
+
+        public DrawableGrid<T> EndRow()
+        {
+            GUILayout.EndHorizontal();
+
+            return this;
+        }
+
+        public DrawableGrid<T> EmptyRow(params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal(StaticRowStyle, options);
+                GUILayout.Label(" ", RowHeaderStyle);
+            GUILayout.EndHorizontal();
+
+            return this;
+        }
+
+        public DrawableGrid<T> VerticalStack(params GUILayoutOption[] options)
+        {
+            GUILayout.BeginVertical(StaticRowStyle, options);
+
+            return this;
+        }
+
+        public DrawableGrid<T> EndVerticalStack(params GUILayoutOption[] options)
+        {
+            GUILayout.EndVertical();
+
+            return this;
+        }
+
+        public DrawableGrid<T> Cell(string text, GUIStyle style, params GUILayoutOption[] options)
+        {
+            GUILayout.Label(text, style, options);
+
+            return this;
+        }
+
+        public DrawableGrid<T> Cell(string text, params GUILayoutOption[] options)
+        {
+            GUILayout.Label(text, CellStyle, options);
+
+            return this;
+        }
+
+        public DrawableGrid<T> Cell(string text, Color color, params GUILayoutOption[] options)
+        {
+            var prevColor = GUI.backgroundColor;
+            GUI.backgroundColor = color;
+
+            GUILayout.Label("<size=11>" + text + "</size>", CellStyle, options);
+
+            GUI.backgroundColor = prevColor;
+
+            return this;
+        }
+
+        public DrawableGrid<T> Cell(string text, GUIStyle style, Color color, params GUILayoutOption[] options)
+        {
+            var prevColor = GUI.backgroundColor;
+            GUI.backgroundColor = color;
+
+            GUILayout.Label("<size=11>" + text + "</size>", style, options);
+
+            GUI.backgroundColor = prevColor;
+
+            return this;
+        }
+
+        public DrawableGrid<T> RowHeader(string text, GUIStyle style, params GUILayoutOption[] options)
+        {
+            GUILayout.Label("<size=10><b>" + text + "</b></size>", style, options);
+
+            return this;
+        }
+
+        public DrawableGrid<T> RowHeader(string text, params GUILayoutOption[] options)
+        {
+            GUILayout.Label("<size=10>" + text + "</size>", RowHeaderStyle, options);
+
+            return this;
+        }
+
+        public virtual DrawableGrid<T> Iterate(Action<T> action) => this;
+        public virtual DrawableGrid<T> Iterate(Action<T, int> action) => this;
+        public virtual DrawableGrid<T> Iterate(Action<T, int, int> action) => this;
+
+        public virtual DrawableGrid<T> CellButton(string text, Action<T> action, params GUILayoutOption[] options) => this;
+        public virtual DrawableGrid<T> CellButton(string text, Action<T, int> action, params GUILayoutOption[] options) => this;
+        public virtual DrawableGrid<T> CellButton(string text, Action<T, int, int> action, params GUILayoutOption[] options) => this;
+
+        public DrawableGrid<T> DrawHorizontalLine(float alpha = 0.3f)
+        {   
+            Utils.DrawHorizontalLine(alpha);
+
+            return this;
+        }
+
+        public DrawableGrid<T> DrawHorizontalLine(float alpha, float width)
+        {   
+            Utils.DrawHorizontalLine(alpha, width);
+
+            return this;
+        }
+
+        public DrawableGrid<T> Space(float size)
+        {   
+            GUILayout.Space(size);
+
+            return this;
         }
     }
 }

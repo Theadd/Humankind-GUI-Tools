@@ -67,11 +67,36 @@ namespace DevTools.Humankind.GUITools.UI
         
         }
 
+        public GUIStyle TintableBackgroundStyle { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Row"))
+        {
+            padding = new RectOffset(0, 0, 0, 0),
+            margin = new RectOffset(0, 0, 0, 0),
+            border = new RectOffset(0, 0, 0, 0),
+            overflow = new RectOffset(0, 0, 0, 0),
+            normal = new GUIStyleState() {
+                background = Utils.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.8f)),
+                textColor = Color.white
+            },
+            hover = new GUIStyleState() {
+                background =null,
+                textColor = Color.white
+            }
+        };
+
+        public GUIStyle BackgroundContainerStyle { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Sidebar.Heading"))
+        {
+            margin = new RectOffset(0, 0, 0, 0),
+        };
+
+        private Color bgTintColor = new Color32(205, 196, 174, 244);
+
         public override void OnDrawUI()
         {
-            // GUI.backgroundColor = new Color(0.1f, 0.1f, 0.1f, 1f);
+            GUI.backgroundColor = bgTintColor;
+            GUILayout.BeginHorizontal(TintableBackgroundStyle);
+            
             GUI.backgroundColor = Color.black;
-            GUILayout.BeginVertical((GUIStyle) "PopupWindow.Sidebar.Heading"); 
+            GUILayout.BeginVertical(BackgroundContainerStyle); 
         
                 
                 OnDrawCheatingTools();
@@ -85,6 +110,7 @@ namespace DevTools.Humankind.GUITools.UI
                 
             GUILayout.EndVertical();
             GUI.backgroundColor = Color.white;
+            GUILayout.EndHorizontal();
 
         }
 
@@ -129,7 +155,7 @@ namespace DevTools.Humankind.GUITools.UI
 
                 GUI.backgroundColor = activeBackground;
                 if (GlobalSettings.AutoTurnTool.Value)
-                    if (DrawItem<AutoTurnToolWindow>(AutoTurnTool, "Auto Turn <color=#00CC00AA>**HOT**</color>"))
+                    if (DrawItem<AutoTurnToolWindow>(AutoTurnTool, "Auto Turn  <color=#11EE119C>✪</color>"))
                         Open<AutoTurnToolWindow>(window => AutoTurnTool = window);
 
                 if (GlobalSettings.CivicsTool.Value)
@@ -228,7 +254,7 @@ namespace DevTools.Humankind.GUITools.UI
         /// <returns>boolean to indicate that the window needs to be created and shown.</returns>
         protected bool DrawItem<T>(T window, string displayName) where T : FloatingToolWindow
         {
-            // var window = UIManager.GetWindow<T>(false);
+            // var window = UIController.GetWindow<T>(false);
             var created = window != null;
             var visible = created && window.IsVisible;
 
@@ -255,7 +281,7 @@ namespace DevTools.Humankind.GUITools.UI
 
         protected void OnDrawTool<T>(string tool) where T : PopupWindow
         {
-            var window = UIManager.GetWindow<T>(false);
+            var window = UIController.GetWindow<T>(false);
             var created = window != null;
             var visible = created && window.IsVisible;
 
@@ -266,7 +292,7 @@ namespace DevTools.Humankind.GUITools.UI
                 if (GUILayout.Button("x", "PopupWindow.Sidebar.InlineButton", new GUILayoutOption[] {
                     GUILayout.Width(28f)
                 })) {
-                    UIManager.CloseWindow<T>();
+                    UIController.CloseWindow<T>();
                 }
                 GUI.enabled = true;
                 GUI.color = Color.white;
@@ -275,7 +301,7 @@ namespace DevTools.Humankind.GUITools.UI
                 var shouldBeVisible = (GUILayout.Toggle(visible, tool.ToUpper(), "PopupWindow.Sidebar.Toggle"));
                 if (visible != shouldBeVisible)
                 {
-                    UIManager.ShowWindow<T>(shouldBeVisible);
+                    UIController.ShowWindow<T>(shouldBeVisible);
                 }
             GUILayout.EndHorizontal();
         }

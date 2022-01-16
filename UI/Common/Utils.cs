@@ -27,6 +27,14 @@ namespace DevTools.Humankind.GUITools.UI
                 1f, new Color(1f, 1f, 1f, alpha), 0,0);
         }
 
+        public static void DrawHorizontalLine(float alpha, float width)
+        {
+            var r = GUILayoutUtility.GetRect(1f, 1f);
+            GUI.DrawTexture(new Rect(r.x, r.y, width, 1f),
+                WhiteTexture, ScaleMode.StretchToFill, true, 
+                1f, new Color(1f, 1f, 1f, alpha), 0,0);
+        }
+
         public static void DrawH1(string title, bool paddingBottom = true)
         {
             GUILayout.Label("<size=20><b><color=#FFFFFFFF>" + title.ToUpper() + "</color></b></size>");
@@ -55,15 +63,15 @@ namespace DevTools.Humankind.GUITools.UI
         // FIDS GAINS AS IMAGE
 
         private static GUIStyle inlineLabel = null;
-        public static GUIStyle InlineLabel => inlineLabel ?? (inlineLabel = new GUIStyle(UIManager.DefaultSkin.FindStyle("RightAlignedLabel")) {
+        public static GUIStyle InlineLabel => inlineLabel ?? (inlineLabel = new GUIStyle(UIController.DefaultSkin.FindStyle("RightAlignedLabel")) {
             stretchWidth = true,
             imagePosition = ImagePosition.ImageLeft,
             alignment = TextAnchor.UpperRight,
             name = "InlineLabel",
             // fontStyle = FontStyle.Bold,
-            // normal = UIManager.DefaultSkin.toggle.normal
+            // normal = UIController.DefaultSkin.toggle.normal
             /*normal = new GUIStyleState() {
-                background = UIManager.DefaultSkin.button.normal.background,
+                background = UIController.DefaultSkin.button.normal.background,
                 textColor = Color.white
             },*/
             margin = new RectOffset(10, 0, 0, 4)

@@ -35,7 +35,7 @@ namespace DevTools.Humankind.GUITools.UI
                 {
                     tooltipDown =
                         new GUIStyle(
-                            Modding.Humankind.DevTools.DeveloperTools.UI.UIManager.DefaultSkin.FindStyle("Tooltip"));
+                            Modding.Humankind.DevTools.DeveloperTools.UI.UIController.DefaultSkin.FindStyle("Tooltip"));
                     tooltipDown.padding = new RectOffset(4, 4, 4, 0);
                     tooltipDown.margin = new RectOffset(6, 8, 0, 4);
                     tooltipDown.alignment = TextAnchor.UpperCenter;

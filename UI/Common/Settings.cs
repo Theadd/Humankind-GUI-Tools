@@ -78,7 +78,7 @@ namespace DevTools.Humankind.GUITools.UI
     
     public static class GlobalSettings
     {
-        public static bool ShouldHideTools => PauseMenu.InGameMenuController.IsEndGameWindowVisible || (HideToolsInGameMenu.Value && PauseMenu.InGameMenuController.IsVisible);
+        public static bool ShouldHideTools => GameStatsWindow.IsVisibleFullscreen || PauseMenu.InGameMenuController.IsEndGameWindowVisible || (HideToolsInGameMenu.Value && PauseMenu.InGameMenuController.IsVisible);
 
         public static CheckboxSetting WindowTransparency = new CheckboxSetting(
             "Toggles the background transparency of all tool windows.", 
@@ -92,7 +92,7 @@ namespace DevTools.Humankind.GUITools.UI
             true
         );
         public static CheckboxSetting HideToolbarWindow = new CheckboxSetting(
-            "Hide the Toolbar window.", "", false
+            "Hide the Toolbar window. \n<size=10>KEYBOARD SHORTCUT: <color=#33DD33DC>[<size=9> HOME </size>]</color></size>", "", false
         );
         public static CheckboxSetting HideToolsInGameMenu = new CheckboxSetting(
             "Hide all Tool Windows in the Game Menu screen, including the Toolbar window."

@@ -28,6 +28,7 @@ namespace DevTools.Humankind.GUITools
         public static StatisticsAndAchievementsToolWindow StatisticsAndAchievementsWindow { get; set; }
         public static FameToolWindow FameWindow { get; set; }
         public static EndGameToolWindow EndGameWindow { get; set; }
+        public static GameStatsWindow StatsWindow { get; set; }
 
         public static void Main()
         {
@@ -42,8 +43,10 @@ namespace DevTools.Humankind.GUITools
             // PopupToolWindow.Open<StatisticsAndAchievementsToolWindow>(w => StatisticsAndAchievementsWindow = w);
             // PopupToolWindow.Open<FameToolWindow>(w => FameWindow = w);
             // PopupToolWindow.Open<EndGameToolWindow>(w => EndGameWindow = w);
+            // PopupToolWindow.Open<GameStatsWindow>(w => StatsWindow = w);
 
-            HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Home), "ToggleBasicToolWindow", ToggleBasicToolWindow);
+            // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Home), "ToggleBasicToolWindow", ToggleBasicToolWindow);
+            HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Home), "ToggleHideToolbarWindow", ToggleHideToolbarWindow);
    
             HumankindDevTools.RegisterAction(
                 new KeyboardShortcut(UnityEngine.KeyCode.Insert), 
@@ -53,6 +56,8 @@ namespace DevTools.Humankind.GUITools
             // Maps [ESC] key to: GodMode.Enabled = false 
             HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Escape), "CancelGodMode", CancelGodMode);
         }
+
+        public static void ToggleHideToolbarWindow() => GlobalSettings.HideToolbarWindow.Value = !GlobalSettings.HideToolbarWindow.Value;
 
         public static void ToggleHideAllUIWindows() => FloatingToolWindow.HideAllGUITools = !FloatingToolWindow.HideAllGUITools;
 
@@ -82,6 +87,7 @@ namespace DevTools.Humankind.GUITools
             StatisticsAndAchievementsWindow?.Close();
             FameWindow?.Close();
             EndGameWindow?.Close();
+            StatsWindow?.Close();
         }
         
         private static void Debug()

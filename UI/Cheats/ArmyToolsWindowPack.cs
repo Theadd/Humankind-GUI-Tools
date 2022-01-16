@@ -26,7 +26,7 @@ namespace DevTools.Humankind.GUITools.UI
         public override void OnGUIStyling()
         {
             base.OnGUIStyling();
-            UIManager.DefaultSkin.label.fontSize = 13;
+            UIController.DefaultSkin.label.fontSize = 13;
             GUI.backgroundColor = new Color32(255, 255, 255, Settings.WindowTransparency.Value == true ? (byte)230 : (byte)255);
         }
 
