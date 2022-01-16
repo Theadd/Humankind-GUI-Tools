@@ -155,7 +155,7 @@ namespace DevTools.Humankind.GUITools.UI
 
                 GUI.backgroundColor = activeBackground;
                 if (GlobalSettings.AutoTurnTool.Value)
-                    if (DrawItem<AutoTurnToolWindow>(AutoTurnTool, "Auto Turn  <color=#11EE119C>✪</color>"))
+                    if (DrawItem<AutoTurnToolWindow>(AutoTurnTool, "Auto Turn"))
                         Open<AutoTurnToolWindow>(window => AutoTurnTool = window);
 
                 if (GlobalSettings.CivicsTool.Value)

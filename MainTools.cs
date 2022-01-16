@@ -47,6 +47,7 @@ namespace DevTools.Humankind.GUITools
 
             // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Home), "ToggleBasicToolWindow", ToggleBasicToolWindow);
             HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Home), "ToggleHideToolbarWindow", ToggleHideToolbarWindow);
+            HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Tab), "ToggleGameOverviewWindow", ToggleGameOverviewWindow);
    
             HumankindDevTools.RegisterAction(
                 new KeyboardShortcut(UnityEngine.KeyCode.Insert), 
@@ -54,14 +55,14 @@ namespace DevTools.Humankind.GUITools
                 ToggleHideAllUIWindows);
             
             // Maps [ESC] key to: GodMode.Enabled = false 
-            HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Escape), "CancelGodMode", CancelGodMode);
+            // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Escape), "CancelGodMode", CancelGodMode);
         }
 
         public static void ToggleHideToolbarWindow() => GlobalSettings.HideToolbarWindow.Value = !GlobalSettings.HideToolbarWindow.Value;
 
         public static void ToggleHideAllUIWindows() => FloatingToolWindow.HideAllGUITools = !FloatingToolWindow.HideAllGUITools;
 
-        public static void CancelGodMode() => AccessTools.PropertySetter(typeof(GodMode), "Enabled")?.Invoke(null, new object[] { false });
+        // public static void CancelGodMode() => AccessTools.PropertySetter(typeof(GodMode), "Enabled")?.Invoke(null, new object[] { false });
 
         public static void ToggleBasicToolWindow()
         {
@@ -73,6 +74,18 @@ namespace DevTools.Humankind.GUITools
 
             BasicWindow.Close();
             BasicWindow = null;
+        }
+
+        public static void ToggleGameOverviewWindow()
+        {
+            if (StatsWindow == null)
+            {
+                PopupToolWindow.Open<GameStatsWindow>(w => StatsWindow = w);
+                return;
+            }
+
+            StatsWindow.Close();
+            StatsWindow = null;
         }
 
         public static void Unload() => Unload(true);
@@ -101,7 +114,7 @@ namespace DevTools.Humankind.GUITools
             // When true, draws a colored border for all UIOverlays backing a FloatingToolWindow derived class
             UIOverlay.DEBUG_DRAW_OVERLAY = false;
             // When not true, adds more verbosity to console output
-            Modding.Humankind.DevTools.DevTools.QuietMode = false;
+            Modding.Humankind.DevTools.DevTools.QuietMode = true;
         }
     }
 }

@@ -13,7 +13,7 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
 
         public override string WindowTitle { get; set; } = "GAME MENU";
 
-        public override bool ShouldBeVisible => InGameMenuController.IsVisible;
+        public override bool ShouldBeVisible => InGameMenuController.IsVisible && UIController.IsAmplitudeUIVisible;
 
         public override bool ShouldRestoreLastWindowPosition => false;
         
@@ -148,7 +148,8 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("<size=10><b>GAME OVERVIEW</b></size>"))
                 {
-                    PopupToolWindow.Open<GameStatsWindow>(w => {});
+                    //PopupToolWindow.Open<GameStatsWindow>(w => {});
+                    MainTools.ToggleGameOverviewWindow();
                     CloseInGameMenu();
                 }
                     

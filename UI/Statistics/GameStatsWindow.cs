@@ -95,6 +95,12 @@ namespace DevTools.Humankind.GUITools.UI
             
         }
 
+        public override void Close(bool saveVisibilityStateBeforeClosing = false)
+        {
+            Unload();
+            base.Close(false);
+        }
+
         private void Unload()
         {
             IsVisibleFullscreen = false;
@@ -103,7 +109,6 @@ namespace DevTools.Humankind.GUITools.UI
             loop = 0;
             isLateRepaint = false;
             forceUpdate = false;
-            this.Close(false);
 
             if (UIManagerService == null) 
                     return;
@@ -189,7 +194,7 @@ namespace DevTools.Humankind.GUITools.UI
             GUI.backgroundColor = Color.white;
             if (GUI.Button(new Rect(24f, 24f, 223f, 38f), "<b>BACK TO THE GAME</b>", backButtonStyle))
             {
-                Unload();
+                MainTools.ToggleGameOverviewWindow();
             }
             // GUILayout.Label("HELLO WORLD!"); 
             GUI.backgroundColor = Color.white;
