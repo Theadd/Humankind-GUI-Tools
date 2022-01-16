@@ -560,7 +560,7 @@ namespace DevTools.Humankind.GUITools.UI
                     GUILayout.Label("Mission flags: " +
                                     jtoken[(object) "MissionInfo"][(object) "MissionFlags"]?.ToString());
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                 }
             }
@@ -721,7 +721,7 @@ namespace DevTools.Humankind.GUITools.UI
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                 }
             }
