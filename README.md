@@ -6,14 +6,11 @@
 
 <br/>
 
-### **FEATURES**
+Primarily intended for mod developers, this modding-tools are a set of panels and windows originally developed by **Amplitude Studios** itself to make the debugging, testing and game development much easier.
 
-* Manage the **resources** of your empire, money, influence, strategic and luxury resources.
-* Unlock/Enact/Cancel any **civic** in the game.
-* Unlock/Manage all **technologies**.
-* **Infinite movement** for your units *(while `Army Tools` window is visible)*.
-* With the `Auto Turn Tool`, you can allow the **AI** to control your empire and watch it evolve at high speed for a specified number of turns *(The [AOM.Humankind.FasterBattleAnimationSpeed](https://gc2021.com/showthread.php?tid=41) mod is very useful when played together with this tool)*.
-* And many more tools for you to play with.
+They allow you to spawn any unit, anywhere. The same with constructibles, you can paint any district directly on the map in a simple point and click. You can allow the AI to control your empire and watch the game evolve at full speed, only a few seconds per turn. Switch to another empire and take full control. Infinite unit movement, unlock, cancel and complete all civics, technologies, resources, achievements, etc.
+
+And that's not all, it's also a way to bring GUIs to your mods in a few lines of code, and with "live-reloading" by the way, seeing the changes as you write them.
 
 <br/>
 
@@ -21,12 +18,16 @@
 
 > This mod requires **BepInEx** to be installed in your game directory. If you don't have it, you can follow [this guide](https://gc2021.com/showthread.php?tid=4).
 
-* Download and unpack [DevTools.Humankind.GUITools.v1.1.0.zip](https://github.com/Theadd/Humankind-GUI-Tools/releases/download/v1.1.0/DevTools.Humankind.GUITools.v1.1.0.zip) into your game directory.
+* Download and unpack [Humankind.GUITools.zip](https://github.com/Theadd/Humankind-GUI-Tools/releases/latest/download/Humankind.GUITools.zip) into your game directory.
 * Run the game.
 
 <br/>
 
 ### **SCREENSHOTS**
+
+![SCREENSHOT](./images/GameOverview.png)
+
+  
 
 ![SCREENSHOT](./images/Showcase.png)
 
