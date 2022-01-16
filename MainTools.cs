@@ -9,6 +9,7 @@ using Amplitude.Mercury.Presentation;
 using BepInEx;
 using BepInEx.Configuration;
 using DevTools.Humankind.GUITools.UI.PauseMenu;
+using StyledGUI;
 
 namespace DevTools.Humankind.GUITools
 {
@@ -53,7 +54,9 @@ namespace DevTools.Humankind.GUITools
                 new KeyboardShortcut(UnityEngine.KeyCode.Insert), 
                 "ToggleHideAllGUITools", 
                 ToggleHideAllUIWindows);
-            
+
+            var x = new ChainingMain();
+
             // Maps [ESC] key to: GodMode.Enabled = false 
             // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Escape), "CancelGodMode", CancelGodMode);
         }

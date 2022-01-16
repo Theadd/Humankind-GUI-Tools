@@ -8,10 +8,11 @@ using Amplitude.Mercury.Sandbox;
 using Amplitude.Framework;
 using Amplitude.Framework.Networking;
 using Amplitude.UI;
+using StyledGUI;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public class GameStatisticsGrid : DrawableGrid<EmpireSnapshot>
+    public class GameStatisticsGrid : GridStyles<EmpireSnapshot>
     {
 
         public GameStatsSnapshot CurrentSnapshot;
@@ -215,7 +216,7 @@ namespace DevTools.Humankind.GUITools.UI
             return this;
         }
 
-        public override DrawableGrid<EmpireSnapshot> Iterate(Action<EmpireSnapshot> action)
+        public override GridStyles<EmpireSnapshot> Iterate(Action<EmpireSnapshot> action)
         {
             for (var i = 0; i < DisplayOrder.Length; i++)
             {
@@ -229,7 +230,7 @@ namespace DevTools.Humankind.GUITools.UI
             return this;
         }
 
-        public override DrawableGrid<EmpireSnapshot> Iterate(Action<EmpireSnapshot, int, int> action)
+        public override GridStyles<EmpireSnapshot> Iterate(Action<EmpireSnapshot, int, int> action)
         {
             for (var i = 0; i < DisplayOrder.Length; i++)
             {
@@ -243,7 +244,7 @@ namespace DevTools.Humankind.GUITools.UI
             return this;
         }
 
-        public override DrawableGrid<EmpireSnapshot> CellButton(string text, Action<EmpireSnapshot, int, int> action, params GUILayoutOption[] options)
+        public override GridStyles<EmpireSnapshot> CellButton(string text, Action<EmpireSnapshot, int, int> action, params GUILayoutOption[] options)
         {
             var empireIndex = CurrentEmpireIndex;
             var index = CurrentIndex;
