@@ -10,6 +10,16 @@ using Amplitude.Mercury;
 
 namespace DevTools.Humankind.GUITools.UI
 {
+    public interface IDataType
+    {
+        
+    }
+    
+    public interface IEmpireSnapshotDataType : IDataType
+    {
+        
+    }
+
     public class GameStatsSnapshot
     {
         public int Turn { get; set; }
@@ -54,7 +64,7 @@ namespace DevTools.Humankind.GUITools.UI
         
     }
 
-    public class EmpireSnapshot
+    public class EmpireSnapshot : IEmpireSnapshotDataType
     {
         public string[] Values;
         private string primaryColor = "#FFFFFFFF";

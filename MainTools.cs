@@ -35,7 +35,7 @@ namespace DevTools.Humankind.GUITools
         {
             if (IsDebugModeEnabled) Debug();
             
-            PopupToolWindow.Open<MainToolbar>(w => Toolbar = w);
+            PopupToolWindow.Open<MainToolbar>(w => Toolbar = InitializeStyledGUI(w));
             PopupToolWindow.Open<InGameMenuWindow>(w => InGameMenu = w);
 
             // PopupToolWindow.Open<GameInfoToolWindow>(w => GameInfoWindow = w);
@@ -55,10 +55,15 @@ namespace DevTools.Humankind.GUITools
                 "ToggleHideAllGUITools", 
                 ToggleHideAllUIWindows);
 
-            var x = new ChainingMain();
-
             // Maps [ESC] key to: GodMode.Enabled = false 
             // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Escape), "CancelGodMode", CancelGodMode);
+        }
+
+        private static MainToolbar InitializeStyledGUI(MainToolbar toolbar)
+        {
+            StyledGUI.StyledGUIUtility.DefaultSkin = UIController.DefaultSkin;
+            
+            return toolbar;
         }
 
         public static void ToggleHideToolbarWindow() => GlobalSettings.HideToolbarWindow.Value = !GlobalSettings.HideToolbarWindow.Value;
