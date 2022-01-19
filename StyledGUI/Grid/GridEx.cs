@@ -130,13 +130,12 @@ namespace StyledGUI
     {
         public static IStyledGrid Iterate<TDType>(
             this IStyledGrid self, 
-            Action<TDType, int, int> action, 
-            params GUILayoutOption[] options) where TDType : IDataType
+            Action<TDType, int, int> action) where TDType : IDataType
         {
             switch (self)
             {
                 case IGameStatisticsGrid gameStatisticsGrid:
-                    return ((IGameStatisticsGrid)gameStatisticsGrid).Iterate<EmpireSnapshot>(action as Action<IEmpireSnapshotDataType, int, int>, options);
+                    return ((IGameStatisticsGrid)gameStatisticsGrid).Iterate<EmpireSnapshot>(action as Action<IEmpireSnapshotDataType, int, int>);
                 default:
                     throw new NotImplementedException();
             }
@@ -144,8 +143,7 @@ namespace StyledGUI
         
         public static IStyledGrid Iterate<TDType>(
             this IGameStatisticsGrid self, 
-            Action<IEmpireSnapshotDataType, int, int> action, 
-            params GUILayoutOption[] options) where TDType : IEmpireSnapshotDataType
+            Action<IEmpireSnapshotDataType, int, int> action) where TDType : IEmpireSnapshotDataType
         {
             for (var i = 0; i < self.DisplayOrder.Length; i++)
             {
@@ -161,13 +159,12 @@ namespace StyledGUI
         
         public static IStyledGrid Iterate<TDType>(
             this IStyledGrid self, 
-            Action<TDType> action, 
-            params GUILayoutOption[] options) where TDType : IDataType
+            Action<TDType> action) where TDType : IDataType
         {
             switch (self)
             {
                 case IGameStatisticsGrid gameStatisticsGrid:
-                    return ((IGameStatisticsGrid)gameStatisticsGrid).Iterate<EmpireSnapshot>(action as Action<IEmpireSnapshotDataType>, options);
+                    return ((IGameStatisticsGrid)gameStatisticsGrid).Iterate<EmpireSnapshot>(action as Action<IEmpireSnapshotDataType>);
                 default:
                     throw new NotImplementedException();
             }
@@ -175,8 +172,7 @@ namespace StyledGUI
         
         public static IStyledGrid Iterate<T>(
             this IGameStatisticsGrid self, 
-            Action<IEmpireSnapshotDataType> action, 
-            params GUILayoutOption[] options) where T : IEmpireSnapshotDataType
+            Action<IEmpireSnapshotDataType> action) where T : IEmpireSnapshotDataType
         {
             for (var i = 0; i < self.DisplayOrder.Length; i++)
             {
