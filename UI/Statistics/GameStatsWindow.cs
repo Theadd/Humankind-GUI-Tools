@@ -23,6 +23,8 @@ namespace DevTools.Humankind.GUITools.UI
 
         public static bool IsVisibleFullscreen = false;
 
+        public static Vector2 ScrollViewPosition = Vector2.zero;
+
         private static int localEmpireIndex = 0;
         // Snapshot currently being displayed
         private static GameStatsSnapshot Snapshot;
@@ -44,6 +46,11 @@ namespace DevTools.Humankind.GUITools.UI
 
         private GUIStyle backButtonStyle = new GUIStyle(UIToolManager.DefaultSkin.toggle) {
             margin = new RectOffset(1, 1, 1, 1)
+        };
+        
+        private GUIStyle CommonHeaderStyle = new GUIStyle(UIToolManager.DefaultSkin.toggle) {
+            margin = new RectOffset(1, 1, 1, 1),
+            alignment = TextAnchor.LowerRight
         };
 
         private static bool initialized = false;
@@ -158,24 +165,58 @@ namespace DevTools.Humankind.GUITools.UI
                 return;
             }
 
-            GUILayout.BeginVertical(bgStyle, GUILayout.Width(Screen.width), GUILayout.Height(Screen.height));
-                DrawBackButton();
+            grid.SetSnapshot(Snapshot);
+            
+            BeginBackgroundScrollView();
+            {
+                GUILayout.BeginHorizontal(GUILayout.Width(Screen.width), GUILayout.Height(Screen.height));
+                {
+                    GUILayout.FlexibleSpace();
 
-                GUILayout.FlexibleSpace();
+                    GUILayout.BeginVertical();
+                    {
+                        GUILayout.Space(24f);
+                        DrawCommonContent();
+                        
+                        GUILayout.Space(72f);
+                        GUILayout.FlexibleSpace();
+                        
+                        DrawWindowContent();
+                        // GUILayout.Space(16f);
+                        // DrawWindowContent();
+                        
+                        GUILayout.FlexibleSpace();
+                        GUILayout.Space(72f);
 
-                GUILayout.BeginHorizontal();
+                    }
+                    GUILayout.EndVertical();
 
-                GUILayout.FlexibleSpace();
-
-                DrawWindowContent();
-
-                GUILayout.FlexibleSpace();
-
+                    GUILayout.FlexibleSpace();
+                }
                 GUILayout.EndHorizontal();
+            }
+            GUILayout.EndScrollView();
+            DrawBackButton();
+        }
 
-                GUILayout.FlexibleSpace();
+        private void BeginBackgroundScrollView()
+        {
+            ScrollViewPosition = GUILayout.BeginScrollView(
+                ScrollViewPosition, 
+                false, 
+                false, 
+                "horizontalscrollbar",
+                "verticalscrollbar",
+                bgStyle,
+                // "scrollview",
+                GUILayout.Height(Screen.height));
+        }
 
-            GUILayout.EndVertical();
+        private void DrawCommonContent()
+        {
+            GUILayout.BeginHorizontal();
+            grid.DrawCommonHeader();
+            GUILayout.EndHorizontal();
         }
 
         private void DrawWindowContent()
@@ -183,7 +224,7 @@ namespace DevTools.Humankind.GUITools.UI
             GUILayout.BeginVertical();
                 GUILayout.Space(4f);
 
-                grid.Draw(Snapshot);
+                grid.Draw();
 
                 GUILayout.Space(4f);
             GUILayout.EndVertical();
