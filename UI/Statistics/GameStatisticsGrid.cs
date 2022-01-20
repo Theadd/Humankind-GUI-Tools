@@ -35,12 +35,62 @@ namespace DevTools.Humankind.GUITools.UI
         private int CurrentIndex;
         private int CurrentEmpireIndex;
 
-        public void Draw(GameStatsSnapshot snapshot)
+        public void SetSnapshot(GameStatsSnapshot snapshot)
         {
             CurrentSnapshot = snapshot;
             if (DisplayOrder == null || DisplayOrder.Length != snapshot.Empires.Length)
                 DisplayOrder = snapshot.Empires.Select((e, i) => i).ToArray();
+        }
+        
+        public void DrawCommonHeader()
+        {
+            Row(StaticRowStyle);
+            RowHeader(" ", CellSpan6);
 
+            RowHeader("TURN", CellSpan1);
+            DrawCell(CurrentSnapshot.Turn.ToString(), CellSpan1);
+            
+            RowHeader("ATMOSPHERE POLLUTION", CellSpan5);
+            DrawCell("<size=10>LEVEL " + CurrentSnapshot.AtmospherePollutionLevel + "</size>", CellSpan2);
+            DrawCell("" + 
+                     "<b>" + CurrentSnapshot.AtmospherePollutionStock + "</b>" + 
+                     (CurrentSnapshot.AtmospherePollutionNet >= 0 ? "  ( +" : "  ( ") + 
+                     CurrentSnapshot.AtmospherePollutionNet + " " + PerTurn + " )", 
+                CellSpan4);
+            CellButton("<size=10>-2K</size>", () =>
+            {
+                SandboxManager.PostOrder((Order)new EditorOrderAddOrRemoveAtmospherePollution()
+                {
+                    Delta = -2000
+                }, (int)Snapshots.GameSnapshot.PresentationData.LocalEmpireInfo.EmpireIndex);
+            }, CellSpan1);
+            CellButton("<size=10>-250</size>", () =>
+            {
+                SandboxManager.PostOrder((Order)new EditorOrderAddOrRemoveAtmospherePollution()
+                {
+                    Delta = -250
+                }, (int)Snapshots.GameSnapshot.PresentationData.LocalEmpireInfo.EmpireIndex);
+            }, CellSpan1);
+            CellButton("<size=10>+250</size>", () =>
+            {
+                SandboxManager.PostOrder((Order)new EditorOrderAddOrRemoveAtmospherePollution()
+                {
+                    Delta = 250
+                }, (int)Snapshots.GameSnapshot.PresentationData.LocalEmpireInfo.EmpireIndex);
+            }, CellSpan1);
+            CellButton("<size=10>+2K</size>", () =>
+            {
+                SandboxManager.PostOrder((Order)new EditorOrderAddOrRemoveAtmospherePollution()
+                {
+                    Delta = 2000
+                }, (int)Snapshots.GameSnapshot.PresentationData.LocalEmpireInfo.EmpireIndex);
+            }, CellSpan1);
+            
+            EndRow();
+        }
+
+        public void Draw()
+        {
             DrawRow(" ", StaticRowStyle, (empire, index, empireIndex) =>
             {
                 var headerText = empireIndex == CurrentSnapshot.LocalEmpireIndex ?
@@ -66,6 +116,10 @@ namespace DevTools.Humankind.GUITools.UI
             DrawRow("CITIZENS, EMPIRE POPULATION", empire =>
                 DrawCell(empire.SettlementsPopulation, CellSpan2)
                 .DrawCell(empire.EmpirePopulation, CellSpan2));
+            DrawRow("POLLUTION", empire =>
+                DrawCell("" + empire.PollutionStock, CellSpan2)
+                .DrawCell((int.Parse(empire.PollutionNet) >= 0 ? "+" : "") + 
+                              empire.PollutionNet + " " + PerTurn, CellSpan2));
 
             DrawSection("<size=12><b>MILITARY STATS</b></size>");
             DrawRow("COMBAT STRENGTH", empire => DrawCell(empire.CombatStrength, CellSpan4));
@@ -117,18 +171,41 @@ namespace DevTools.Humankind.GUITools.UI
                 GUI.enabled = (empireIndex != CurrentSnapshot.LocalEmpireIndex);
                 CellButton("<size=10>SWITCH EMPIRE</size>", (e, i, eIndex) => 
                 {
-                    Services.GetService<INetworkingService>()?.CreateMessageSender().SendLocalMessage(
-                        (LocalMessage) new SandboxControlMessage(
-                            (ISandboxControlInstruction) new ChangeLocalEmpireInstruction(eIndex)
-                        )
-                    );
-                    HumankindGame.Empires.Where(emp => emp.EmpireIndex == eIndex).Settlements().IsCapital().First().CenterToCamera();
+                    try
+                    {
+                        Services.GetService<INetworkingService>()?.CreateMessageSender().SendLocalMessage(
+                            (LocalMessage) new SandboxControlMessage(
+                                (ISandboxControlInstruction) new ChangeLocalEmpireInstruction(eIndex)
+                            )
+                        );
+                        HumankindGame.Empires.Where(emp => emp.EmpireIndex == eIndex).Settlements().IsCapital().First()
+                            .CenterToCamera();
+                    }
+                    catch (Exception)
+                    {
+                        HumankindGame.Empires.Where(emp => emp.EmpireIndex == eIndex).Armies().First().CenterToCamera();
+                    }
                 }, CellSpan4);
                 GUI.enabled = true;
             });
 
         }
 
+        public void CellButton(string text, Action action, params GUILayoutOption[] options)
+        {
+            var prevBgTint = GUI.backgroundColor;
+            // GUI.backgroundColor = CellButtonTintColor; 
+            GUI.backgroundColor = Color.white;
+            if (GUILayout.Button(text, CellButtonStyle, options))
+            {
+                action.Invoke();
+                HumankindGame.Update();
+                // CurrentSnapshot.Snapshot();
+                GameStatsWindow.ResetLoop();
+            }
+            GUI.backgroundColor = prevBgTint;
+        }
+        
         public GameStatisticsGrid DrawSection(string title)
         {
             return (GameStatisticsGrid)this
