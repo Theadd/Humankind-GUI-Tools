@@ -7,6 +7,7 @@ using Modding.Humankind.DevTools.Core;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
 using UnityEngine;
 using Amplitude.Mercury;
+using Amplitude.Mercury.Interop;
 
 namespace DevTools.Humankind.GUITools.UI
 {
@@ -17,6 +18,9 @@ namespace DevTools.Humankind.GUITools.UI
         public int GameSpeedLevel { get; set; }
         public EmpireSnapshot[] Empires;
         public int LocalEmpireIndex { get; set; }
+        public int AtmospherePollutionLevel { get; set; }
+        public int AtmospherePollutionStock { get; set; }
+        public int AtmospherePollutionNet { get; set; }
 
         public GameStatsSnapshot()
         {
@@ -40,7 +44,11 @@ namespace DevTools.Humankind.GUITools.UI
                     Empires[i].Snapshot(empires[i]);
                 }
             }
-            
+
+            var pollutionData = Snapshots.PollutionSnapshot.PresentationData;
+            AtmospherePollutionLevel = pollutionData.AtmospherePollutionLevel + 1;
+            AtmospherePollutionStock = (int) pollutionData.AtmospherePollutionStock;
+            AtmospherePollutionNet = (int) pollutionData.AtmospherePollutionNet;
 
             return this;
         }
@@ -148,12 +156,24 @@ namespace DevTools.Humankind.GUITools.UI
         public string LuxuryResourcesAccessCount => Values[23];
         public string StrategicResourcesAccessCount => Values[24];
         public string TradeNodesCount => Values[25];
+        public string PollutionStock => Values[26];
+        public string PollutionNet => Values[27];
     }
 
     public static class EmpireSnapshotUtils
     {
         public static string[] MakeEmpireSnapshotValues(HumankindEmpire empire)
         {
+            EmpireInfo empireInfo;
+            try
+            {
+                empireInfo = Snapshots.GameSnapshot.PresentationData.EmpireInfo[empire.EmpireIndex];
+            }
+            catch (Exception)
+            {
+                empireInfo = new EmpireInfo();
+            }
+            
             return new[] {
                 $"{empire.EmpireIndex}",
                 $"{empire.PersonaName}",
@@ -183,6 +203,8 @@ namespace DevTools.Humankind.GUITools.UI
                 $"{empire.LuxuryResourcesAccessCount}",
                 $"{empire.StrategicResourcesAccessCount}",
                 $"{empire.TradeNodesCount}",
+                $"{(int)empireInfo.PollutionStock}",
+                $"{(int)empireInfo.PollutionNet}",
             };
         }
     }

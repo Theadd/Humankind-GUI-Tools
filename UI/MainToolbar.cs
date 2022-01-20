@@ -13,7 +13,7 @@ namespace DevTools.Humankind.GUITools.UI
         public override bool ShouldRestoreLastWindowPosition => true;
         public override string WindowTitle { get; set; } = "TOOLBAR";
         public override Rect WindowRect { get; set; } = new Rect (30, 290, 170, 600);
-        private Color activeBackground = new Color(0.8f, 0.7f, 0.9f, 0.7f);
+        public static Color ActiveToolBackgroundTint { get; set; } = new Color(0.8f, 0.7f, 0.9f, 0.7f);
         
         #region FloatingToolWindow derived classes
 
@@ -67,6 +67,9 @@ namespace DevTools.Humankind.GUITools.UI
         
         }
 
+        public static Texture2D TintableWhiteTexture { get; set; } =
+            Utils.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.8f));
+
         public GUIStyle TintableBackgroundStyle { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Row"))
         {
             padding = new RectOffset(0, 0, 0, 0),
@@ -74,11 +77,19 @@ namespace DevTools.Humankind.GUITools.UI
             border = new RectOffset(0, 0, 0, 0),
             overflow = new RectOffset(0, 0, 0, 0),
             normal = new GUIStyleState() {
-                background = Utils.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.8f)),
+                background = TintableWhiteTexture,
                 textColor = Color.white
             },
             hover = new GUIStyleState() {
-                background =null,
+                background = TintableWhiteTexture,
+                textColor = Color.white
+            },
+            active = new GUIStyleState() {
+                background = TintableWhiteTexture,
+                textColor = Color.white
+            },
+            onNormal = new GUIStyleState() {
+                background = TintableWhiteTexture,
                 textColor = Color.white
             }
         };
@@ -88,11 +99,11 @@ namespace DevTools.Humankind.GUITools.UI
             margin = new RectOffset(0, 0, 0, 0),
         };
 
-        private Color bgTintColor = new Color32(205, 196, 174, 244);
+        public static Color BackgroundTintColor { get; set; } = new Color32(205, 196, 174, 244);
 
         public override void OnDrawUI()
         {
-            GUI.backgroundColor = bgTintColor;
+            GUI.backgroundColor = BackgroundTintColor;
             GUILayout.BeginHorizontal(TintableBackgroundStyle);
             
             GUI.backgroundColor = Color.black;
@@ -121,7 +132,7 @@ namespace DevTools.Humankind.GUITools.UI
                 GUILayout.Label("<color=#000000AA>C H E A T I N G</color>   T O O L S",
                     "PopupWindow.Sidebar.Heading");
 
-                GUI.backgroundColor = activeBackground;
+                GUI.backgroundColor = ActiveToolBackgroundTint;
                 if (GlobalSettings.MilitaryTool.Value)
                     if (DrawItem<MilitaryToolsWindow>(MilitaryTool, "Military"))
                         Open<MilitaryToolsWindow>(window => MilitaryTool = window);
@@ -153,7 +164,7 @@ namespace DevTools.Humankind.GUITools.UI
                 GUILayout.Label("<color=#000000AA>D E V E L O P E R</color>   T O O L S",
                     "PopupWindow.Sidebar.Heading");
 
-                GUI.backgroundColor = activeBackground;
+                GUI.backgroundColor = ActiveToolBackgroundTint;
                 if (GlobalSettings.AutoTurnTool.Value)
                     if (DrawItem<AutoTurnToolWindow>(AutoTurnTool, "Auto Turn"))
                         Open<AutoTurnToolWindow>(window => AutoTurnTool = window);
@@ -189,7 +200,7 @@ namespace DevTools.Humankind.GUITools.UI
                 GUILayout.Label("<color=#000000AA>P R O F I L I N G</color>   T O O L S",
                     "PopupWindow.Sidebar.Heading");
                 
-                GUI.backgroundColor = activeBackground; 
+                GUI.backgroundColor = ActiveToolBackgroundTint; 
                 if (GlobalSettings.FramerateTool.Value)
                     if (DrawItem<FramerateToolWindow>(FramerateTool, "Framerate"))
                         Open<FramerateToolWindow>(window => FramerateTool = window);
@@ -217,7 +228,7 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 GUILayout.Label("E X P <color=#000000AA>E R I M E N T A L</color>", "PopupWindow.Sidebar.Heading");
 
-                GUI.backgroundColor = activeBackground;
+                GUI.backgroundColor = ActiveToolBackgroundTint;
                 if (GlobalSettings.AITool.Value)
                     if (DrawItem<AIToolWindow>(AITool, "AI Tools"))
                         Open<AIToolWindow>(window => AITool = window);
