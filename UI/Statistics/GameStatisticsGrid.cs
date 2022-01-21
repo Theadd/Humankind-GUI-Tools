@@ -1,58 +1,15 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Modding.Humankind.DevTools;
-using Modding.Humankind.DevTools.DeveloperTools.UI;
 using Amplitude.Mercury.Interop;
 using Amplitude.Mercury.Sandbox;
 using Amplitude.Framework;
 using Amplitude.Framework.Networking;
-using Amplitude.UI;
 using StyledGUI;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    /*public interface IWhateverGrid : IStyledGrid
-    {
-        
-    }
-
-    public interface INotDerivedFromIDataType
-    {
-        string AnotherName();
-    }
-    
-    public interface IWhateverDataType : INotDerivedFromIDataType
-    {
-        string WhateverYouWant();
-    }
-
-    public class WhateverSnapshot : IWhateverDataType
-    {
-        public List<string> Lines { get; set; }
-
-        public string AnotherName() => "Almost there";
-        public string WhateverYouWant() => "I Wanna F*CK U!";
-        
-        public WhateverSnapshot()
-        {
-            Lines = new List<string>() {"ONE", "TWO"};
-        }
-    }
-
-    public class WhateverGrid : GridStyles, IWhateverGrid
-    {
-        public void Draw()
-        {
-            this.CellButton<WhateverSnapshot>("WTF", (whatever, i, eI) =>
-            {
-                Loggr.Log("YEAH, WTF!");
-            });
-        }
-
-    }*/
-
     public interface IGameStatisticsGrid : IStyledGrid
     {
         GameStatsSnapshot CurrentSnapshot { get; set; }
@@ -67,22 +24,9 @@ namespace DevTools.Humankind.GUITools.UI
 
         public GameStatsSnapshot CurrentSnapshot { get; set; }
         public int[] DisplayOrder { get; set; } = null;
-
         public float SpaceEmpireColumsBy { get; set; } = 4f;
-
-        public Color CellTintColor = new Color(0.9f, 0.9f, 0.85f, 1f);
-        // public Color CellTintColorAlt = new Color(1f, 1f, 1f, 0.35f);
-        public Color CellTintColorAlt = new Color(0.6f, 0.6f, 0.6f, 1f);
-        public Color IconTintColor = new Color(1f, 1f, 1f, 0.7f);
-        public Color CellButtonTintColor = new Color32(85, 136, 254, 230);
-
-        //  public const string SpiralCharacter = "\u0489";
-        // public const string SpiralCharacter = "\u2314";
-        // public const string TurnCharacter = "Ⓣ";
         public const string PerTurn = "<color=#000000FF><size=8>/</size><size=7> TURN</size></color>";
         public const string ReturnCharacter = "⏎";
-        //public const string SpiralCharacter = "<color=#FFFFFFFF><size=12>⌀</size></color>";
-
         public int CurrentIndex { get; set; }
         public int CurrentEmpireIndex { get; set; }
 
@@ -95,13 +39,13 @@ namespace DevTools.Humankind.GUITools.UI
         
         public void DrawCommonHeader()
         {
-            Row(StaticRowStyle);
-            RowHeader(" ", CellSpan6);
+            this.Row(Styles.StaticRowStyle);
+            this.RowHeader(" ", CellSpan6);
 
-            RowHeader("TURN", CellSpan1);
+            this.RowHeader("TURN", CellSpan1);
             DrawCell(CurrentSnapshot.Turn.ToString(), CellSpan1);
             
-            RowHeader("ATMOSPHERE POLLUTION", CellSpan5);
+            this.RowHeader("ATMOSPHERE POLLUTION", CellSpan5);
             DrawCell("<size=10>LEVEL " + CurrentSnapshot.AtmospherePollutionLevel + "</size>", CellSpan2);
             DrawCell("" + 
                      "<b>" + CurrentSnapshot.AtmospherePollutionStock + "</b>" + 
@@ -137,12 +81,12 @@ namespace DevTools.Humankind.GUITools.UI
                 }, (int)Snapshots.GameSnapshot.PresentationData.LocalEmpireInfo.EmpireIndex);
             }, CellSpan1);
             
-            EndRow();
+            this.EndRow();
         }
 
         public void Draw()
         {
-            DrawRow(" ", StaticRowStyle, (empire, index, empireIndex) =>
+            DrawRow(" ", Styles.StaticRowStyle, (empire, index, empireIndex) =>
             {
                 var headerText = empireIndex == CurrentSnapshot.LocalEmpireIndex ?
                     "<size=16><color=#FFFFFFFF><b>A C T I V E</b></color></size>" : " ";
@@ -192,25 +136,29 @@ namespace DevTools.Humankind.GUITools.UI
 
             DrawSection("<size=12><b>ECONOMIC STATS</b></size>");
             DrawRow("MONEY", empire => DrawCompositeCell(empire.MoneyNet + " ", Utils.MoneyTexture, PerTurn, CellSpan4));
-            DrawRow("MONEY STOCK", empire => DrawCompositeCell(empire.MoneyStock + " ", Utils.MoneyTexture, null, CellSpan2)
-                                        .CellButton<EmpireSnapshot>("<size=10>-500</size>", (e, i, empireIndex) =>
-                                        {
-                                            HumankindGame.Empires[empireIndex].MoneyStock -= 500;
-                                        }, CellSpan1)
-                                        .CellButton<EmpireSnapshot>("<size=10>+5K</size>", (e, i, empireIndex) =>
-                                        {
-                                            HumankindGame.Empires[empireIndex].MoneyStock += 5000;
-                                        }, CellSpan1));
+            DrawRow("MONEY STOCK", empire => {
+                this.DrawCompositeCell(empire.MoneyStock + " ", Utils.MoneyTexture, null, CellSpan2);
+                this.CellButton<EmpireSnapshot>("<size=10>-500</size>", (e, i, empireIndex) =>
+                {
+                    HumankindGame.Empires[empireIndex].MoneyStock -= 500;
+                }, CellSpan1);
+                this.CellButton<EmpireSnapshot>("<size=10>+5K</size>", (e, i, empireIndex) =>
+                {
+                    HumankindGame.Empires[empireIndex].MoneyStock += 5000;
+                }, CellSpan1);
+            });
             DrawRow("INFLUENCE", empire => DrawCompositeCell("+" + empire.InfluenceNet + " ", Utils.InfluenceTexture, PerTurn, CellSpan4));
-            DrawRow("INFLUENCE STOCK", empire => DrawCompositeCell(empire.InfluenceStock + " ", Utils.InfluenceTexture, null, CellSpan2)
-                                        .CellButton<EmpireSnapshot>("<size=10>-75</size>", (e, i, empireIndex) =>
-                                        {
-                                            HumankindGame.Empires[empireIndex].InfluenceStock -= 75;
-                                        }, CellSpan1)
-                                        .CellButton<EmpireSnapshot>("<size=10>+250</size>", (e, i, empireIndex) =>
-                                        {
-                                            HumankindGame.Empires[empireIndex].InfluenceStock += 250;
-                                        }, CellSpan1));
+            DrawRow("INFLUENCE STOCK", empire => {
+                this.DrawCompositeCell(empire.InfluenceStock + " ", Utils.InfluenceTexture, null, CellSpan2);
+                this.CellButton<EmpireSnapshot>("<size=10>-75</size>", (e, i, empireIndex) =>
+                {
+                    HumankindGame.Empires[empireIndex].InfluenceStock -= 75;
+                }, CellSpan1);
+                this.CellButton<EmpireSnapshot>("<size=10>+250</size>", (e, i, empireIndex) =>
+                {
+                    HumankindGame.Empires[empireIndex].InfluenceStock += 250;
+                }, CellSpan1);
+            });
             DrawRow("TOTAL TRADE NODES", empire => DrawCell(empire.TradeNodesCount, CellSpan4));
             DrawRow("LUXURY, STRATEGIC ACCESS COUNT", empire =>
                 DrawCell(empire.LuxuryResourcesAccessCount, CellSpan2)
@@ -247,7 +195,7 @@ namespace DevTools.Humankind.GUITools.UI
             var prevBgTint = GUI.backgroundColor;
             // GUI.backgroundColor = CellButtonTintColor; 
             GUI.backgroundColor = Color.white;
-            if (GUILayout.Button(text, CellButtonStyle, options))
+            if (GUILayout.Button(text, Styles.CellButtonStyle, options))
             {
                 action.Invoke();
                 HumankindGame.Update();
@@ -269,44 +217,24 @@ namespace DevTools.Humankind.GUITools.UI
                 .EndRow();
         }
 
-        public GameStatisticsGrid DrawColumnHeader(string title)
-        {
-            // TODO:
-            return (GameStatisticsGrid)this
-                .Space(16f)
-                .Row(Styles.StaticRowStyle)
-                .VerticalStack()
-                .RowHeader(title, CellSpan6)
-                .DrawHorizontalLine(0.5f, CellWidth * 6)
-                .EndVerticalStack()
-                .EndRow();
-        }
-
         public GameStatisticsGrid DrawRow(string title, GUIStyle style, Action<EmpireSnapshot, int, int> action)
         {
-            return (GameStatisticsGrid)this
-                .Row(style)
-                .RowHeader(title, CellSpan6)
-                .Iterate<EmpireSnapshot>(action)
-                .EndRow();
-        }
+            this.Row(style);
+            this.RowHeader(title, CellSpan6);
+            this.Iterate<EmpireSnapshot>(action);
+            this.EndRow();
 
-        public GameStatisticsGrid DrawRow(string title, Action<IEmpireSnapshotDataType, int, int> action)
-        {
-            return (GameStatisticsGrid)this
-                .Row()
-                .RowHeader(title, CellSpan6)
-                .Iterate<IEmpireSnapshotDataType>(action)
-                .EndRow();
+            return this;
         }
 
         public GameStatisticsGrid DrawRow(string title, Action<EmpireSnapshot> action)
         {
-            return (GameStatisticsGrid)this
-                .Row()
-                .RowHeader(title, CellSpan6)
-                .Iterate<EmpireSnapshot>(action)
-                .EndRow();
+            this.Row();
+            this.RowHeader(title, CellSpan6);
+            this.Iterate<EmpireSnapshot>(action);
+            this.EndRow();
+
+            return this;
         }
 
         public GameStatisticsGrid DrawCell(string text, params GUILayoutOption[] options)

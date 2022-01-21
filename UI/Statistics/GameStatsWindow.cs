@@ -1,15 +1,8 @@
-using System;
-using System.Reflection;
 using UnityEngine;
 using Modding.Humankind.DevTools;
-using Modding.Humankind.DevTools.Core;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
-using UIToolManager = Modding.Humankind.DevTools.DeveloperTools.UI.UIController;
 using Amplitude.Mercury.Interop;
-using Amplitude.Mercury.Sandbox;
 using Amplitude.Framework;
-using Amplitude.Framework.Networking;
-using Amplitude.UI;
 using Amplitude.Mercury.UI;
 
 namespace DevTools.Humankind.GUITools.UI
@@ -33,7 +26,7 @@ namespace DevTools.Humankind.GUITools.UI
 
         private GameStatisticsGrid grid;
 
-        private GUIStyle bgStyle = new GUIStyle(UIToolManager.DefaultSkin.FindStyle("PopupWindow.Sidebar.Highlight")) {
+        private GUIStyle bgStyle = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Sidebar.Highlight")) {
             normal = new GUIStyleState() {
                 background = Utils.CreateSinglePixelTexture2D(new Color(0, 0, 0, 0.8f)),
                 textColor = Color.white
@@ -44,11 +37,11 @@ namespace DevTools.Humankind.GUITools.UI
             }
         };
 
-        private GUIStyle backButtonStyle = new GUIStyle(UIToolManager.DefaultSkin.toggle) {
+        private GUIStyle backButtonStyle = new GUIStyle(UIController.DefaultSkin.toggle) {
             margin = new RectOffset(1, 1, 1, 1)
         };
         
-        private GUIStyle CommonHeaderStyle = new GUIStyle(UIToolManager.DefaultSkin.toggle) {
+        private GUIStyle CommonHeaderStyle = new GUIStyle(UIController.DefaultSkin.toggle) {
             margin = new RectOffset(1, 1, 1, 1),
             alignment = TextAnchor.LowerRight
         };
@@ -167,10 +160,14 @@ namespace DevTools.Humankind.GUITools.UI
 
             grid.SetSnapshot(Snapshot);
             
+            GUILayout.BeginVertical(bgStyle, GUILayout.Width(Screen.width), GUILayout.Height(Screen.height));
+            
+
             BeginBackgroundScrollView();
             {
-                GUILayout.BeginHorizontal(GUILayout.Width(Screen.width), GUILayout.Height(Screen.height));
+                GUILayout.BeginHorizontal();
                 {
+                    GUILayout.Space(60f);
                     GUILayout.FlexibleSpace();
 
                     GUILayout.BeginVertical();
@@ -182,7 +179,6 @@ namespace DevTools.Humankind.GUITools.UI
                         GUILayout.FlexibleSpace();
                         
                         DrawWindowContent();
-                        // GUILayout.Space(16f);
                         // DrawWindowContent();
                         
                         GUILayout.FlexibleSpace();
@@ -192,11 +188,14 @@ namespace DevTools.Humankind.GUITools.UI
                     GUILayout.EndVertical();
 
                     GUILayout.FlexibleSpace();
+                    GUILayout.Space(60f);
                 }
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndScrollView();
             DrawBackButton();
+
+            GUILayout.EndVertical();
         }
 
         private void BeginBackgroundScrollView()
@@ -207,8 +206,8 @@ namespace DevTools.Humankind.GUITools.UI
                 false, 
                 "horizontalscrollbar",
                 "verticalscrollbar",
-                bgStyle,
-                // "scrollview",
+                //bgStyle,
+                "scrollview",
                 GUILayout.Height(Screen.height));
         }
 
@@ -237,7 +236,6 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 MainTools.ToggleGameOverviewWindow();
             }
-            // GUILayout.Label("HELLO WORLD!"); 
             GUI.backgroundColor = Color.white;
         }
     }

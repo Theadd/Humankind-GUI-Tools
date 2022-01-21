@@ -58,7 +58,7 @@ namespace DevTools.Humankind.GUITools
             // Maps [ESC] key to: GodMode.Enabled = false 
             // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Escape), "CancelGodMode", CancelGodMode);
             
-            // ToggleGameOverviewWindow();
+            ToggleGameOverviewWindow();
         }
 
         private static MainToolbar InitializeStyledGUI(MainToolbar toolbar)
