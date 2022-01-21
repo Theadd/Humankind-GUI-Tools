@@ -42,8 +42,8 @@ namespace DevTools.Humankind.GUITools.UI
         {
             for (var i = 0; i < self.DisplayOrder.Length; i++)
             {
-                if (self.SpaceEmpireColumsBy != 0 && i != 0)
-                    GUILayout.Space(self.SpaceEmpireColumsBy);
+                if (self.SpaceEmpireColumnsBy != 0 && i != 0)
+                    GUILayout.Space(self.SpaceEmpireColumnsBy);
                 self.CurrentIndex = i;
                 self.CurrentEmpireIndex = self.DisplayOrder[i];
                 action.Invoke(self.CurrentSnapshot.Empires[self.DisplayOrder[i]], i, self.CurrentEmpireIndex);
@@ -58,8 +58,8 @@ namespace DevTools.Humankind.GUITools.UI
         {
             for (var i = 0; i < self.DisplayOrder.Length; i++)
             {
-                if (self.SpaceEmpireColumsBy != 0 && i != 0)
-                    GUILayout.Space(self.SpaceEmpireColumsBy);
+                if (self.SpaceEmpireColumnsBy != 0 && i != 0)
+                    GUILayout.Space(self.SpaceEmpireColumnsBy);
                 self.CurrentIndex = i;
                 self.CurrentEmpireIndex = self.DisplayOrder[i];
                 action.Invoke(self.CurrentSnapshot.Empires[self.DisplayOrder[i]]);

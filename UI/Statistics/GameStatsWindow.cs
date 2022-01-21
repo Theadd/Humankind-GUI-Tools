@@ -4,6 +4,7 @@ using Modding.Humankind.DevTools.DeveloperTools.UI;
 using Amplitude.Mercury.Interop;
 using Amplitude.Framework;
 using Amplitude.Mercury.UI;
+using StyledGUI;
 
 namespace DevTools.Humankind.GUITools.UI
 {
@@ -25,6 +26,7 @@ namespace DevTools.Humankind.GUITools.UI
         private static bool isLiveSnapshot;
 
         private GameStatisticsGrid grid;
+        public GameGrid GameOverviewGrid { get; set; }
 
         private GUIStyle bgStyle = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Sidebar.Highlight")) {
             normal = new GUIStyleState() {
@@ -79,6 +81,15 @@ namespace DevTools.Humankind.GUITools.UI
                 grid = new GameStatisticsGrid();
 
                 Snapshot.SetLocalEmpireIndex(localEmpireIndex);
+
+                GameOverviewGrid = new GameGrid()
+                {
+                    Snapshot = Snapshot,
+                    VirtualGrid = new VirtualGrid()
+                    {
+                        Grid = grid
+                    }
+                };
 
                 initialized = true;
                 isValidSnapshot = true;
@@ -180,6 +191,10 @@ namespace DevTools.Humankind.GUITools.UI
                         
                         DrawWindowContent();
                         // DrawWindowContent();
+                        GUILayout.Space(24f);
+                        Utils.DrawHorizontalLine(1f);
+                        GUILayout.Space(24f);
+                        GameOverviewGrid.Render();
                         
                         GUILayout.FlexibleSpace();
                         GUILayout.Space(72f);

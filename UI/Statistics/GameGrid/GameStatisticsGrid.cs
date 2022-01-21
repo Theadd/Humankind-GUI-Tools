@@ -16,7 +16,7 @@ namespace DevTools.Humankind.GUITools.UI
         int CurrentIndex { get; set; }
         int CurrentEmpireIndex { get; set; }
         int[] DisplayOrder { get; set; }
-        float SpaceEmpireColumsBy { get; set; }
+        float SpaceEmpireColumnsBy { get; set; }
     }
     
     public class GameStatisticsGrid : GridStyles, IGameStatisticsGrid
@@ -24,7 +24,7 @@ namespace DevTools.Humankind.GUITools.UI
 
         public GameStatsSnapshot CurrentSnapshot { get; set; }
         public int[] DisplayOrder { get; set; } = null;
-        public float SpaceEmpireColumsBy { get; set; } = 4f;
+        public float SpaceEmpireColumnsBy { get; set; } = 4f;
         public const string PerTurn = "<color=#000000FF><size=8>/</size><size=7> TURN</size></color>";
         public const string ReturnCharacter = "⏎";
         public int CurrentIndex { get; set; }
