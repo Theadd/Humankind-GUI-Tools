@@ -1,22 +1,36 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System;
 using UnityEngine;
+using StyledGUI.VirtualGridElements;
 
 namespace StyledGUI
 {
     public class VirtualGrid
     {
         public List<Column> Columns { get; set; } = new List<Column>();
-        public IStyledGrid Grid { get; set; }
+        public Section[] Sections { get; set; }
+        public IStyledGrid Grid { get => _grid; set => SetStyledGrid(value); }
         public bool DrawColumnHeaders { get; set; } = true;
         public bool DrawSectionHeaders { get; set; } = true;
         public bool DrawRowHeaders { get; set; } = true;
         public GUILayoutOption RowHeaderCellSpan { get; set; } = null;
+        public GUILayoutOption ColumnCellSpan { get; set; } = null;
         public float ColumnGap { get; set; } = 4f;
-        
         public int[] Distribution { get => _distribution; set => SetDistribution(value, true); }
+        
         private int[] _distribution = null;
         private bool isExplicitDistribution = false;
+        private IStyledGrid _grid;
+
+        private void SetStyledGrid(IStyledGrid grid)
+        {
+            _grid = grid;
+            if (ColumnCellSpan == null)
+                ColumnCellSpan = _grid.CellSpan4;
+            if (RowHeaderCellSpan == null)
+                RowHeaderCellSpan = _grid.CellSpan6;
+        }
         
         public void Render()
         {
@@ -30,10 +44,28 @@ namespace StyledGUI
                 Grid.Row(Styles.StaticRowStyle);
                 if (DrawRowHeaders)
                 {
-                    Grid.RowHeader(" ", RowHeaderCellSpan ?? Grid.CellSpan6);
+                    Grid.RowHeader(" ", RowHeaderCellSpan);
                 }
 
                 Distribution.Select(colIndex => Columns[colIndex].Header).Render(this);
+            }
+
+            for (var sectionIndex = 0; sectionIndex < Sections.Length; sectionIndex++)
+            {
+
+                for (var rowIndex = 0; rowIndex < Sections[sectionIndex].Rows.Length; rowIndex++)
+                {
+                    var row = Sections[sectionIndex].Rows[rowIndex];
+
+                    Grid.Row( /* TODO: Row style */);
+                    if (DrawRowHeaders)
+                    {
+                        Grid.RowHeader(row.Title, RowHeaderCellSpan);
+                    }
+
+                    row.Cells.Render(this, true);
+                }
+                
             }
             
             
@@ -46,37 +78,5 @@ namespace StyledGUI
 
             _distribution = distribution;
         }
-        
-        public class Column
-        {
-            public ColumnHeader Header { get; set; } = ColumnHeader.Empty;
-        
-            public Section[] Sections { get; set; }
-        }
-
-        public class ColumnHeader
-        {
-            public static ColumnHeader Empty = new ColumnHeader();
-        
-            public string Text { get; set; } = string.Empty;
-            public Color BackgroundColor { get; set; } = Color.clear;
-            public Color Color { get; set; } = Color.white;
-        }
-    
-        public class Section
-        {
-            public static Section Empty = new Section() { Rows = new []{ Row.Empty } };
-
-            public Row[] Rows { get; set; }
-        }
-    
-        public class Row
-        {
-            public static Row Empty = new Row();
-
-            public string Text { get; set; } = string.Empty;
-        }
     }
-
-    
 }

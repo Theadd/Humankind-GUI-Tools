@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using StyledGUI;
+using StyledGUI.VirtualGridElements;
+using System;
 using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI
@@ -8,7 +10,6 @@ namespace DevTools.Humankind.GUITools.UI
     {
         public VirtualGrid VirtualGrid { get; set; }
         public GameStatsSnapshot Snapshot { get; set; }
-        public int[] DisplayOrder { get; set; } = null;
         public bool IsDirty { get; set; } = true;
 
         public GameGrid() { }
@@ -30,53 +31,61 @@ namespace DevTools.Humankind.GUITools.UI
 
         private void ComputeVirtualGrid()
         {
-            if (DisplayOrder == null || DisplayOrder.Length != Snapshot.Empires.Length)
-                DisplayOrder = Snapshot.Empires.Select((e, i) => i).ToArray();
+            // EmpireSnapshot empire = Snapshot.Empires[DisplayOrder[i]];
 
-            for (var i = 0; i < DisplayOrder.Length; i++)
+            VirtualGrid.Columns = Snapshot.Empires.Select(empire => new Column()
             {
-                int index = i;
-                int empireIndex = DisplayOrder[i];
-
-                EmpireSnapshot empire = Snapshot.Empires[DisplayOrder[i]];
-
-                VirtualGrid.Columns[i] = new VirtualGrid.Column()
+                Header = new ColumnHeader()
                 {
-                    Header = new VirtualGrid.ColumnHeader()
+                    Text = empire.UserName
+                },
+            }).ToList();
+
+            VirtualGrid.Sections = new[]
+            {
+                new Section()
+                {
+                    Rows = new[]
                     {
-                        Text = empire.UserName
-                    },
-                    Sections = new []
-                    {
-                        new VirtualGrid.Section()
+                        new Row()
                         {
-                            Rows = new []
+                            Title = "MoneyStock",
+                            Cells = Snapshot.Empires.Select(empire => new Cell()
                             {
-                                new VirtualGrid.Row()
-                                {
-                                    Text = empire.MoneyStock
-                                },
-                                new VirtualGrid.Row()
-                                {
-                                    Text = empire.MoneyNet
-                                }
-                            }
+                                Text = empire.MoneyStock
+                            })
                         },
-                        new VirtualGrid.Section()
+                        new Row()
                         {
-                            Rows = new []
+                            Title = "MoneyNet",
+                            Cells = Snapshot.Empires.Select(empire => new Cell()
                             {
-                                new VirtualGrid.Row { Text = empire.InfluenceStock },
-                                new VirtualGrid.Row { Text = empire.InfluenceNet },
-                            }
+                                Text = empire.MoneyNet
+                            })
                         }
                     }
-                };
-            }
+                },
+                new Section()
+                {
+                    Rows = new[]
+                    {
+                        QuickTextRow("InfluenceStock", e => e.InfluenceStock),
+                        QuickTextRow("InfluenceNet", e => e.InfluenceNet),
+                    }
+                }
+            };
+
 
         }
 
-        
-
+        private Row QuickTextRow(string title, Func<EmpireSnapshot, string> builder) =>
+            new Row()
+            {
+                Title = title,
+                Cells = Snapshot.Empires.Select(empire => new Cell()
+                {
+                    Text = builder.Invoke(empire)
+                })
+            };
     }
 }
