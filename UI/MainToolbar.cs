@@ -42,6 +42,8 @@ namespace DevTools.Humankind.GUITools.UI
 
         #endregion FloatingToolWindow derived classes
 
+        public HexOverlay HexPainter { get; set; } = new HexOverlay();
+
         public void RestoreVisibleWindows()
         {
             if (GlobalSettings.AutoTurnTool.Value && WasVisible<AutoTurnToolWindow>()) Open<AutoTurnToolWindow>(window => AutoTurnTool = window);
@@ -107,9 +109,10 @@ namespace DevTools.Humankind.GUITools.UI
             GUILayout.BeginHorizontal(TintableBackgroundStyle);
             
             GUI.backgroundColor = Color.black;
-            GUILayout.BeginVertical(BackgroundContainerStyle); 
-        
-                
+            GUILayout.BeginVertical(BackgroundContainerStyle);
+
+            HexPainter.Draw();    
+            
                 OnDrawCheatingTools();
                 GUI.backgroundColor = Color.black;
                 OnDrawDeveloperTools();

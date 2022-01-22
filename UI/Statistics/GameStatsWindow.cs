@@ -120,7 +120,7 @@ namespace DevTools.Humankind.GUITools.UI
                         Grid = new ShortcutsGrid(),
                     }
                 };
-
+                
                 ShortcutsGrid.VirtualGrid.RowHeaderCellSpan = ShortcutsGrid.VirtualGrid.Grid.CellSpan8;
                 ShortcutsGrid.VirtualGrid.SectionHorizontalLineWidth = ShortcutsGrid.VirtualGrid.Grid.GetCellWidth() * 8;
 

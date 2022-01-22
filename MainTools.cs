@@ -46,7 +46,7 @@ namespace DevTools.Humankind.GUITools
             // PopupToolWindow.Open<EndGameToolWindow>(w => EndGameWindow = w);
             // PopupToolWindow.Open<GameStatsWindow>(w => StatsWindow = w);
 
-            // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Home), "ToggleBasicToolWindow", ToggleBasicToolWindow);
+            HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.UpArrow, UnityEngine.KeyCode.LeftControl), "ToggleBasicToolWindow", ToggleBasicToolWindow);
             HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Home), "ToggleHideToolbarWindow", ToggleHideToolbarWindow);
             HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Tab), "ToggleGameOverviewWindow", ToggleGameOverviewWindow);
    
@@ -58,9 +58,10 @@ namespace DevTools.Humankind.GUITools
             // Maps [ESC] key to: GodMode.Enabled = false 
             // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Escape), "CancelGodMode", CancelGodMode);
             
-            ToggleGameOverviewWindow();
+            // ToggleGameOverviewWindow();
+            // ToggleBasicToolWindow();
         }
-
+        
         private static MainToolbar InitializeStyledGUI(MainToolbar toolbar)
         {
             StyledGUI.StyledGUIUtility.DefaultSkin = UIController.DefaultSkin;

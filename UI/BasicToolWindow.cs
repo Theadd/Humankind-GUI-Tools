@@ -1,10 +1,18 @@
 using System;
 using System.Reflection;
+using Amplitude;
+using Amplitude.Framework;
+using Amplitude.Graphics;
+using Amplitude.Mercury;
+using Amplitude.Mercury.AI;
 using UnityEngine;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.Core;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
 using Amplitude.Mercury.Interop;
+using Amplitude.Mercury.Presentation;
+using Amplitude.Mercury.Terrain;
+using Amplitude.Mercury.UI;
 
 namespace DevTools.Humankind.GUITools.UI
 {
@@ -13,11 +21,74 @@ namespace DevTools.Humankind.GUITools.UI
         public override bool ShouldBeVisible => true;
         public override bool ShouldRestoreLastWindowPosition => true;
         public override string WindowTitle { get; set; } = "BASIC TOOL WINDOW";
-        public override Rect WindowRect { get; set; } = new Rect (300, 300, 900, 600);
+        public override Rect WindowRect { get; set; } = new Rect (300, 300, 400, 600);
 
         public static FieldInfo EmpireEndGameStatusField = R.GetField<Amplitude.Mercury.Simulation.MajorEmpire>("EmpireEndGameStatus", R.NonPublicInstance);
 
         private int loop = 0;
+        
+        private GUIStyle bgStyle = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Sidebar.Highlight")) {
+            normal = new GUIStyleState() {
+                background = Utils.CreateSinglePixelTexture2D(new Color(0, 0, 0, 0.8f)),
+                textColor = Color.white
+            },
+            hover = new GUIStyleState() {
+                background = null,
+                textColor = Color.white
+            }
+        };
+
+        public void SetupDebugger()
+        {
+            DebugControl.WantedDebugger = DebugControl.DebuggerType.Terrain;
+            DebugControl.UpdatePresentationDebugger = true;
+            
+            
+        }
+
+        public void UpdateDebugger()
+        {
+            ITerrainPickingService instance = RenderContextAccess.GetInstance<ITerrainPickingService>(0);
+            
+            Hexagon.OffsetCoords offsetHexCoords = new Hexagon.OffsetCoords();
+            if (instance.ScreenPositionToHexagonOffsetCoords((Vector2) Input.mousePosition, ref offsetHexCoords))
+            {
+                WorldPosition cursorPosition = DebugControl.CursorPosition;
+                DebugControl.CursorPosition = new WorldPosition(offsetHexCoords);
+                if (DebugControl.CursorPosition != cursorPosition)
+                    DebugControl.UpdatePresentationDebugger = true;
+            }
+            else
+            {
+                DebugControl.CursorPosition = WorldPosition.Invalid;
+                DebugControl.UpdatePresentationDebugger = true;
+            }
+        }
+        
+        private void OnDrawTerrainDebugger()
+        {
+            if (!DebugControl.CursorPosition.IsWorldPositionValid())
+            {
+                GUILayout.Label("NOT A VALID WORLD POSITION");
+                return;
+            }
+            ref Amplitude.Mercury.Interop.AI.Data.Tile local =
+                ref Amplitude.Mercury.Interop.AI.Snapshots.World.Tiles[DebugControl.CursorPosition.ToTileIndex()];
+            GUILayout.Label(string.Format("Position {0} | {1}", (object) DebugControl.CursorPosition,
+                (object) local.MovementType));
+            GUILayout.Label(string.Format("{0} exploitable neighbors", (object) local.AdjacentExploitableTilesCount));
+            GUILayout.Label(string.Format("Neighbor FIMS: {0}", (object) local.AdjacentExploitableTilesFims));
+            GUILayout.Label(string.Format("Visible {0}",
+                (object) Amplitude.Mercury.Presentation.Presentation.PresentationVisibilityController.IsTileVisible(
+                    DebugControl.CursorPosition.ToTileIndex())));
+            GUILayout.Label(string.Format("Explored {0}",
+                (object) Amplitude.Mercury.Presentation.Presentation.PresentationVisibilityController.IsTileExplored(
+                    DebugControl.CursorPosition.ToTileIndex())));
+            if (!local.GreaterElevationThanAdjacentTiles)
+                return;
+            GUILayout.Label("None of the neighbors have a higher elevation.");
+        }
+        
         public override void OnDrawUI()
         {
             var asMajorEmpire = HumankindGame.Empires[0].Simulation;
@@ -25,34 +96,57 @@ namespace DevTools.Humankind.GUITools.UI
 
             if (loop < 20)
             {
-                if (loop == 16 && endGameStatus == EmpireEndGameStatus.Resigned)
+                if (loop > 18)
                 {
-                    Loggr.Log("SETTING EmpireEndGameStatusField TO InGame");
+                    
+                    
+                    
+                    // SetupDebugger();
+                    // Presentation.PresentationFrontiersController.DisplayAllFrontiers(true);
+                    // Loggr.Log(Presentation.PresentationCameraController);
+                    // Presentation.PresentationCameraController.SetCameraLayerModifier(PresentationCameraController.CameraModifierID.Diplomacy);
+                    //Amplitude.Mercury.Presentation.Presentation.PresentationVisibilityController.VisibilityBufferMask |= PresentationVisibilityController.VisibilityBufferFlags.Timemap;
+                    // ReadWriteBuffer1D<VisibilityEntry> visibilityBuffer = constHexBufferProvider.VisibilityBuffer;
+                    // int num1 = WorldMapProviderHelper.VisibilityStatusToInt(Amplitude.Mercury.Terrain.VisibilityStatus.Visible);
+                }
+                if (loop == 16 && endGameStatus == EmpireEndGameStatus.Resigned) 
+                {
                     EmpireEndGameStatusField.SetValue(asMajorEmpire, EmpireEndGameStatus.InGame);
                 }
                 loop++;
             }
 
-            GUILayout.BeginVertical();
-                DrawValue("Name", Amplitude.Framework.Application.Name);
-                DrawValue("User Name", Amplitude.Framework.Application.UserName);
-                DrawValue("User Identifier", Amplitude.Framework.Application.UserIdentifier.ToString());
-                DrawValue("User Directory", Amplitude.Framework.Application.UserDirectory);
-                DrawValue("Game Directory", Amplitude.Framework.Application.GameDirectory);
-                DrawValue("Game Save Directory", Amplitude.Framework.Application.GameSaveDirectory);
-                DrawValue("Current Game Language", Amplitude.Framework.Application.CurrentGameLanguage);
-                DrawValue("EmpireEndGameStatus", endGameStatus.ToString());
+            GUILayout.BeginVertical(bgStyle);
+            DrawValue("rotationX", ActionController.FreeCamera.FreeCam?.rotationX.ToString());
+                DrawValue("rotationY", ActionController.FreeCamera.FreeCam?.rotationY.ToString());
+                DrawValue("Position", ActionController.FreeCamera.FreeCam?.GetTransform().position.ToString());
+                DrawValue("localRotation", ActionController.FreeCamera.FreeCam?.GetTransform().localRotation.ToString());
+                DrawValue("FreeCam rotation", ActionController.FreeCamera.FreeCam?.GetTransform().rotation.ToString());
+                DrawValue("nearClipPlane", ActionController.Camera?.nearClipPlane.ToString());
+                DrawValue("farClipPlane", ActionController.Camera?.farClipPlane.ToString());
+                DrawValue("fieldOfView", ActionController.Camera?.fieldOfView.ToString());
+                DrawValue("Camera rotation", ActionController.Camera?.transform.rotation.ToString());
+                DrawValue("WorldPosition Highlighted", Presentation.PresentationCursorController.CurrentHighlightedPosition.ToString());
 
+                // UpdateDebugger();
+                // OnDrawTerrainDebugger();
+                
                 Utils.DrawHorizontalLine(0.6f);
 
                 GUILayout.BeginHorizontal();
                     GUI.enabled = HumankindGame.IsGameLoaded;
-                    GUILayout.Label("<size=11><b>FOG OF WAR</b></size>");
+                    GUILayout.Label("<size=11><b>CAMERA, LEFTCTRL + ...</b></size>");
                     GUILayout.FlexibleSpace();
-                    if (GUILayout.Button("<size=10><b>ENABLE</b></size>"))
-                        EnableFogOfWar(true);
-                    if (GUILayout.Button("<size=10><b>DISABLE</b></size>"))
-                        EnableFogOfWar(false);
+                    if (GUILayout.Button("<size=10><b>1: Loggr => CameraController</b></size>"))
+                        Loggr.Log(ActionController.FreeCamera);
+                    if (GUILayout.Button("<size=10><b>2: Loggr => FreeCamera</b></size>"))
+                        Loggr.Log(ActionController.FreeCamera?.FreeCam);
+
+                    if (GUILayout.Button("<size=10><b>3: Loggr => PresentationCameraMover</b></size>"))
+                        Loggr.Log(ActionController.FreeCamera?.presCamMover);
+
+                    if (GUILayout.Button("<size=10><b>4: Loggr => Camera</b></size>"))
+                        Loggr.Log(ActionController.FreeCamera?.cameraCam);
                     GUI.enabled = true;
                 GUILayout.EndHorizontal();
 
