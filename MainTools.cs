@@ -124,7 +124,7 @@ namespace DevTools.Humankind.GUITools
             // When true, draws a colored border for all UIOverlays backing a FloatingToolWindow derived class
             UIOverlay.DEBUG_DRAW_OVERLAY = false;
             // When not true, adds more verbosity to console output
-            Modding.Humankind.DevTools.DevTools.QuietMode = true;
+            Modding.Humankind.DevTools.DevTools.QuietMode = false;
         }
     }
 }

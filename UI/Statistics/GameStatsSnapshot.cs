@@ -82,6 +82,7 @@ namespace DevTools.Humankind.GUITools.UI
         public string SecondaryColor => secondaryColor;
         public Color ContrastColor => contrastColor;
         public string UserName = string.Empty;
+        public int Index { get; private set; }
 
         public EmpireSnapshot(HumankindEmpire empire)
         {
@@ -90,6 +91,7 @@ namespace DevTools.Humankind.GUITools.UI
 
         public EmpireSnapshot Snapshot(HumankindEmpire empire)
         {
+            Index = empire.EmpireIndex;
             Values = EmpireSnapshotUtils.MakeEmpireSnapshotValues(empire);
             
             if (R.Text.NormalizeColor(empire.PrimaryColor) != primaryColor)

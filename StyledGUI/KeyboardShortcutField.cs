@@ -1,11 +1,4 @@
-using System;
-using System.IO;
 using System.Linq;
-using Modding.Humankind.DevTools;
-using Modding.Humankind.DevTools.DeveloperTools.UI;
-using HarmonyLib;
-using Amplitude.Mercury.Presentation;
-using BepInEx;
 using BepInEx.Configuration;
 using UnityEngine;
 
@@ -15,39 +8,10 @@ namespace StyledGUI
     {
         public KeyboardShortcut Value { get; private set; } = KeyboardShortcut.Empty;
         public KeyboardShortcut InitialValue { get; private set; }
+        public GUIStyle Style { get; set; } = Styles.ToggleCaptureStyle;
 
         private bool initialValueProvided;
-
-        public static GUIStyle DefaultToggleCaptureStyle { get; set; } = new GUIStyle(UIController.DefaultSkin.toggle) {
-            fontSize = 10,
-            normal = new GUIStyleState() {
-                background = UIController.DefaultSkin.toggle.hover.background,
-                textColor = new Color32(20, 20, 20, 255)
-            },
-            hover = new GUIStyleState() {
-                background = UIController.DefaultSkin.toggle.active.background,
-                textColor = new Color32(20, 20, 20, 255)
-            },
-            active = new GUIStyleState() {
-                background = UIController.DefaultSkin.textField.onNormal.background,
-                textColor = new Color32(250, 250, 250, 255)
-            },
-            onNormal = new GUIStyleState() {
-                background = UIController.DefaultSkin.textField.onNormal.background,
-                textColor = new Color32(250, 250, 250, 255)
-            },
-            onHover = new GUIStyleState() {
-                background = UIController.DefaultSkin.textField.onNormal.background,
-                textColor = new Color32(250, 250, 250, 255)
-            },
-            onActive = new GUIStyleState() {
-                background = UIController.DefaultSkin.textField.onNormal.background,
-                textColor = new Color32(250, 250, 250, 255)
-            },
-        };
-
-        public GUIStyle ToggleCaptureStyle { get; set; } = DefaultToggleCaptureStyle;
-
+        
         public KeyboardShortcutField() : this(KeyboardShortcut.Empty) {}
 
         public KeyboardShortcutField(KeyboardShortcut initialValue)
@@ -64,12 +28,19 @@ namespace StyledGUI
 
         private CaptureKeyCombo keyComboCapturer;
 
-        public string DisplayText => Value.Equals(KeyboardShortcut.Empty) ? (initialValueProvided && !IsCapturing ? InitialValue.Serialize() : DefaultText) : Value.Serialize();
+        public string DisplayTextPrefix { get; set; } = "";
+        public string DisplayTextPostfix { get; set; } = "";
+        public string DisplayText => DisplayTextPrefix + (Value.Equals(KeyboardShortcut.Empty) ? (initialValueProvided && !IsCapturing ? InitialValue.Serialize() : DefaultText) : Value.Serialize()) + DisplayTextPostfix;
 
-        public void Draw(params GUILayoutOption[] options)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns>true, only one time, just after capturing is done.</returns>
+        public bool Draw(GUIStyle style, params GUILayoutOption[] options)
         {
             GUI.color = Color.white;
-            var shouldCapture = GUILayout.Toggle(IsCapturing, DisplayText.ToUpper(), ToggleCaptureStyle, options);
+            var shouldCapture = GUILayout.Toggle(IsCapturing, DisplayText.ToUpper(), style ?? Style, options);
             if (shouldCapture && !IsCapturing)
             {
                 // Start capturing
@@ -88,8 +59,12 @@ namespace StyledGUI
                         Value = InitialValue;
 
                     IsCapturing = false;
+
+                    return true;
                 }
             }
+
+            return false;
         }
     }
 

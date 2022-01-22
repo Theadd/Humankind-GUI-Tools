@@ -193,7 +193,7 @@ namespace DevTools.Humankind.GUITools.UI
             StatisticsAndAchievementsTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("StatisticsAndAchievementsTool"), StatisticsAndAchievementsTool.Value ? 1 : 0) != 0;
             FameTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("FameTool"), FameTool.Value ? 1 : 0) != 0;
             EndGameTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("EndGameTool"), EndGameTool.Value ? 1 : 0) != 0;
-            
+
             WindowTransparency.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("WindowTransparency"), WindowTransparency.Value ? 1 : 0) != 0;
             WindowTitleBar.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("WindowTitleBar"), WindowTitleBar.Value ? 1 : 0) != 0;
             HideToolbarWindow.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("HideToolbarWindow"), HideToolbarWindow.Value ? 1 : 0) != 0;

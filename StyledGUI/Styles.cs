@@ -3,23 +3,6 @@ using UnityEngine;
 
 namespace StyledGUI
 {
-    /*public interface IGridStyles : ICellSpan
-    {
-        
-    }*/
-
-    /*public interface IGridStyles
-    {
-        GUIStyle RowStyle { get; set; }
-        GUIStyle StaticRowStyle { get; set; }
-        GUIStyle CenteredStaticRowStyle { get; set; }
-        GUIStyle CellStyle { get; set; }
-        GUIStyle ColorableCellStyle { get; set; }
-        GUIStyle InlineCellContentStyle { get; set; }
-        GUIStyle RowHeaderStyle { get; set; }
-        GUIStyle CellButtonStyle { get; set; }
-    }*/
-
     public static class Styles
     {
         public static GUIStyle RowStyle { get; set; } =
@@ -159,6 +142,45 @@ namespace StyledGUI
                 background = Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.35f)),
                 textColor = new Color32(40, 86, 240, 255)
             }
+        };
+        
+        public static GUIStyle ToggleCaptureStyle { get; set; } = new GUIStyle(StyledGUIUtility.DefaultSkin.toggle) {
+            fontSize = 12,
+            margin = StyledGUIUtility.DefaultSkin.FindStyle("PopupWindow.Grid").margin,
+            padding = StyledGUIUtility.DefaultSkin.FindStyle("PopupWindow.Grid").padding,
+            normal = new GUIStyleState()
+            {
+                background = Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.35f)),
+                textColor = new Color32(80, 230, 80, 220)
+            },
+            /*normal = new GUIStyleState() {
+                background = StyledGUIUtility.DefaultSkin.toggle.hover.background,
+                textColor = new Color32(20, 20, 20, 255)
+            },
+            hover = new GUIStyleState() {
+                background = StyledGUIUtility.DefaultSkin.toggle.active.background,
+                textColor = new Color32(20, 20, 20, 255)
+            },*/
+            hover = new GUIStyleState() {
+                background = StyledGUIUtility.DefaultSkin.toggle.hover.background,
+                textColor = new Color32(200, 200, 200, 255)
+            },
+            active = new GUIStyleState() {
+                background = StyledGUIUtility.DefaultSkin.textField.onNormal.background,
+                textColor = new Color32(250, 250, 250, 255)
+            },
+            onNormal = new GUIStyleState() {
+                background = StyledGUIUtility.DefaultSkin.textField.onNormal.background,
+                textColor = new Color32(250, 250, 250, 255)
+            },
+            onHover = new GUIStyleState() {
+                background = StyledGUIUtility.DefaultSkin.textField.onNormal.background,
+                textColor = new Color32(250, 250, 250, 255)
+            },
+            onActive = new GUIStyleState() {
+                background = StyledGUIUtility.DefaultSkin.textField.onNormal.background,
+                textColor = new Color32(250, 250, 250, 255)
+            },
         };
     }
 }
