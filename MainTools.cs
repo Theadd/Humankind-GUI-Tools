@@ -30,6 +30,7 @@ namespace DevTools.Humankind.GUITools
         public static FameToolWindow FameWindow { get; set; }
         public static EndGameToolWindow EndGameWindow { get; set; }
         public static GameStatsWindow StatsWindow { get; set; }
+        public static BackScreenWindow BackScreen { get; set; }
 
         public static void Main()
         {
@@ -37,6 +38,7 @@ namespace DevTools.Humankind.GUITools
             
             PopupToolWindow.Open<MainToolbar>(w => Toolbar = InitializeStyledGUI(w));
             PopupToolWindow.Open<InGameMenuWindow>(w => InGameMenu = w);
+            PopupToolWindow.Open<BackScreenWindow>(w => BackScreen = w);
 
             // PopupToolWindow.Open<GameInfoToolWindow>(w => GameInfoWindow = w);
             // PopupToolWindow.Open<DistrictPainterToolWindow>(w => DistrictPainterWindow = w);
@@ -112,6 +114,7 @@ namespace DevTools.Humankind.GUITools
             FameWindow?.Close();
             EndGameWindow?.Close();
             StatsWindow?.Close();
+            BackScreen?.Close();
         }
         
         private static void Debug()
