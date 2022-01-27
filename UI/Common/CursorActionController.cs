@@ -33,7 +33,7 @@ namespace DevTools.Humankind.GUITools.UI
             });
         }
         
-        public static void CreateExtensionDistrictIndistryUnderCursor()
+        public static void CreateExtensionDistrictIndustryUnderCursor()
         {
             DistrictInfo districtInfo2;
             if (TryGetDistrictInfoAt(Presentation.PresentationCursorController.CurrentHighlightedPosition, out districtInfo2))

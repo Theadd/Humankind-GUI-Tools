@@ -13,6 +13,7 @@ using Amplitude.Mercury.Interop;
 using Amplitude.Mercury.Presentation;
 using Amplitude.Mercury.Terrain;
 using Amplitude.Mercury.UI;
+using Amplitude.UI;
 
 namespace DevTools.Humankind.GUITools.UI
 {
@@ -38,57 +39,8 @@ namespace DevTools.Humankind.GUITools.UI
             }
         };
 
-        public void SetupDebugger()
-        {
-            DebugControl.WantedDebugger = DebugControl.DebuggerType.Terrain;
-            DebugControl.UpdatePresentationDebugger = true;
-            
-            
-        }
+        public Texture EmpireIconTexture { get; set; }
 
-        public void UpdateDebugger()
-        {
-            ITerrainPickingService instance = RenderContextAccess.GetInstance<ITerrainPickingService>(0);
-            
-            Hexagon.OffsetCoords offsetHexCoords = new Hexagon.OffsetCoords();
-            if (instance.ScreenPositionToHexagonOffsetCoords((Vector2) Input.mousePosition, ref offsetHexCoords))
-            {
-                WorldPosition cursorPosition = DebugControl.CursorPosition;
-                DebugControl.CursorPosition = new WorldPosition(offsetHexCoords);
-                if (DebugControl.CursorPosition != cursorPosition)
-                    DebugControl.UpdatePresentationDebugger = true;
-            }
-            else
-            {
-                DebugControl.CursorPosition = WorldPosition.Invalid;
-                DebugControl.UpdatePresentationDebugger = true;
-            }
-        }
-        
-        private void OnDrawTerrainDebugger()
-        {
-            if (!DebugControl.CursorPosition.IsWorldPositionValid())
-            {
-                GUILayout.Label("NOT A VALID WORLD POSITION");
-                return;
-            }
-            ref Amplitude.Mercury.Interop.AI.Data.Tile local =
-                ref Amplitude.Mercury.Interop.AI.Snapshots.World.Tiles[DebugControl.CursorPosition.ToTileIndex()];
-            GUILayout.Label(string.Format("Position {0} | {1}", (object) DebugControl.CursorPosition,
-                (object) local.MovementType));
-            GUILayout.Label(string.Format("{0} exploitable neighbors", (object) local.AdjacentExploitableTilesCount));
-            GUILayout.Label(string.Format("Neighbor FIMS: {0}", (object) local.AdjacentExploitableTilesFims));
-            GUILayout.Label(string.Format("Visible {0}",
-                (object) Amplitude.Mercury.Presentation.Presentation.PresentationVisibilityController.IsTileVisible(
-                    DebugControl.CursorPosition.ToTileIndex())));
-            GUILayout.Label(string.Format("Explored {0}",
-                (object) Amplitude.Mercury.Presentation.Presentation.PresentationVisibilityController.IsTileExplored(
-                    DebugControl.CursorPosition.ToTileIndex())));
-            if (!local.GreaterElevationThanAdjacentTiles)
-                return;
-            GUILayout.Label("None of the neighbors have a higher elevation.");
-        }
-        
         public override void OnDrawUI()
         {
             var asMajorEmpire = HumankindGame.Empires[0].Simulation;
@@ -98,16 +50,16 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 if (loop > 18)
                 {
+                    // EmpireIcon = UIController.GameUtils.GetEmpireIcon(1);
+                    EmpireIcon = UIController.GameUtils.GetEmpireBannerOrnament(0);
+                    // EmpireIcon.GetAsset();
+                    EmpireIcon.RequestAsset();
+                    EmpireIconTexture = EmpireIcon.GetAsset();
+                    Loggr.Log(EmpireIconTexture);
+                    Loggr.LogAll(EmpireIcon);
+                    EmpireIcon.RequestAsset();
+                    Loggr.LogAll(EmpireIcon.GetAsset());
                     
-                    
-                    
-                    // SetupDebugger();
-                    // Presentation.PresentationFrontiersController.DisplayAllFrontiers(true);
-                    // Loggr.Log(Presentation.PresentationCameraController);
-                    // Presentation.PresentationCameraController.SetCameraLayerModifier(PresentationCameraController.CameraModifierID.Diplomacy);
-                    //Amplitude.Mercury.Presentation.Presentation.PresentationVisibilityController.VisibilityBufferMask |= PresentationVisibilityController.VisibilityBufferFlags.Timemap;
-                    // ReadWriteBuffer1D<VisibilityEntry> visibilityBuffer = constHexBufferProvider.VisibilityBuffer;
-                    // int num1 = WorldMapProviderHelper.VisibilityStatusToInt(Amplitude.Mercury.Terrain.VisibilityStatus.Visible);
                 }
                 if (loop == 16 && endGameStatus == EmpireEndGameStatus.Resigned) 
                 {
@@ -117,23 +69,29 @@ namespace DevTools.Humankind.GUITools.UI
             }
 
             GUILayout.BeginVertical(bgStyle);
-            DrawValue("rotationX", ActionController.FreeCamera.FreeCam?.rotationX.ToString());
+            {
+                DrawUITexture();
+                
+                DrawValue("rotationX", ActionController.FreeCamera.FreeCam?.rotationX.ToString());
                 DrawValue("rotationY", ActionController.FreeCamera.FreeCam?.rotationY.ToString());
                 DrawValue("Position", ActionController.FreeCamera.FreeCam?.GetTransform().position.ToString());
-                DrawValue("localRotation", ActionController.FreeCamera.FreeCam?.GetTransform().localRotation.ToString());
+                DrawValue("localRotation",
+                    ActionController.FreeCamera.FreeCam?.GetTransform().localRotation.ToString());
                 DrawValue("FreeCam rotation", ActionController.FreeCamera.FreeCam?.GetTransform().rotation.ToString());
                 DrawValue("nearClipPlane", ActionController.Camera?.nearClipPlane.ToString());
                 DrawValue("farClipPlane", ActionController.Camera?.farClipPlane.ToString());
                 DrawValue("fieldOfView", ActionController.Camera?.fieldOfView.ToString());
                 DrawValue("Camera rotation", ActionController.Camera?.transform.rotation.ToString());
-                DrawValue("WorldPosition Highlighted", Presentation.PresentationCursorController.CurrentHighlightedPosition.ToString());
+                DrawValue("WorldPosition Highlighted",
+                    Presentation.PresentationCursorController.CurrentHighlightedPosition.ToString());
 
                 // UpdateDebugger();
                 // OnDrawTerrainDebugger();
-                
+
                 Utils.DrawHorizontalLine(0.6f);
 
                 GUILayout.BeginHorizontal();
+                {
                     GUI.enabled = HumankindGame.IsGameLoaded;
                     GUILayout.Label("<size=11><b>CAMERA, LEFTCTRL + ...</b></size>");
                     GUILayout.FlexibleSpace();
@@ -148,8 +106,9 @@ namespace DevTools.Humankind.GUITools.UI
                     if (GUILayout.Button("<size=10><b>4: Loggr => Camera</b></size>"))
                         Loggr.Log(ActionController.FreeCamera?.cameraCam);
                     GUI.enabled = true;
+                }
                 GUILayout.EndHorizontal();
-
+            }
             GUILayout.EndVertical();
         }
 
@@ -162,16 +121,36 @@ namespace DevTools.Humankind.GUITools.UI
             GUILayout.EndHorizontal();
         }
 
-        public static void EnableFogOfWar(bool enable)
-        {
-            if (!HumankindGame.IsGameLoaded)
-            {
-                Loggr.Log("UNABLE TO CHANGE FOG OF WAR VALUE WHEN NO GAME IS RUNNING.", ConsoleColor.DarkRed);
-                return;
-            }
+        public Texture2D HeaderImage { get; set; } = Modding.Humankind.DevTools.DevTools.Assets.Load<Texture2D>("GameplayOrientation_Warmonger");
+        public UITexture EmpireIcon { get; set; } = UIController.GameUtils.GetEmpireIcon(0);
 
-            HumankindGame.Empires[0].EnableFogOfWar(enable);
-            HumankindGame.Update();
+        public void DrawUITexture()
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.BeginVertical(GUILayout.ExpandWidth(false), GUILayout.Width(78f), GUILayout.ExpandHeight(false), GUILayout.Height(78f));
+            GUILayoutUtility.GetRect(64f, 64f);
+            GUI.DrawTexture(  
+                new Rect(18f, 10f, 64f, 64f), 
+                HeaderImage, 
+                ScaleMode.ScaleToFit, 
+                true, 
+                1f,
+                new Color32(255, 255, 255, 240), 
+                0, 
+                0
+            );
+            GUILayout.EndVertical();
+            GUILayout.BeginVertical(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(false), GUILayout.Height(82f), GUILayout.MaxHeight(82f));
+            GUILayout.Label(
+                ("<size=4>\n</size><size=10><b>  Showcasing</b> a fully featured demo of an " + 
+                 "<b>in-game<size=3>\n\n</size>  Tool</b> made with <color=#1199EECC><b>Humankind Modding DevTools</b></color>" + 
+                 "</size><size=3>\n</size>").ToUpper(), "Text");
+            GUILayout.FlexibleSpace();
+            GUI.color = new Color(1f, 1f, 1f, 0.5f);
+            GUILayout.Label(R.Text.Size(R.Text.Bold("GUITooltip.ToUpper()"), 9), "Tooltip");
+            GUI.color = Color.white;
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
         }
     }
 }

@@ -5,6 +5,19 @@ namespace StyledGUI
 {
     public static class Styles
     {
+        public static Texture2D Alpha65WhitePixel { get; set; } =
+            Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.65f));
+        public static Texture2D Alpha35WhitePixel { get; set; } =
+            Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.35f));
+        public static Texture2D WhitePixel { get; set; } =
+            Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 1f));
+        public static Texture2D ButtonNormalPixel { get; set; } =
+            Graphics.CreateSinglePixelTexture2D(new Color32(85, 136, 254, 150));
+        public static Texture2D ButtonHoverPixel { get; set; } =
+            Graphics.CreateSinglePixelTexture2D(new Color32(85, 136, 254, 230));
+        public static Texture2D ButtonActivePixel { get; set; } =
+            Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.35f));
+
         public static GUIStyle RowStyle { get; set; } =
             new GUIStyle(StyledGUIUtility.DefaultSkin.FindStyle("PopupWindow.Row"))
             {
@@ -60,7 +73,7 @@ namespace StyledGUI
                 fontSize = 12,
                 normal = new GUIStyleState()
                 {
-                    background = Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.35f)),
+                    background = Alpha35WhitePixel,
                     textColor = Color.white
                 },
                 hover = new GUIStyleState()
@@ -70,18 +83,19 @@ namespace StyledGUI
                 },
             };
 
+        
         public static GUIStyle ColorableCellStyle { get; set; } =
             new GUIStyle(StyledGUIUtility.DefaultSkin.FindStyle("PopupWindow.Grid"))
             {
                 fontSize = 12,
                 normal = new GUIStyleState()
                 {
-                    background = Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.65f)),
+                    background = Alpha65WhitePixel,
                     textColor = Color.white
                 },
                 hover = new GUIStyleState()
                 {
-                    background = Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 1f)),
+                    background = WhitePixel,
                     textColor = Color.white
                 }
             };
@@ -129,17 +143,17 @@ namespace StyledGUI
             padding = StyledGUIUtility.DefaultSkin.FindStyle("PopupWindow.Grid").padding,
             normal = new GUIStyleState()
             {
-                background = Graphics.CreateSinglePixelTexture2D(new Color32(85, 136, 254, 150)),
+                background = ButtonNormalPixel,
                 textColor = Color.white
             },
             hover = new GUIStyleState()
             {
-                background = Graphics.CreateSinglePixelTexture2D(new Color32(85, 136, 254, 230)),
+                background = ButtonHoverPixel,
                 textColor = Color.white
             },
             active = new GUIStyleState()
             {
-                background = Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.35f)),
+                background = ButtonActivePixel,
                 textColor = new Color32(40, 86, 240, 255)
             }
         };

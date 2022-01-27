@@ -57,11 +57,11 @@ namespace DevTools.Humankind.GUITools.UI
         {
             if (ScreenOverlay == null)
             {
-                ScreenOverlay = ScreenUIOverlay.Find(UniqueName).Sync(this);
+                ScreenOverlay = ScreenUIOverlay.Find(UniqueName).FullScreenSync();
             }
             else
             {
-                ScreenOverlay.Sync(this);
+                ScreenOverlay.FullScreenSync();
             }
         }
         

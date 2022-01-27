@@ -54,12 +54,20 @@ namespace StyledGUI
                 if (DrawSectionHeaders && sectionTitle.Length > 0)
                 {
                     if (DrawRowHeaders)
+                    {
                         Grid.Row(Styles.StaticRowStyle)
                             .VerticalStack()
                             .RowHeader(sectionTitle, RowHeaderCellSpan)
                             .DrawHorizontalLine(0.5f, SectionHorizontalLineWidth)
                             .EndVerticalStack()
                             .EndRow();
+                    }
+                    else
+                    {
+                        Grid.Row(Styles.StaticRowStyle)
+                            .RowHeader(sectionTitle, RowHeaderCellSpan)
+                            .EndRow();
+                    }
                 }
                 
                 for (var rowIndex = 0; rowIndex < Sections[sectionIndex].Rows.Length; rowIndex++)

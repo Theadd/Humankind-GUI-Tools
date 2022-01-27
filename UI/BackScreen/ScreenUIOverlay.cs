@@ -48,6 +48,18 @@ namespace DevTools.Humankind.GUITools.UI
             }
         }
         
+        public bool LockFullScreenMouseEvents
+        {
+            get => Control?.enabled ?? false;
+            set => SetLockFullScreenMouseEvents(value);
+        }
+        
+        public bool EnableFullScreenBackgroundColor
+        {
+            get => Canvas?.enabled ?? false;
+            set => SetEnableFullScreenBackgroundColor(value);
+        }
+        
 
         public static ScreenUIOverlay Find(string uuid)
         {
@@ -79,9 +91,9 @@ namespace DevTools.Humankind.GUITools.UI
         // 500 500 
         
 
-        public ScreenUIOverlay Sync(PopupWindow target)
+        public ScreenUIOverlay FullScreenSync()
         {
-            var rect = ApplyRelativeResolution(target.GetWindowPosition());
+            var rect = ApplyRelativeResolution(new Rect(0, 0, Screen.width, Screen.height));
             
             UITransform.X = rect.x;
             UITransform.Y = rect.y;
@@ -108,6 +120,7 @@ namespace DevTools.Humankind.GUITools.UI
             UITransform = GetComponent<UITransform>();
             Control = GetComponent<UIButton>();
             Control.LoadIfNecessary();
+            Control.enabled = false;
 
             if (gameObject.GetComponent<SquircleBackgroundWidget>() == null)
             {
@@ -116,16 +129,18 @@ namespace DevTools.Humankind.GUITools.UI
                 Canvas.OuterBorderColor = Color.green;
                 Canvas.BorderColor = Color.clear;
                 Canvas.CornerRadius = 0f;
+                Canvas.enabled = false;
             }
 
             var go = new GameObject("InnerOverlayRect");
             go.transform.parent = gameObject.transform;
             InnerUITransform = go.AddComponent<UITransform>();
             InnerControl = go.AddComponent<UIButton>();
+            InnerControl.LoadIfNecessary();
             
-            InnerCanvas = gameObject.AddComponent<SquircleBackgroundWidget>();
+            InnerCanvas = go.AddComponent<SquircleBackgroundWidget>();
             InnerCanvas.BackgroundColor = BackgroundColor;
-            InnerCanvas.OuterBorderColor = Color.green;
+            InnerCanvas.OuterBorderColor = Color.red;
             InnerCanvas.BorderColor = Color.clear;
             InnerCanvas.CornerRadius = 16f;
 
@@ -134,6 +149,37 @@ namespace DevTools.Humankind.GUITools.UI
             // this.Control.MouseLeave -= OnMouseEventHandler;
             // this.Control.MouseLeave += OnMouseEventHandler;
         }
+
+        public ScreenUIOverlay SetInnerRect(Rect innerRect)
+        {
+            if (InnerUITransform == null)
+                return this;
+            
+            var rect = ApplyRelativeResolution(innerRect);
+            
+            InnerUITransform.X = rect.x;
+            InnerUITransform.Y = rect.y;
+            InnerUITransform.Width = rect.width;
+            InnerUITransform.Height = rect.height;
+
+            return this;
+        }
+
+        public ScreenUIOverlay SetInnerRectAsVisible(bool shouldBeVisible)
+        {
+            if (InnerUITransform == null)
+                return this;
+            
+            InnerUITransform.VisibleSelf = shouldBeVisible;
+
+            return this;
+        }
+        
+        public bool SetLockFullScreenMouseEvents(bool shouldBeLocked = true) => 
+            Control != null && (Control.enabled = shouldBeLocked);
+
+        public bool SetEnableFullScreenBackgroundColor(bool shouldBeEnabled = true) =>
+            Canvas != null && (Canvas.enabled = shouldBeEnabled);
 
         public static void Unload()
         {

@@ -36,9 +36,24 @@ namespace DevTools.Humankind.GUITools
         {
             if (IsDebugModeEnabled) Debug();
             
-            PopupToolWindow.Open<MainToolbar>(w => Toolbar = InitializeStyledGUI(w));
-            PopupToolWindow.Open<InGameMenuWindow>(w => InGameMenu = w);
+            UIController.OnceGUIHasLoaded(() =>
+            {
+                StyledGUIUtility.DefaultSkin = UIController.DefaultSkin;
+                Loggr.Log("OnceGUIHasLoaded 1", ConsoleColor.Red);
+            });
             PopupToolWindow.Open<BackScreenWindow>(w => BackScreen = w);
+            PopupToolWindow.Open<MainToolbar>(w => Toolbar = w);
+            UIController.OnceGUIHasLoaded(() =>
+            {
+                Loggr.Log("OnceGUIHasLoaded 2", ConsoleColor.Red);
+            });
+            PopupToolWindow.Open<InGameMenuWindow>(w => InGameMenu = w);
+            
+            
+            UIController.OnceGUIHasLoaded(() =>
+            {
+                Loggr.Log("OnceGUIHasLoaded 3", ConsoleColor.Red);
+            });
 
             // PopupToolWindow.Open<GameInfoToolWindow>(w => GameInfoWindow = w);
             // PopupToolWindow.Open<DistrictPainterToolWindow>(w => DistrictPainterWindow = w);
@@ -60,15 +75,13 @@ namespace DevTools.Humankind.GUITools
             // Maps [ESC] key to: GodMode.Enabled = false 
             // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Escape), "CancelGodMode", CancelGodMode);
             
-            // ToggleGameOverviewWindow();
+            // ToggleGameOverviewWindow(); 
             // ToggleBasicToolWindow();
-        }
-        
-        private static MainToolbar InitializeStyledGUI(MainToolbar toolbar)
-        {
-            StyledGUI.StyledGUIUtility.DefaultSkin = UIController.DefaultSkin;
             
-            return toolbar;
+            HumankindDevTools.RegisterAction(
+                new KeyboardShortcut(UnityEngine.KeyCode.F4), 
+                "RebuildConstructibles", 
+                ConstructibleStore.Rebuild);
         }
 
         public static void ToggleHideToolbarWindow() => GlobalSettings.HideToolbarWindow.Value = !GlobalSettings.HideToolbarWindow.Value;

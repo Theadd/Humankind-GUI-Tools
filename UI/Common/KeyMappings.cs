@@ -32,7 +32,7 @@ namespace DevTools.Humankind.GUITools.UI
             },
             new KeyMap("TogglePresentationFogOfWar")
             {
-                DisplayName = "PRESENTATION FOG OR WAR",
+                DisplayName = "PRESENTATION FOG OF WAR",
                 Action = ActionController.TogglePresentationFogOfWar,
                 Key = KeyboardShortcut.Empty,
                 GroupName = CameraKeysGroup
@@ -46,7 +46,7 @@ namespace DevTools.Humankind.GUITools.UI
             },
             new KeyMap("SwitchCameraFieldOfView")
             {
-                DisplayName = "SWITCH MAIN CAMERA FIELD OF VIEW, VALUES: [15, 35, 65]",
+                DisplayName = "SWITCH MAIN CAMERA FIELD OF VIEW (15, 35, 65)",
                 Action = ActionController.SwitchCameraFieldOfView,
                 Key = KeyboardShortcut.Empty,
                 GroupName = CameraKeysGroup
@@ -72,10 +72,10 @@ namespace DevTools.Humankind.GUITools.UI
                 Key = KeyboardShortcut.Empty,
                 GroupName = InteractionKeysGroup
             },
-            new KeyMap("CreateExtensionDistrictIndistryUnderCursor")
+            new KeyMap("CreateExtensionDistrictIndustryUnderCursor")
             {
                 DisplayName = "CREATE INDUSTRIAL DISTRICT UNDER CURSOR",
-                Action = ActionController.CreateExtensionDistrictIndistryUnderCursor,
+                Action = ActionController.CreateExtensionDistrictIndustryUnderCursor,
                 Key = KeyboardShortcut.Empty,
                 GroupName = InteractionKeysGroup
             },
