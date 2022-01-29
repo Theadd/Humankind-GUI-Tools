@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Amplitude;
+using Amplitude.Extensions;
 using Amplitude.Framework;
 using Amplitude.Mercury.Data.Simulation;
+using Amplitude.UI;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.Core;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
@@ -47,8 +49,9 @@ namespace DevTools.Humankind.GUITools.UI
                 DefinitionName = definition.Name,
                 Title = UIController.GetLocalizedTitle(definition.Name, name),
                 Name = name,
-                Category = string.Empty,
-                Era = EraLevel(definition.name)
+                Category = definition.Category.ToString(),
+                Era = EraLevel(definition.name),
+                Image = Utils.LoadTexture(definition.name)
             };
         }
         
@@ -63,7 +66,7 @@ namespace DevTools.Humankind.GUITools.UI
                 Name = name,
                 Category = UIController.GetLocalizedTitle(definition.UnitClassName),
                 Era = UnitEraLevel(definition.name),
-                Image = Utils.LoadUnitSprite(definition.name)?.texture
+                Image = Utils.LoadTexture(definition.name)
             };
         }
 
@@ -71,8 +74,7 @@ namespace DevTools.Humankind.GUITools.UI
         {
             var constructibles = Databases
                 .GetDatabase<ConstructibleDefinition>(false);
-                //.GetValues();
-            
+
             var districts = constructibles
                 .OfType<DistrictDefinition>()
                 .ToArray();
@@ -111,19 +113,20 @@ namespace DevTools.Humankind.GUITools.UI
 
             Units = new DefinitionsGroup[]
             {
-                new DefinitionsGroup()
-                {
-                    Title = "Land Units",
-                    Values = units
-                        .Where(u => u.SpawnType == UnitSpawnType.Land)
-                        .Select(CreateUnitConstructible)
-                        .ToArray()
-                },
+                
                 new DefinitionsGroup()
                 {
                     Title = "Maritime Units",
                     Values = units
                         .Where(u => u.SpawnType == UnitSpawnType.Maritime)
+                        .Select(CreateUnitConstructible)
+                        .ToArray()
+                },
+                new DefinitionsGroup()
+                {
+                    Title = "Land Units",
+                    Values = units
+                        .Where(u => u.SpawnType == UnitSpawnType.Land)
                         .Select(CreateUnitConstructible)
                         .ToArray()
                 },
@@ -136,6 +139,61 @@ namespace DevTools.Humankind.GUITools.UI
                         .ToArray()
                 }
             };
+        }
+
+        public static void PrintBatchProcess()
+        {
+            var constructibles = Databases
+                .GetDatabase<ConstructibleDefinition>(false);
+
+            var key = new StaticString("Small");
+            var key2 = new StaticString("Default_Small");
+            List<ConstructibleDefinition> remaining = new List<ConstructibleDefinition>();
+            List<string> result = new List<string>();
+            int failCount = 0;
+            int count = 0;
+            string assetPath = "";
+            foreach (var definition in constructibles.GetValues())
+            {
+                count++;
+                try
+                {
+                    var uiTexture = UIController.DataUtils.GetImage(definition.Name, key);
+                    assetPath = "" + uiTexture.AssetPath;
+                    if (assetPath.Length == 0)
+                    {
+                        assetPath = "" + UIController.DataUtils.GetImage(definition.Name, key2).AssetPath;
+                    }
+                    if (assetPath.Length == 0)
+                    {
+                        remaining.Add(definition);
+                        failCount++;
+                        continue;
+                    }
+
+                    var filename = assetPath.Substring(assetPath.LastIndexOf('/') + 1);
+                    result.Add("cp -u " + filename + " ../Small/" + definition.name + ".png");
+                }
+                catch (Exception)
+                {
+                    failCount++;
+                }
+            }
+            Loggr.Log(failCount.ToString() + " FAILED OUT OF " + count + ", REMAINING = " + remaining.Count, ConsoleColor.Green);
+            
+            foreach (var constructibleDefinition in remaining)
+            {
+                Loggr.Log("" + constructibleDefinition.name.ToString(), ConsoleColor.DarkCyan);
+            }
+            
+            Loggr.Log("\n\n");
+            
+            foreach (var s in result)
+            {
+                Loggr.Log(s, ConsoleColor.Green);
+            }
+            
+            Loggr.Log("\n\n");
         }
     }
 }
@@ -328,5 +386,11 @@ namespace Modding.Humankind.DevTools.Core
 "Extension_Era5_Ethiopia"
 "Extension_Era6_Nigeria"
 
+
+UI_Extension_ArtificialWonder_Era3_GreatZimbabwe_Small.png
+Extension_ArtificialWonder_Era3_GreatZimbabwe
+
+UI_ConstructibleInfrastructure_Repeatable_Era3_GreatMosqueOfDjenne_Small.png
+UI_ConstructibleExtension_Era5_Siam_Small.png
  */
  

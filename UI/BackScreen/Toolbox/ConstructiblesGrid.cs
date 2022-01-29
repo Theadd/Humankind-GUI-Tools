@@ -1,20 +1,14 @@
 ﻿using System.Linq;
 using StyledGUI;
 using StyledGUI.VirtualGridElements;
-using System;
-using Modding.Humankind.DevTools;
-using Amplitude.Mercury.Interop;
-using Amplitude.Mercury.Sandbox;
-using Amplitude.Framework;
-using Amplitude.Framework.Networking;
 using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI
 {
     public class ConstructiblesStyledGrid : GridStyles
     {
-        public override Color CellTintColor { get; set; } = new Color(0.26f, 0.26f, 0.26f, 1f);
-        public override Color CellTintColorAlt { get; set; } = new Color(0, 0, 0, 1f);
+        public override Color CellTintColor { get; set; } = new Color(0, 0, 0, 0.6f);
+        public override Color CellTintColorAlt { get; set; } = new Color(0, 0, 0, 0.2f);
         public override Color IconTintColor { get; set; } = new Color(1f, 1f, 1f, 0.7f);
         public override float GetCellHeight() => 48f;
     }
@@ -57,7 +51,7 @@ namespace DevTools.Humankind.GUITools.UI
             VirtualGrid.Sections = Snapshot.Units
                 .Select(group => new Section()
                 {
-                    Title = group.Title,
+                    Title = "<size=13><b>" + group.Title.ToUpper() + "</b></size>",
                     View = 0,
                     Rows = group.Values.Select(c => new Row()
                     {
@@ -65,11 +59,11 @@ namespace DevTools.Humankind.GUITools.UI
                         {
                             new Clickable4xCell()
                             {
-                                Title = c.Title,
+                                Title = "<size=11><b>" + c.Title.ToUpper() + "</b></size>",
                                 Subtitle = c.Name,
                                 UniqueName = c.DefinitionName.ToString(),
-                                Category = c.Category,
-                                Tags = "ERA " + c.Era,
+                                Category = c.Category == "None" ? "" : "<size=9>" + c.Category.ToUpper() + "</size>", 
+                                Tags = c.Era > 0 ? "<size=10>ERA " + c.Era + "</size>" : "",
                                 Image = c.Image
                                 // Span = Grid.CellSpan8
                             }
@@ -79,7 +73,7 @@ namespace DevTools.Humankind.GUITools.UI
                 .Concat(
                 Snapshot.Districts.Select(group => new Section()
                 {
-                    Title = group.Title,
+                    Title = "<size=13><b>" + group.Title.ToUpper() + "</b></size>",
                     View = 1,
                     Rows = group.Values.Select(c => new Row()
                     {
@@ -87,11 +81,11 @@ namespace DevTools.Humankind.GUITools.UI
                         {
                             new Clickable4xCell()
                             {
-                                Title = c.Title,
+                                Title = "<size=11><b>" + c.Title.ToUpper() + "</b></size>",
                                 Subtitle = c.Name,
                                 UniqueName = c.DefinitionName.ToString(),
-                                // Category = c.Category,
-                                Tags = "ERA " + c.Era,
+                                Category = c.Category == "None" ? "" : "<size=9>" + c.Category.ToUpper() + "</size>",
+                                Tags = c.Era > 0 ? "<size=10>ERA " + c.Era + "</size>" : "",
                                 Image = c.Image
                                 // Span = Grid.CellSpan8
                             }
@@ -100,16 +94,5 @@ namespace DevTools.Humankind.GUITools.UI
                 }))
                 .ToArray();
         }
-
-        private void Trigger(Action action)
-        {
-            // some actions tracking stuff here
-            action.Invoke();
-            // Trigger update
-            GameStatsWindow.ResetLoop();
-        }
-
-        private void OnAdd5kMoney(int empireIndex) =>
-            Trigger(() => HumankindGame.Empires[empireIndex].MoneyStock += 5000);
     }
 }

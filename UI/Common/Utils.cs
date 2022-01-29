@@ -57,7 +57,8 @@ namespace DevTools.Humankind.GUITools.UI
         // UNIT UTILL
 
         public static Sprite LoadUnitSprite(Amplitude.StaticString unitName) => LoadUnitSprite(unitName.ToString());
-        public static Sprite LoadUnitSprite(string unitName) => SharedAssets.SharedAssets.Load<Sprite>(NormalizeUnitName(unitName));
+        public static Sprite LoadUnitSprite(string unitName) => SharedAssets.SharedAssets.Load<Sprite>(unitName);
+        public static Texture2D LoadTexture(string name) => SharedAssets.SharedAssets.Load<Texture2D>(name);
         public static string NormalizeUnitName(string unitName) => unitName.Substring(unitName.IndexOf('_') + 1);
 
         // FIDS GAINS AS IMAGE

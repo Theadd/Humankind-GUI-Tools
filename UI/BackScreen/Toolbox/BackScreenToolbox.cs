@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Modding.Humankind.DevTools;
+using Modding.Humankind.DevTools.DeveloperTools.UI;
 using StyledGUI.VirtualGridElements;
 using UnityEngine;
 
@@ -18,6 +20,8 @@ namespace DevTools.Humankind.GUITools.UI
             "<size=10><b> UNITS </b></size>", 
             "<size=10><b> DISTRICTS </b></size>"
         };
+
+        private List<Vector2> _storedScrollViewPositions = new List<Vector2>() {Vector2.zero, Vector2.zero};
         
         public void Draw(Rect targetRect)
         {
@@ -80,6 +84,8 @@ namespace DevTools.Humankind.GUITools.UI
 
             if (activeTab != ActiveTab)
             {
+                _storedScrollViewPositions[ActiveTab] = ScrollViewPosition;
+                ScrollViewPosition = _storedScrollViewPositions[activeTab];
                 ActiveTab = activeTab;
                 ConstructiblesGrid.VirtualGrid.VisibleViews = new[] { ActiveTab };
             }
@@ -89,8 +95,6 @@ namespace DevTools.Humankind.GUITools.UI
 
         public void OnClickHandler(ICell cell)
         {
-            Loggr.Log("FOUND CELL FOR CLICK! CELL TYPE = " + cell.GetType().Name, ConsoleColor.DarkCyan);
-            Loggr.Log(cell);
             ConstructiblesGrid.VirtualGrid.Cursor.AddToSelection();
         }
     }

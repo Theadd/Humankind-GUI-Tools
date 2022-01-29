@@ -13,6 +13,7 @@ namespace DevTools.Humankind.GUITools.UI
         public static string CameraKeysGroup = "CAMERA / SCREEN PRESENTATION";
         public static string InteractionKeysGroup = "GAME INTERACTION";
         public static string UserInterfacesKeysGroup = "GAME UI / GUI TOOLS";
+        public static string LiveEditorKeysGroup = "LIVE EDITOR MODE";
         
         public static KeyMap[] Keys { get; set; } = new KeyMap[]
         {
@@ -21,7 +22,9 @@ namespace DevTools.Humankind.GUITools.UI
                 DisplayName = "GAME OVERVIEW FULLSCREEN OVERLAY",
                 Action = MainTools.ToggleGameOverviewWindow,
                 Key = new KeyboardShortcut(KeyCode.Tab),
-                GroupName = GlobalKeysGroup
+                GroupName = GlobalKeysGroup,
+                IsEditable = false,
+                IsRemovable = false
             },
             new KeyMap("ToggleHideToolbarWindow")
             {
@@ -50,6 +53,49 @@ namespace DevTools.Humankind.GUITools.UI
                 Action = ActionController.SwitchCameraFieldOfView,
                 Key = KeyboardShortcut.Empty,
                 GroupName = CameraKeysGroup
+            },
+            new KeyMap("ToggleLiveEditor")
+            {
+                DisplayName = "TOGGLE LIVE EDITOR MODE ON/OFF",
+                Action = ActionController.ToggleLiveEditorMode,
+                Key = new KeyboardShortcut(KeyCode.F4),
+                GroupName = LiveEditorKeysGroup
+            },
+            new KeyMap(LiveEditorMode.ToolboxPreviewActionName, LiveEditorMode.UpdateKeyMappings)
+            {
+                DisplayName = "HOLD FOR QUICK USE OF TOOLBOX",
+                Action = null,
+                Key = new KeyboardShortcut(KeyCode.LeftControl),
+                GroupName = LiveEditorKeysGroup,
+                IsGlobalShortcut = false,
+                IsRemovable = false,
+            },
+            new KeyMap(LiveEditorMode.StickedToolboxActionName, LiveEditorMode.UpdateKeyMappings)
+            {
+                DisplayName = "TOGGLE STICKY TOOLBOX",
+                Action = null,
+                Key = new KeyboardShortcut(KeyCode.Space, KeyCode.LeftControl),
+                GroupName = LiveEditorKeysGroup,
+                IsGlobalShortcut = false,
+                IsRemovable = false,
+            },
+            new KeyMap(LiveEditorMode.CreateUnderCursorActionName, LiveEditorMode.UpdateKeyMappings)
+            {
+                DisplayName = "PAINT/CREATE SELECTED CONSTRUCTIBLE",
+                Action = null,
+                Key = new KeyboardShortcut(KeyCode.Mouse0),
+                GroupName = LiveEditorKeysGroup,
+                IsGlobalShortcut = false,
+                IsRemovable = false,
+            },
+            new KeyMap(LiveEditorMode.DestroyUnderCursorActionName, LiveEditorMode.UpdateKeyMappings)
+            {
+                DisplayName = "DESTROY ARMY/DISTRICT/SETTLEMENT/ETC",
+                Action = null,
+                Key = new KeyboardShortcut(KeyCode.Mouse1),
+                GroupName = LiveEditorKeysGroup,
+                IsGlobalShortcut = false,
+                IsRemovable = false,
             },
             new KeyMap("ToggleGodMode")
             {
@@ -153,16 +199,39 @@ namespace DevTools.Humankind.GUITools.UI
 
     public class KeyMap
     {
-        public KeyboardShortcut Key { get; set; }
+        public KeyboardShortcut Key { get => _key; set => ChangeKey(value); }
         public string ActionName { get; private set; }
         public string DisplayName { get; set; }
         public Action Action { get; set; }
         public string GroupName { get; set; }
         public bool IsGlobalShortcut { get; set; } = true;
+        public bool IsRemovable { get; set; } = true;
+        public bool IsEditable { get; set; } = true;
+        
+        private Action OnKeyChange { get; set; }
+        private KeyboardShortcut _key = KeyboardShortcut.Empty;
 
-        public KeyMap(string actionName)
+        public KeyMap(string actionName, Action onKeyChange = null)
         {
             ActionName = actionName.Replace(" ", "_");
+            OnKeyChange = onKeyChange;
+        }
+        
+        private void ChangeKey(KeyboardShortcut newKey)
+        {
+            if (!_key.Equals(newKey))
+            {
+                _key = newKey;
+
+                try
+                {
+                    OnKeyChange?.Invoke();
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+            }
         }
     }
 }

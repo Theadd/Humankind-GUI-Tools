@@ -29,6 +29,7 @@ namespace DevTools.Humankind.GUITools.UI
 
         protected bool Initialized = false;
         protected bool InitializedInGame = false;
+        private bool _wasLiveEditorEnabled;
         
 
         protected virtual void Initialize()
@@ -73,14 +74,13 @@ namespace DevTools.Humankind.GUITools.UI
                 {
                     GUI.backgroundColor = Color.black;
 
-                    GUILayout.Label("FOCUSED CONTROL: " + GUI.GetNameOfFocusedControl(), ScreenTag);
-                    GUILayout.Label("INPUT STRING: " + Input.inputString, ScreenTag);
-                    if (Amplitude.Mercury.Presentation.Presentation.IsPresentationRunning)
-                        GUILayout.Label("IN GAME", ScreenTag);
-                    if (Input.anyKey)
-                        GUILayout.Label("ANY KEY", ScreenTag);
-                    if (Input.anyKeyDown)
-                        GUILayout.Label("ANY KEY DOWN", ScreenTag);
+                    if (IsInGame && LiveEditorMode.Enabled)
+                    {
+                        GUILayout.Label("LIVE EDITOR MODE", ScreenTag);
+                        if (LiveEditorMode.BrushType != LiveBrushType.None)
+                            GUILayout.Label("BRUSH TYPE: <b>" + LiveEditorMode.BrushType.ToString().ToUpper() + "</b>", ScreenTag);
+                    }
+
                     GUI.backgroundColor = Color.white;
                 }
                 GUILayout.EndHorizontal();
@@ -91,23 +91,30 @@ namespace DevTools.Humankind.GUITools.UI
             
             if (IsInGame)
             {
-                HexPainter.Draw();
-
-                if (IsToolboxVisible != ToolboxController.Draw())
+                SyncInGameUI();
+                if (LiveEditorMode.Enabled)
                 {
-                    IsToolboxVisible = !IsToolboxVisible;
+                    if (Event.current.type == EventType.Repaint)
+                        LiveEditorMode.Run();
                     
-                    ScreenOverlay
-                        .SetInnerRect(ToolboxController.ToolboxRect)
-                        .SetInnerRectAsVisible(IsToolboxVisible);
+                    HexPainter.Draw();
 
-                    if (IsToolboxVisible)
+                    if (IsToolboxVisible != ToolboxController.Draw())
                     {
-                        OnExpand();
-                    }
-                    else
-                    {
-                        OnCollapse();
+                        IsToolboxVisible = !IsToolboxVisible;
+
+                        ScreenOverlay
+                            .SetInnerRect(ToolboxController.ToolboxRect)
+                            .SetInnerRectAsVisible(IsToolboxVisible);
+
+                        if (IsToolboxVisible)
+                        {
+                            OnExpand();
+                        }
+                        else
+                        {
+                            OnCollapse();
+                        }
                     }
                 }
             }
@@ -117,6 +124,25 @@ namespace DevTools.Humankind.GUITools.UI
             
             GUILayout.EndHorizontal();
             GUILayout.EndArea();
+        }
+
+        private void SyncInGameUI()
+        {
+            if (_wasLiveEditorEnabled != LiveEditorMode.Enabled)
+            {
+                if (LiveEditorMode.Enabled)
+                {
+                    
+                }
+                else
+                {
+                    IsToolboxVisible = false;
+                    ScreenOverlay.SetInnerRectAsVisible(false);
+                    ToolboxController.IsSticked = false;
+                    OnCollapse();
+                }
+                _wasLiveEditorEnabled = LiveEditorMode.Enabled;
+            }
         }
 
         public override void OnZeroGUI()

@@ -46,6 +46,7 @@ namespace DevTools.Humankind.GUITools.UI
             .DisplayAllFrontiers(!Presentation.PresentationFrontiersController?.FrontiersDisplayed ?? false);
 
         public static void ToggleGodMode() => UIController.GodMode = !UIController.GodMode;
+        public static void ToggleLiveEditorMode() => LiveEditorMode.Enabled = !LiveEditorMode.Enabled;
 
         public static bool TryGetDistrictInfoAt(WorldPosition position, out DistrictInfo districtInfo)
         {

@@ -73,5 +73,12 @@ namespace DevTools.Humankind.GUITools.UI
         {
             throw new NotSupportedException();
         }
+
+        public override void Close(bool saveVisibilityStateBeforeClosing = false)
+        {
+            ToolboxController.Unload();
+            ScreenUIOverlay.Unload();
+            base.Close(false);
+        }
     }
 }

@@ -140,11 +140,7 @@ namespace StyledGUI.VirtualGridElements
             GUI.enabled = true;
             GUI.backgroundColor = prev;
         }
-        
-        // private static readonly int ButtonGridHash = "ButtonGrid".GetHashCode();
-        // public static Texture2D HeaderImage { get; set; } = Modding.Humankind.DevTools.DevTools.Assets.Load<Texture2D>("GameplayOrientation_Warmonger");
-        // public static Color HeaderImageColor { get; set; } = (Color) new Color32(255, 255, 255, 255);
-        
+
         public static void Render(this Clickable4xCell self, VirtualGrid grid)
         {
             GUI.enabled = self.Enabled;
@@ -159,7 +155,7 @@ namespace StyledGUI.VirtualGridElements
             else
                 AlternateBackgroundColor(grid);
 
-            using (var cellScope = new GUILayout.HorizontalScope(self.Style ?? Styles.CellStyle, self.Span ?? grid.DefaultCellSpan))
+            using (var cellScope = new GUILayout.HorizontalScope(self.Style ?? Styles.ColorableCellStyle, self.Span ?? grid.DefaultCellSpan))
             {
                 var r = GUILayoutUtility.GetRect(46f, 40f);
                 GUI.DrawTexture(
@@ -178,12 +174,16 @@ namespace StyledGUI.VirtualGridElements
                     {
                         GUILayout.Label(self.Title, Styles.Fixed20pxHeightTextStyle);
                         GUILayout.FlexibleSpace();
+                        GUI.contentColor = Color.yellow;// Styles.GoldTextColor;
                         GUILayout.Label(self.Category, Styles.Fixed20pxHeightTextStyle);
+                        GUI.contentColor = Color.white;
                     }
                     GUILayout.EndHorizontal();
                     GUILayout.BeginHorizontal();
                     {
+                        GUI.contentColor = Color.grey;
                         GUILayout.Label(self.Subtitle, Styles.Fixed20pxHeightTextStyle);
+                        GUI.contentColor = Color.white;
                         GUILayout.FlexibleSpace();
                         GUILayout.Label(self.Tags, Styles.Fixed20pxHeightTextStyle);
                     }

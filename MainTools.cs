@@ -36,24 +36,10 @@ namespace DevTools.Humankind.GUITools
         {
             if (IsDebugModeEnabled) Debug();
             
-            UIController.OnceGUIHasLoaded(() =>
-            {
-                StyledGUIUtility.DefaultSkin = UIController.DefaultSkin;
-                Loggr.Log("OnceGUIHasLoaded 1", ConsoleColor.Red);
-            });
+            UIController.OnceGUIHasLoaded(() => StyledGUIUtility.DefaultSkin = UIController.DefaultSkin);
             PopupToolWindow.Open<BackScreenWindow>(w => BackScreen = w);
             PopupToolWindow.Open<MainToolbar>(w => Toolbar = w);
-            UIController.OnceGUIHasLoaded(() =>
-            {
-                Loggr.Log("OnceGUIHasLoaded 2", ConsoleColor.Red);
-            });
             PopupToolWindow.Open<InGameMenuWindow>(w => InGameMenu = w);
-            
-            
-            UIController.OnceGUIHasLoaded(() =>
-            {
-                Loggr.Log("OnceGUIHasLoaded 3", ConsoleColor.Red);
-            });
 
             // PopupToolWindow.Open<GameInfoToolWindow>(w => GameInfoWindow = w);
             // PopupToolWindow.Open<DistrictPainterToolWindow>(w => DistrictPainterWindow = w);
@@ -76,10 +62,10 @@ namespace DevTools.Humankind.GUITools
             // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Escape), "CancelGodMode", CancelGodMode);
             
             // ToggleGameOverviewWindow(); 
-            // ToggleBasicToolWindow();
+            // ToggleBasicToolWindow(); 
             
             HumankindDevTools.RegisterAction(
-                new KeyboardShortcut(UnityEngine.KeyCode.F4), 
+                new KeyboardShortcut(UnityEngine.KeyCode.F4, UnityEngine.KeyCode.LeftShift), 
                 "RebuildConstructibles", 
                 ConstructibleStore.Rebuild);
         }

@@ -121,12 +121,13 @@ namespace DevTools.Humankind.GUITools.UI
                                     Field = entry.Field,
                                     Index = entry.Index,
                                     Action = OnDoneCapturing,
-                                    Color = entry.HasInvalidValue ? InvalidColor : Color.white
+                                    Color = entry.HasInvalidValue ? InvalidColor : Color.white,
+                                    Enabled = entry.KeyMap.IsEditable
                                 },
                                 new ClickableCell()
                                 {
                                     Span = Grid.CellSpan2,
-                                    Enabled = entry.HasPendingAction && !entry.HasInvalidValue,
+                                    Enabled = entry.KeyMap.IsEditable && entry.HasPendingAction && !entry.HasInvalidValue,
                                     Text = "<size=10>APPLY</size>",
                                     Index = entry.Index,
                                     Action = OnApply
@@ -134,7 +135,8 @@ namespace DevTools.Humankind.GUITools.UI
                                 new ClickableCell()
                                 {
                                     Span = Grid.CellSpan2,
-                                    Enabled = entry.HasPendingAction || (!entry.HasPendingAction &&
+                                    Enabled = entry.HasPendingAction || (!entry.HasPendingAction && 
+                                                                         entry.KeyMap.IsRemovable &&
                                                                          !entry.KeyMap.Key.Equals(
                                                                              KeyboardShortcut.Empty)),
                                     Text = (entry.HasPendingAction

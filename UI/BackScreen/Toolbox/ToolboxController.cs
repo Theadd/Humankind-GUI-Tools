@@ -18,7 +18,7 @@ namespace DevTools.Humankind.GUITools.UI
         public static KeyboardShortcut ToolboxPreviewKey { get; set; } = new KeyboardShortcut(KeyCode.LeftControl);
         public static KeyboardShortcut StickedToolboxKey { get; set; } = new KeyboardShortcut(KeyCode.Space, KeyCode.LeftControl);
         public static bool IsVisible { get; private set; } = false;
-        public static bool IsSticked { get; set; } = true;
+        public static bool IsSticked { get; set; } = false;
         public static string InputFilter { get; set; } = string.Empty;
         
         // IInputService
@@ -54,12 +54,14 @@ namespace DevTools.Humankind.GUITools.UI
                         AlternateType = VirtualGridAlternateType.Rows,
                         Cursor = new VirtualGridCursor()
                         {
-                            SelectionType = VirtualGridSelectionType.SingleCell
+                            SelectionType = VirtualGridSelectionType.OptionalSingleCell,
                         }
                     }
                 }
             };
-            
+
+            Toolbox.ConstructiblesGrid.VirtualGrid.Cursor.OnSelectionChange += LiveEditorMode.UpdatePaintBrush;
+
             CreateInputFilter();
         }
 
@@ -146,6 +148,12 @@ namespace DevTools.Humankind.GUITools.UI
             IsVisible = false;
             inputFilterHandle = inputFilterService.DestroyFilter(inputFilterHandle);
             CreateInputFilter();
+        }
+
+        public static void Unload()
+        {
+            inputFilterHandle = inputFilterService.DestroyFilter(inputFilterHandle);
+            Toolbox.ConstructiblesGrid.VirtualGrid.Cursor.OnSelectionChange -= LiveEditorMode.UpdatePaintBrush;
         }
     }
 }
