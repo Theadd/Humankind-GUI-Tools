@@ -140,14 +140,9 @@ namespace DevTools.Humankind.GUITools.UI
             
             InnerCanvas = go.AddComponent<SquircleBackgroundWidget>();
             InnerCanvas.BackgroundColor = BackgroundColor;
-            InnerCanvas.OuterBorderColor = Color.red;
+            InnerCanvas.OuterBorderColor = Color.clear;
             InnerCanvas.BorderColor = Color.clear;
-            InnerCanvas.CornerRadius = 16f;
-
-            // this.Control.MouseEnter -= OnMouseEventHandler;
-            // this.Control.MouseEnter += OnMouseEventHandler;
-            // this.Control.MouseLeave -= OnMouseEventHandler;
-            // this.Control.MouseLeave += OnMouseEventHandler;
+            InnerCanvas.CornerRadius = 7f;
         }
 
         public ScreenUIOverlay SetInnerRect(Rect innerRect)

@@ -5,6 +5,7 @@ using Amplitude.Mercury.Data;
 using Amplitude.Mercury.Input;
 using BepInEx.Configuration;
 using Modding.Humankind.DevTools;
+using StyledGUI;
 using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI
@@ -28,13 +29,27 @@ namespace DevTools.Humankind.GUITools.UI
         public static void Initialize(BackScreenWindow window)
         {
             if (ToolboxRect.Equals(Rect.zero))
-                SetToolboxRect(new Rect(300f, 300f, 300f, 300f));
+                SetToolboxRect(new Rect(300f, 300f, 900f, 300f));
             
             ConstructibleStore.Rebuild();
             
             Toolbox = new BackScreenToolbox()
             {
-                Window = window
+                Window = window,
+                ConstructiblesGrid = new ConstructiblesGrid()
+                {
+                    Snapshot = new ConstructibleStoreSnapshot()
+                    {
+                        Districts = ConstructibleStore.Districts,
+                        Units = ConstructibleStore.Units
+                    },
+                    VirtualGrid = new VirtualGrid()
+                    {
+                        Grid = new ConstructiblesStyledGrid(),
+                        DrawRowHeaders = false,
+                        DrawSectionHeaders = true
+                    }
+                }
             };
             
             CreateInputFilter();

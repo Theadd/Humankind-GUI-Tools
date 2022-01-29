@@ -27,6 +27,7 @@ namespace StyledGUI.VirtualGridElements
         public string Title { get; set; } = string.Empty;
         public Row[] Rows { get; set; }
         public float SpaceBefore { get; set; } = 16f;
+        public int View { get; set; } = 0;
     }
     
     public class Row
@@ -86,6 +87,20 @@ namespace StyledGUI.VirtualGridElements
         public Color BackgroundColor { get; set; } = UnityEngine.Color.clear;
         public string Color { get; set; } = "#FFFFFFFF";
         public GUIStyle Style { get; set; } = null;
+    }
+    
+    public class Clickable4xCell : ICell
+    {
+        public string Title { get; set; }
+        public string Subtitle { get; set; }
+        public string Tags { get; set; }
+        public string Category { get; set; }
+        public string UniqueName { get; set; }
+        public GUIContent Image { get; set; }
+        public Action<int> Action { get; set; }
+        public GUILayoutOption Span { get; set; } = null;
+        public GUIStyle Style { get; set; } = null;
+        public bool Enabled { get; set; } = true;
     }
 
     public class TextElement : IElement

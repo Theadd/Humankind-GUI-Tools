@@ -49,7 +49,6 @@ namespace DevTools.Humankind.GUITools.UI
                 if (loop++ > maxLoop)
                     loop = 0;
             }
-            // WindowRect = GUI.Window (WindowID, WindowRect, OnDrawUIToolWindow, string.Empty, WindowGUIStyle);
             WindowRect = GUI.Window (WindowID, WindowRect, OnDrawUI, string.Empty, WindowGUIStyle);
         }
 
@@ -65,16 +64,14 @@ namespace DevTools.Humankind.GUITools.UI
             }
         }
         
-        protected override void OnBecomeVisible() { } // this.SyncUIOverlay(base.OnBecomeVisible);
-        protected override void OnBecomeInvisible() { } // this.SyncUIOverlay(base.OnBecomeInvisible);
+        protected override void OnBecomeVisible() { }
+        protected override void OnBecomeInvisible() { }
         
         public override Rect GetWindowRect() => WindowRect;
 
         public override void SetWindowRect(Rect rect)
         {
-            Loggr.Log("HEHREHRHEHERHREHREHEHERHERHRHE");
             throw new NotSupportedException();
-            WindowRect = rect;
         }
     }
 }

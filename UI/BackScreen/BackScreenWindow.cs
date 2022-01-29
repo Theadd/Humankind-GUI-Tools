@@ -73,7 +73,7 @@ namespace DevTools.Humankind.GUITools.UI
                 {
                     GUI.backgroundColor = Color.black;
 
-                    GUILayout.Label("LEFT ARROW", ScreenTag);
+                    GUILayout.Label("FOCUSED CONTROL: " + GUI.GetNameOfFocusedControl(), ScreenTag);
                     GUILayout.Label("INPUT STRING: " + Input.inputString, ScreenTag);
                     if (Amplitude.Mercury.Presentation.Presentation.IsPresentationRunning)
                         GUILayout.Label("IN GAME", ScreenTag);

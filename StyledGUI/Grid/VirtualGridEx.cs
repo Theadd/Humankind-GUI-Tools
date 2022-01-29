@@ -1,6 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using Modding.Humankind.DevTools;
 
 namespace StyledGUI.VirtualGridElements
 {
@@ -10,13 +13,15 @@ namespace StyledGUI.VirtualGridElements
         {
             bool drawGap = false;
             int count = sequence.Count();
+
+            grid.Cursor.CellIndex = 0;
             
             for (var i = 0; i < count; i++)
             {
                 if (addColumnGap)
                 {
-                    grid.Index = i;
-                    grid.ColumnIndex = grid.Distribution[i];
+                    grid.Cursor.VisibleColumnIndex = i;
+                    grid.Cursor.ColumnIndex = grid.Distribution[i];
                 }
 
                 ICell element = sequence.ElementAt(i);
@@ -48,8 +53,15 @@ namespace StyledGUI.VirtualGridElements
                 {
                     compositeCell.Render(grid);
                 }
+                else if (element is Clickable4xCell clickable4XCell)
+                {
+                    clickable4XCell.Render(grid);
+                }
 
                 drawGap = addColumnGap;
+                grid.Cursor.SyncXY();
+                grid.Cursor.X += grid.Cursor.LastWidth;
+                grid.Cursor.CellIndex++;
             }
             
             return sequence;
@@ -57,10 +69,13 @@ namespace StyledGUI.VirtualGridElements
 
         public static void Render(this Cell self, VirtualGrid grid)
         {
+            if (grid.IsLookingForCell)
+                DoCellLookup(self, grid, self.Span ?? grid.DefaultCellSpan);
+            
             var prevTint = GUI.backgroundColor;
-            GUI.backgroundColor = grid.Index % 2 != 0 ? grid.Grid.CellTintColorAlt : grid.Grid.CellTintColor;
+            GUI.backgroundColor = grid.Cursor.VisibleColumnIndex % 2 != 0 ? grid.Grid.CellTintColorAlt : grid.Grid.CellTintColor;
 
-            grid.Grid.Cell(self.Text, self.Style ?? Styles.CellStyle, self.Span ?? grid.ColumnCellSpan);
+            grid.Grid.Cell(self.Text, self.Style ?? Styles.CellStyle, self.Span ?? grid.DefaultCellSpan);
 
             GUI.backgroundColor = prevTint;
         }
@@ -72,24 +87,30 @@ namespace StyledGUI.VirtualGridElements
         
         public static void Render(this TintableCell self, VirtualGrid grid)
         {
+            if (grid.IsLookingForCell)
+                DoCellLookup(self, grid, self.Span ?? grid.DefaultCellSpan);
+            
             var prev = GUI.backgroundColor;
             GUI.backgroundColor = self.BackgroundColor;
             grid.Grid.Cell(
                 "<color=" + self.Color + ">" + self.Text + "</color>", 
                 self.Style ?? Styles.ColorableCellStyle, 
                 self.BackgroundColor, 
-                self.Span ?? grid.ColumnCellSpan);
+                self.Span ?? grid.DefaultCellSpan);
             GUI.backgroundColor = prev;
         }
         
         public static void Render(this ClickableCell self, VirtualGrid grid)
         {
+            if (grid.IsLookingForCell)
+                DoCellLookup(self, grid, self.Span ?? grid.DefaultCellSpan);
+            
             var prev = GUI.backgroundColor;
             GUI.backgroundColor = self.Color;
             GUI.enabled = self.Enabled;
             if (GUILayout.Button(self.Text, self.Style ?? Styles.CellButtonStyle, self.Span))
             {
-                self.Action.Invoke(self.Index ?? grid.ColumnIndex);
+                self.Action.Invoke(self.Index ?? grid.Cursor.ColumnIndex);
             }
 
             GUI.enabled = true;
@@ -98,6 +119,9 @@ namespace StyledGUI.VirtualGridElements
         
         public static void Render(this KeyboardShortcutCell self, VirtualGrid grid)
         {
+            if (grid.IsLookingForCell)
+                DoCellLookup(self, grid, self.Span ?? grid.DefaultCellSpan);
+            
             var prev = GUI.backgroundColor;
             GUI.backgroundColor = self.Color;
             GUI.enabled = self.Enabled;
@@ -106,18 +130,70 @@ namespace StyledGUI.VirtualGridElements
                 self.Field.Style = self.Style;
             
             if (self.Field.Draw(self.Style, self.Span) && self.Action != null)
-                self.Action.Invoke(self.Index ?? grid.ColumnIndex);
+                self.Action.Invoke(self.Index ?? grid.Cursor.ColumnIndex);
 
             GUI.enabled = true;
             GUI.backgroundColor = prev;
         }
         
+        // private static readonly int ButtonGridHash = "ButtonGrid".GetHashCode();
+        public static Texture2D HeaderImage { get; set; } = Modding.Humankind.DevTools.DevTools.Assets.Load<Texture2D>("GameplayOrientation_Warmonger");
+        public static Color HeaderImageColor { get; set; } = (Color) new Color32(255, 255, 255, 240);
+        
+        public static void Render(this Clickable4xCell self, VirtualGrid grid)
+        {
+            GUI.enabled = self.Enabled;
+
+            if (grid.IsLookingForCell)
+                DoCellLookup(self, grid, self.Span ?? grid.DefaultCellSpan);
+            
+            using (var cellScope = new GUILayout.HorizontalScope(self.Span ?? grid.DefaultCellSpan))
+            {
+                var r = GUILayoutUtility.GetRect(46f, 40f);
+                GUI.DrawTexture(
+                    new Rect(r.x + 6, r.y, 40f, 40f), 
+                    HeaderImage, 
+                    ScaleMode.ScaleToFit, 
+                    true, 
+                    1f,
+                    HeaderImageColor, 
+                    0, 
+                    0
+                );
+                GUILayout.BeginVertical();
+                {
+                    GUILayout.BeginHorizontal();
+                    {
+                        GUILayout.Label(self.Title, Styles.Fixed20pxHeightTextStyle);
+                        GUILayout.FlexibleSpace();
+                        GUILayout.Label(self.Category, Styles.Fixed20pxHeightTextStyle);
+                    }
+                    GUILayout.EndHorizontal();
+                    GUILayout.BeginHorizontal();
+                    {
+                        GUILayout.Label(self.Subtitle, Styles.Fixed20pxHeightTextStyle);
+                        GUILayout.FlexibleSpace();
+                        GUILayout.Label(self.Tags, Styles.Fixed20pxHeightTextStyle);
+                    }
+                    GUILayout.EndHorizontal();
+                }
+                GUILayout.EndVertical();
+                
+                
+            }
+
+            GUI.enabled = true;
+        }
+        
         public static void Render(this CompositeCell self, VirtualGrid grid)
         {
+            if (grid.IsLookingForCell)
+                DoCellLookup(self, grid, self.Span ?? grid.DefaultCellSpan);
+            
             var prevTint = GUI.backgroundColor;
-            GUI.backgroundColor = grid.Index % 2 != 0 ? grid.Grid.CellTintColorAlt : grid.Grid.CellTintColor;
+            GUI.backgroundColor = grid.Cursor.VisibleColumnIndex % 2 != 0 ? grid.Grid.CellTintColorAlt : grid.Grid.CellTintColor;
 
-            GUILayout.BeginHorizontal(self.Style ?? Styles.CellStyle, self.Span ?? grid.ColumnCellSpan);
+            GUILayout.BeginHorizontal(self.Style ?? Styles.CellStyle, self.Span ?? grid.DefaultCellSpan);
             GUILayout.FlexibleSpace();
 
             self.Elements.Render(grid);
@@ -159,6 +235,30 @@ namespace StyledGUI.VirtualGridElements
             GUI.DrawTexture(GUILayoutUtility.GetRect(self.Size, self.Size),
                 self.Image, ScaleMode.StretchToFill, true,
                 1f, grid.Grid.IconTintColor, 0, 0);
+        }
+        
+        public static readonly FieldInfo GUILayoutOptionValue = 
+            typeof(GUILayoutOption).GetField("value", BindingFlags.NonPublic | BindingFlags.Instance);
+
+        private static bool HitTest(Vector2 pos, VirtualGrid grid, GUILayoutOption span)
+        {
+            bool hit = false;
+            
+            if (grid.Cursor.Y <= pos.y && pos.y <= grid.Cursor.Y + 40 && grid.Cursor.X <= pos.x)
+            {
+                hit = (grid.Columns.Length == 1 && grid.ExpandWidthOnSingleColumnGrid) ||
+                      (pos.x <= grid.Cursor.X + (float) ((object) GUILayoutOptionValue.GetValue(span)));
+            }
+
+            return hit;
+        }
+        
+        private static void DoCellLookup(ICell self, VirtualGrid grid, GUILayoutOption span)
+        {
+            if (HitTest(grid.TargetCellPosition, grid, span))
+            {
+                VirtualGrid.TriggerHitOnCell(self, grid);
+            }
         }
     }
 }

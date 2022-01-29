@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace StyledGUI
 {
@@ -17,6 +16,13 @@ namespace StyledGUI
             Graphics.CreateSinglePixelTexture2D(new Color32(85, 136, 254, 230));
         public static Texture2D ButtonActivePixel { get; set; } =
             Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.35f));
+        public static Texture2D RowHoverPixel { get; set; } =
+            Graphics.CreateSinglePixelTexture2D(new Color32(85, 136, 254, 70));
+
+        public static Color GreenTextColor { get; set; } = (Color) new Color32(80, 230, 80, 220);
+        public static Color WhiteTextColor { get; set; } = (Color) new Color32(250, 250, 250, 255);
+        public static Color WhitePearlTextColor { get; set; } = (Color) new Color32(200, 200, 200, 255);
+        public static Color BlueTextColor { get; set; } = (Color) new Color32(40, 86, 240, 255);
 
         public static GUIStyle RowStyle { get; set; } =
             new GUIStyle(StyledGUIUtility.DefaultSkin.FindStyle("PopupWindow.Row"))
@@ -26,7 +32,7 @@ namespace StyledGUI
                 margin = new RectOffset(0, 0, 0, 0),
                 hover = new GUIStyleState()
                 {
-                    background = Graphics.CreateSinglePixelTexture2D(new Color32(85, 136, 254, 70)),
+                    background = RowHoverPixel,
                     textColor = Color.white
                 }
             };
@@ -154,7 +160,7 @@ namespace StyledGUI
             active = new GUIStyleState()
             {
                 background = ButtonActivePixel,
-                textColor = new Color32(40, 86, 240, 255)
+                textColor = BlueTextColor
             }
         };
         
@@ -164,37 +170,54 @@ namespace StyledGUI
             padding = StyledGUIUtility.DefaultSkin.FindStyle("PopupWindow.Grid").padding,
             normal = new GUIStyleState()
             {
-                background = Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.35f)),
-                textColor = new Color32(80, 230, 80, 220)
-            },
-            /*normal = new GUIStyleState() {
-                background = StyledGUIUtility.DefaultSkin.toggle.hover.background,
-                textColor = new Color32(20, 20, 20, 255)
+                background = Alpha35WhitePixel,
+                textColor = GreenTextColor
             },
             hover = new GUIStyleState() {
-                background = StyledGUIUtility.DefaultSkin.toggle.active.background,
-                textColor = new Color32(20, 20, 20, 255)
-            },*/
-            hover = new GUIStyleState() {
                 background = StyledGUIUtility.DefaultSkin.toggle.hover.background,
-                textColor = new Color32(200, 200, 200, 255)
+                textColor = WhitePearlTextColor
             },
             active = new GUIStyleState() {
                 background = StyledGUIUtility.DefaultSkin.textField.onNormal.background,
-                textColor = new Color32(250, 250, 250, 255)
+                textColor = WhiteTextColor
             },
             onNormal = new GUIStyleState() {
                 background = StyledGUIUtility.DefaultSkin.textField.onNormal.background,
-                textColor = new Color32(250, 250, 250, 255)
+                textColor = WhiteTextColor
             },
             onHover = new GUIStyleState() {
                 background = StyledGUIUtility.DefaultSkin.textField.onNormal.background,
-                textColor = new Color32(250, 250, 250, 255)
+                textColor = WhiteTextColor
             },
             onActive = new GUIStyleState() {
                 background = StyledGUIUtility.DefaultSkin.textField.onNormal.background,
-                textColor = new Color32(250, 250, 250, 255)
+                textColor = WhiteTextColor
             },
         };
+        
+        public static GUIStyle Fixed20pxHeightTextStyle { get; set; } =
+            new GUIStyle(StyledGUIUtility.DefaultSkin.FindStyle("PopupWindow.Grid"))
+            {
+                fontSize = 12,
+                border = RectOffsetZero,
+                padding = new RectOffset(6, 6, 0, 0),
+                margin = RectOffsetZero,
+                overflow = RectOffsetZero,
+                fixedHeight = 20f,
+                alignment = TextAnchor.MiddleLeft,
+                richText = true,
+                wordWrap = false,
+                normal = new GUIStyleState()
+                {
+                    background = null,
+                    textColor = Color.white,
+                },
+                hover = new GUIStyleState()
+                {
+                    background = null,
+                    textColor = Color.white,
+                },
+                stretchWidth = false
+            };
     }
 }
