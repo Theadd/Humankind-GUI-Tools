@@ -11,14 +11,18 @@ namespace DevTools.Humankind.GUITools.UI
         public ConstructiblesGrid ConstructiblesGrid { get; set; }
         public Vector2 ScrollViewPosition { get; set; } = Vector2.zero;
 
+        public int ActiveTab { get; set; } = 0;
+
+        private string[] tabNames =
+        {
+            "<size=10><b> UNITS </b></size>", 
+            "<size=10><b> DISTRICTS </b></size>"
+        };
+        
         public void Draw(Rect targetRect)
         {
-            return;
-            // GUILayout.Label("HELLO WORLD!");
-
             GUILayout.BeginArea(targetRect);
             {
-                GUILayout.Label("HELLO WORLD!");
                 Draw();
             }
             GUILayout.EndArea();
@@ -27,18 +31,21 @@ namespace DevTools.Humankind.GUITools.UI
         public void Draw()
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("HELLO WORLD!");
+            GUILayout.BeginVertical();
+            //GUILayout.Space(1f);
 
+            DrawTabs();
+            
             ScrollViewPosition = GUILayout.BeginScrollView(
                 ScrollViewPosition, 
                 false, 
                 false, 
-                null,
-                null,
-                null,
+                "horizontalscrollbar",
+                "verticalscrollbar",
+                "scrollview",
                 new GUILayoutOption[]
                 {
-                    GUILayout.Height(300f)
+                    // GUILayout.Height(300f)
                 });
             {
                 GUILayout.BeginVertical();
@@ -58,25 +65,33 @@ namespace DevTools.Humankind.GUITools.UI
                 GUILayout.EndVertical();
             }
             GUILayout.EndScrollView();
-            
+            GUILayout.Space(1f);
+            GUILayout.EndVertical();
             GUILayout.EndHorizontal();
+        }
+
+        private void DrawTabs()
+        {
+            GUILayout.Space(6f);
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(12f);
+            
+            var activeTab = GUILayout.Toolbar(ActiveTab, tabNames, "TabButton", GUI.ToolbarButtonSize.FitToContents);
+
+            if (activeTab != ActiveTab)
+            {
+                ActiveTab = activeTab;
+                ConstructiblesGrid.VirtualGrid.VisibleViews = new[] { ActiveTab };
+            }
+            GUILayout.EndHorizontal();
+            Utils.DrawHorizontalLine();
         }
 
         public void OnClickHandler(ICell cell)
         {
             Loggr.Log("FOUND CELL FOR CLICK! CELL TYPE = " + cell.GetType().Name, ConsoleColor.DarkCyan);
             Loggr.Log(cell);
-        }
-
-        private static bool HitTest(Rect rect, Event evt)
-        {
-            var offset = (evt.pointerType == PointerType.Pen || evt.pointerType == PointerType.Touch) ? 3 : 0;
-            var point = evt.mousePosition;
-
-            return (double) point.x >= (double) rect.xMin - (double) offset &&
-                   (double) point.x < (double) rect.xMax + (double) offset &&
-                   (double) point.y >= (double) rect.yMin - (double) offset &&
-                   (double) point.y < (double) rect.yMax + (double) offset;
+            ConstructiblesGrid.VirtualGrid.Cursor.AddToSelection();
         }
     }
 }

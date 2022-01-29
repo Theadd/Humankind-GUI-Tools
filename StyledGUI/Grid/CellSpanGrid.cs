@@ -18,6 +18,7 @@ namespace StyledGUI
         GUILayoutOption CellSpan10 { get; set; }
         float GetCellWidth();
         float GetCellSpace();
+        float GetCellHeight();
     }
     
     public abstract class CellSpanGrid : ICellSpan
@@ -66,6 +67,7 @@ namespace StyledGUI
 
         public float GetCellWidth() => CellWidth;
         public float GetCellSpace() => CellSpace;
+        public virtual float GetCellHeight() => 22f;
     }
 
     

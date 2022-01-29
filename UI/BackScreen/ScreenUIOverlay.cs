@@ -14,7 +14,7 @@ namespace DevTools.Humankind.GUITools.UI
     {
         public UIButton Control { get; protected set; }
         public UIButton InnerControl { get; protected set; }
-        public Color BackgroundColor { get; set; } = new Color(0, 0, 0, 0.4f);
+        public Color BackgroundColor { get; set; } = new Color(0, 0, 0, 0.7f);
         public UITransform UITransform { get; protected set; }
         public UITransform InnerUITransform { get; protected set; }
         public SquircleBackgroundWidget InnerCanvas { get; protected set; }

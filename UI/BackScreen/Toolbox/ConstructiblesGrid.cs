@@ -13,6 +13,10 @@ namespace DevTools.Humankind.GUITools.UI
 {
     public class ConstructiblesStyledGrid : GridStyles
     {
+        public override Color CellTintColor { get; set; } = new Color(0.26f, 0.26f, 0.26f, 1f);
+        public override Color CellTintColorAlt { get; set; } = new Color(0, 0, 0, 1f);
+        public override Color IconTintColor { get; set; } = new Color(1f, 1f, 1f, 0.7f);
+        public override float GetCellHeight() => 48f;
     }
 
     public class ConstructiblesGrid
@@ -66,6 +70,7 @@ namespace DevTools.Humankind.GUITools.UI
                                 UniqueName = c.DefinitionName.ToString(),
                                 Category = c.Category,
                                 Tags = "ERA " + c.Era,
+                                Image = c.Image
                                 // Span = Grid.CellSpan8
                             }
                         }
@@ -87,6 +92,7 @@ namespace DevTools.Humankind.GUITools.UI
                                 UniqueName = c.DefinitionName.ToString(),
                                 // Category = c.Category,
                                 Tags = "ERA " + c.Era,
+                                Image = c.Image
                                 // Span = Grid.CellSpan8
                             }
                         }

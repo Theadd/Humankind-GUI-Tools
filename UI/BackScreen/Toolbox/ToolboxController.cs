@@ -29,7 +29,9 @@ namespace DevTools.Humankind.GUITools.UI
         public static void Initialize(BackScreenWindow window)
         {
             if (ToolboxRect.Equals(Rect.zero))
-                SetToolboxRect(new Rect(300f, 300f, 900f, 300f));
+                SetToolboxRect(new Rect(
+                    300f, 220f, 360f,
+                    Mathf.Min(640f, Mathf.Ceil(Screen.height * 0.66f))));
             
             ConstructibleStore.Rebuild();
             
@@ -47,7 +49,13 @@ namespace DevTools.Humankind.GUITools.UI
                     {
                         Grid = new ConstructiblesStyledGrid(),
                         DrawRowHeaders = false,
-                        DrawSectionHeaders = true
+                        DrawSectionHeaders = true,
+                        VisibleViews = new[] { 0 },
+                        AlternateType = VirtualGridAlternateType.Rows,
+                        Cursor = new VirtualGridCursor()
+                        {
+                            SelectionType = VirtualGridSelectionType.SingleCell
+                        }
                     }
                 }
             };

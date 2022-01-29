@@ -7,8 +7,23 @@ using StyledGUI.VirtualGridElements;
 
 namespace StyledGUI
 {
+    public enum VirtualGridAlternateType
+    {
+        None,
+        Columns,
+        Rows
+    }
+    
+    public enum VirtualGridSelectionType
+    {
+        None,
+        SingleCell,
+        OptionalSingleCell
+    }
+    
     public class VirtualGrid
     {
+        public VirtualGridAlternateType AlternateType { get; set; } = VirtualGridAlternateType.Columns;
         public Column[] Columns { get; set; }
         public Section[] Sections { get; set; }
         public IStyledGrid Grid { get => _grid; set => SetStyledGrid(value); }
@@ -28,9 +43,19 @@ namespace StyledGUI
         public int[] VisibleViews { get; set; } = null;
         public bool ExpandWidthOnSingleColumnGrid { get; set; } = true;
         public Vector2 TargetCellPosition { get; private set; } = Vector2.zero;
+        
         public bool IsLookingForCell => _isLookingForCell && Event.current.type == EventType.Repaint;
-        public VirtualGridCursor Cursor { get; } = new VirtualGridCursor();
         public GUILayoutOption DefaultCellSpan { get; private set; }
+
+        public VirtualGridCursor Cursor
+        {
+            get => _cursor;
+            set
+            {
+                _cursor = value;
+                _cursor.Initialize(this);
+            }
+        }
 
         private static GUILayoutOption LooseCellSpan { get; } = GUILayout.ExpandWidth(true);
         private int[] _distribution = null;
@@ -40,6 +65,7 @@ namespace StyledGUI
         private Action<ICell> OnTargetCellFound { get; set; }
         private Action OnTargetCellNotFound { get; set; }
         private bool _isAnyCellFound = false;
+        private VirtualGridCursor _cursor = new VirtualGridCursor();
 
         public void FindCellAtPosition(Vector2 position, Action<ICell> callbackOnSuccess, Action callbackOnFailure = null)
         {
@@ -71,8 +97,7 @@ namespace StyledGUI
                     continue;
                 }
 
-                Cursor.VisibleSectionIndex++;
-                Cursor.SectionIndex++;
+                
 
                 // START drawing Section header
                 if (section.SpaceBefore != 0)
@@ -106,8 +131,8 @@ namespace StyledGUI
                 for (var rowIndex = 0; rowIndex < section.Rows.Length; rowIndex++)
                 {
                     var row = section.Rows[rowIndex];
-                    Cursor.RowIndex++;
-                    Cursor.VisibleRowIndex++;
+                    
+                    Cursor.SectionRowIndex = rowIndex;
                     Cursor.X = 0;
 
                     // START drawing Row
@@ -127,8 +152,12 @@ namespace StyledGUI
 
                     Cursor.X = 0;
                     Cursor.Y += Cursor.LastHeight;
+                    Cursor.RowIndex++;
+                    Cursor.VisibleRowIndex++;
                 }
                 
+                Cursor.VisibleSectionIndex++;
+                Cursor.SectionIndex++;
             }
 
             if (IsLookingForCell)
@@ -150,7 +179,14 @@ namespace StyledGUI
                 return;
 
             grid._isAnyCellFound = true;
-            grid.OnTargetCellFound?.Invoke(cell);
+            try
+            {
+                grid.OnTargetCellFound?.Invoke(cell);
+            }
+            catch (Exception ex)
+            {
+                Loggr.Log(ex);
+            }
         }
         
         private void SetStyledGrid(IStyledGrid grid)
@@ -176,44 +212,87 @@ namespace StyledGUI
 
             _distribution = distribution;
         }
+        
+        
     }
 
     public class VirtualGridCursor
     {
+        public VirtualGridSelectionType SelectionType { get; set; } = VirtualGridSelectionType.None;
+
+        public VirtualGridCell DefaultSelectedCell { get; set; } = new VirtualGridCell();
+
+        public VirtualGrid Owner { get; private set; }
+
         /// <summary>
         ///     Index of Section[] currently being drawn or the one in which the action is triggered.
         /// </summary>
         public int SectionIndex { get; set; }
+        
         /// <summary>
         ///     Section[]'s current index, not taking into account those sections filtered out using the VisibleViews property.
         /// </summary>
         public int VisibleSectionIndex { get; set; }
+        
         /// <summary>
         ///     The same as SectionIndex but for Rows instead.
         /// </summary>
         public int RowIndex { get; set; }
+        
         /// <summary>
         ///     The same as VisibleSectionIndex but for Rows instead.
         /// </summary>
         public int VisibleRowIndex { get; set; }
+        
         public int ColumnIndex { get; set; }
+        
         public int VisibleColumnIndex { get; set; }
+        
         /// <summary>
         ///     Index of Cell within the within a CellGroup, or 0 if there's a single Cell within the Column in that row.
         /// </summary>
         public int CellIndex { get; set; }
+        
         /// <summary>
         ///     RowIndex within it's section
         /// </summary>
         public int SectionRowIndex { get; set; }
-        public int SelectedRowIndex { get; set; }
-        public int SelectedCellIndex { get; set; }
-        public int SelectedColumnIndex { get; set; }
+
+        public bool IsSelectionActive { get; private set; } = false;
 
         public float X { get; set; }
+        
         public float Y { get; set; }
+        
         public float LastWidth { get; set; }
+        
         public float LastHeight { get; set; }
+
+        private VirtualGridCell SelectedCell { get; set; }
+        private bool _initialized = false;
+        
+        private ICell GetCurrentCell()
+        {
+            ICell currentCell = null;
+            try
+            {
+                currentCell = Owner.Sections[SectionIndex].Rows[SectionRowIndex].Cells.ElementAt(CellIndex);
+
+                if (currentCell is Clickable4xCell cell)
+                {
+                    Loggr.Log(cell.Title, ConsoleColor.Green);
+                }
+            }
+            catch (Exception e)
+            {
+                Loggr.Log(e);
+                Loggr.Log(this);
+                Loggr.Log(Owner.Sections[SectionIndex]);
+                Loggr.Log(Owner.Sections[SectionIndex].Rows.Length.ToString());
+            }
+
+            return currentCell;
+        }
 
         public void Reset()
         {
@@ -227,17 +306,85 @@ namespace StyledGUI
             X = 0;
         }
 
+        public void Initialize(VirtualGrid owner)
+        {
+            if (_initialized)
+                throw new NotSupportedException("VirtualGridCursor already initialized.");
+
+            Owner = owner;
+            
+            if (SelectionType == VirtualGridSelectionType.SingleCell)
+            {
+                SelectedCell = DefaultSelectedCell;
+                IsSelectionActive = true;
+            }
+
+            _initialized = true;
+        }
+
         public void SyncXY()
         {
             if (Event.current.type != EventType.Repaint)
                 return;
             
             var r = GUILayoutUtility.GetLastRect();
-            // Loggr.Log(Event.current.type.ToString() + r.ToString(), ConsoleColor.Cyan);
+            
             X = r.x;
             Y = r.y;
             LastWidth = r.width;
             LastHeight = r.height;
         }
+
+        public void AddToSelection()
+        {
+            switch (SelectionType)
+            {
+                case VirtualGridSelectionType.SingleCell:
+                case VirtualGridSelectionType.OptionalSingleCell:
+                    IsSelectionActive = true;
+                    SelectedCell = new VirtualGridCell()
+                    {
+                        RowIndex = RowIndex,
+                        ColumnIndex = ColumnIndex,
+                        CellIndex = CellIndex,
+                        Cell = GetCurrentCell()
+                    };
+                    
+                    break;
+                case VirtualGridSelectionType.None:
+                    IsSelectionActive = false;
+                    break;
+            }
+        }
+
+        public void ClearSelection()
+        {
+            switch (SelectionType)
+            {
+                case VirtualGridSelectionType.OptionalSingleCell:
+                    IsSelectionActive = false;
+                    SelectedCell = null;
+                    break;
+                case VirtualGridSelectionType.SingleCell:
+                    IsSelectionActive = true;
+                    SelectedCell = DefaultSelectedCell;
+                    break;
+            }
+        }
+
+
+        public bool IsCurrentCellSelected =>
+            IsSelectionActive && 
+            SelectedCell.RowIndex == RowIndex && 
+            SelectedCell.ColumnIndex == ColumnIndex &&
+            SelectedCell.CellIndex == CellIndex;
+    }
+
+    public class VirtualGridCell
+    {
+        public int RowIndex { get; set; } = 0;
+        public int CellIndex { get; set; } = 0;
+        public int ColumnIndex { get; set; } = 0;
+        public ICell Cell { get; set; } = null;
     }
 }

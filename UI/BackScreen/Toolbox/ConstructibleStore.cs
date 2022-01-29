@@ -25,6 +25,7 @@ namespace DevTools.Humankind.GUITools.UI
         public string Title { get; set; }
         public string Category { get; set; }
         public int Era { get; set; }
+        public Texture Image { get; set; }
     }
 
     public static class ConstructibleStore
@@ -61,7 +62,8 @@ namespace DevTools.Humankind.GUITools.UI
                 Title = UIController.GetLocalizedTitle(definition.Name, name),
                 Name = name,
                 Category = UIController.GetLocalizedTitle(definition.UnitClassName),
-                Era = UnitEraLevel(definition.name)
+                Era = UnitEraLevel(definition.name),
+                Image = Utils.LoadUnitSprite(definition.name)?.texture
             };
         }
 
