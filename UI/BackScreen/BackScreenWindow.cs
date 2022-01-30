@@ -19,8 +19,6 @@ namespace DevTools.Humankind.GUITools.UI
         public Rect MinWindowRect { get; set; } = new Rect (0, 0, Screen.width, 24f);
         public Rect MaxWindowRect { get; set; } = new Rect (0, 0, Screen.width, Screen.height);
         
-        public HexOverlay HexPainter { get; set; }
-
         protected bool IsToolboxVisible = false;
 
         public bool IsInGame { get; private set; } = false;
@@ -42,7 +40,7 @@ namespace DevTools.Humankind.GUITools.UI
 
         protected virtual void InitializeInGame()
         {
-            HexPainter = new HexOverlay();
+            LiveEditorMode.Initialize();
             ScreenOverlay.SetInnerRectAsVisible(false);
             ToolboxController.Initialize(this);
 
@@ -58,7 +56,7 @@ namespace DevTools.Humankind.GUITools.UI
 
         public override void OnDrawUI(int _)
         {
-            RuntimeGameState.Refresh();
+            // TODO: RuntimeGameState.Refresh();
             
             GUILayout.BeginArea(new Rect(0f, 0f, WindowRect.width, WindowRect.height));
             GUILayout.BeginHorizontal();
@@ -79,6 +77,10 @@ namespace DevTools.Humankind.GUITools.UI
                         GUILayout.Label("LIVE EDITOR MODE", ScreenTag);
                         if (LiveEditorMode.BrushType != LiveBrushType.None)
                             GUILayout.Label("BRUSH TYPE: <b>" + LiveEditorMode.BrushType.ToString().ToUpper() + "</b>", ScreenTag);
+                        if (PaintBrush.ActionNameOnCreate != string.Empty)
+                            GUILayout.Label("ON PAINT: <b>" + PaintBrush.ActionNameOnCreate + "</b>", ScreenTag);      
+                        if (PaintBrush.ActionNameOnCreate != string.Empty)
+                            GUILayout.Label("ON ERASE: <b>" + PaintBrush.ActionNameOnDestroy + "</b>", ScreenTag);
                     }
 
                     GUI.backgroundColor = Color.white;
@@ -92,12 +94,16 @@ namespace DevTools.Humankind.GUITools.UI
             if (IsInGame)
             {
                 SyncInGameUI();
+                LiveEditorMode.HexPainter.IsVisible =
+                    LiveEditorMode.Enabled && LiveEditorMode.EditorMode == EditorModeType.TilePainter;
+                LiveEditorMode.HexPainter.Draw();
+                
                 if (LiveEditorMode.Enabled)
                 {
                     if (Event.current.type == EventType.Repaint)
                         LiveEditorMode.Run();
                     
-                    HexPainter.Draw();
+                    
 
                     if (IsToolboxVisible != ToolboxController.Draw())
                     {
@@ -132,13 +138,14 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 if (LiveEditorMode.Enabled)
                 {
-                    
+                    //ScreenLocker.LockFullScreenMouseEvents = true;
                 }
                 else
                 {
                     IsToolboxVisible = false;
                     ScreenOverlay.SetInnerRectAsVisible(false);
                     ToolboxController.IsSticked = false;
+                    ScreenLocker.LockFullScreenMouseEvents = false;
                     OnCollapse();
                 }
                 _wasLiveEditorEnabled = LiveEditorMode.Enabled;

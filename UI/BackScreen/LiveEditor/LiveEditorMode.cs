@@ -34,17 +34,31 @@ namespace DevTools.Humankind.GUITools.UI
         public static readonly string StickedToolboxActionName = "ToggleStickyToolbox";
         public static readonly string CreateUnderCursorActionName = "CreateConstructibleUnderCursor";
         public static readonly string DestroyUnderCursorActionName = "DestroyAnythingUnderCursor";
+        public static readonly string DebugUnderCursorActionName = "DebugTileUnderCursor";
         public static bool Enabled { get; set; } = false;
         public static EditorModeType EditorMode { get; set; } = EditorModeType.TilePainter;
-
+        public static HexOverlay HexPainter { get; set; }
         public static ConstructibleDefinition ActivePaintBrush { get; private set; } = null;
         public static LiveBrushType BrushType { get; private set; } = LiveBrushType.None;
 
         private static KeyboardShortcut CreateKey { get; set; }
         private static KeyboardShortcut DestroyKey { get; set; }
+        private static KeyboardShortcut DebugKey { get; set; }
 
-        public static KeyboardShortcut TestKey { get; set; } = new KeyboardShortcut(KeyCode.F5);
+        private static PaintBrush BrushPainter { get; set; }
 
+        public static void Initialize()
+        {
+            HexPainter = new HexOverlay(HandleOnTileChange);
+            BrushPainter = new PaintBrush();
+            UpdateKeyMappings();
+        }
+
+        private static void HandleOnTileChange()
+        {
+            BrushPainter.UpdateTile();
+        }
+        
         public static void UpdateKeyMappings()
         {
             ToolboxController.ToolboxPreviewKey =
@@ -54,6 +68,12 @@ namespace DevTools.Humankind.GUITools.UI
             
             CreateKey = KeyMappings.Keys.First(map => map.ActionName == CreateUnderCursorActionName).Key;
             DestroyKey = KeyMappings.Keys.First(map => map.ActionName == DestroyUnderCursorActionName).Key;
+            DebugKey = KeyMappings.Keys.First(map => map.ActionName == DebugUnderCursorActionName).Key;
+                
+            var str = "\nCreateKey = " + CreateKey.Serialize() + 
+                      "\nDestroyKey = " + DestroyKey.Serialize() + "\n";
+            
+            Loggr.Log("\t>>> LiveEditorMode.UpdateKeyMappings()" + str, ConsoleColor.Magenta);
         }
 
         public static void UpdatePaintBrush()
@@ -76,21 +96,11 @@ namespace DevTools.Humankind.GUITools.UI
             if (!Enabled)
                 return;
 
-            if (TestKey.IsPressed())
-            {
-                Loggr.Log(DestroyKey.Serialize() + " F5 IS PRESSED! " + CreateKey.Serialize(), ConsoleColor.Magenta);
-            }
             if (EditorMode == EditorModeType.TilePainter)
             {
-                if (CreateKey.IsDown())
-                {
-                    Loggr.Log("CREATE KEY DOWN");
-                }
-
-                if (DestroyKey.IsPressed())
-                {
-                    Loggr.Log("DESTROY KEY PRESSED");
-                }
+                if (DebugKey.IsPressed()) BrushPainter.Debug();
+                if (CreateKey.IsPressed()) BrushPainter.Paint();
+                if (DestroyKey.IsPressed()) BrushPainter.Erase();
             }
         }
 

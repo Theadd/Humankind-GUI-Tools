@@ -97,6 +97,14 @@ namespace DevTools.Humankind.GUITools.UI
                 IsGlobalShortcut = false,
                 IsRemovable = false,
             },
+            new KeyMap(LiveEditorMode.DebugUnderCursorActionName, LiveEditorMode.UpdateKeyMappings)
+            {
+                DisplayName = "PRINT TILE DEBUG INFO TO CONSOLE",
+                Action = null,
+                Key = new KeyboardShortcut(KeyCode.Mouse0, KeyCode.LeftAlt),
+                GroupName = LiveEditorKeysGroup,
+                IsGlobalShortcut = false,
+            },
             new KeyMap("ToggleGodMode")
             {
                 DisplayName = "TOGGLE GOD MODE CURSOR",
@@ -158,15 +166,17 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 DisplayName = "VISIBILITY OVERRIDE FOR ALL GUI TOOLS",
                 Action = MainTools.ToggleHideAllUIWindows,
-                Key = new KeyboardShortcut(KeyCode.Insert),
-                GroupName = UserInterfacesKeysGroup
+                Key = KeyboardShortcut.Empty, // new KeyboardShortcut(KeyCode.Insert),
+                GroupName = UserInterfacesKeysGroup,
+                IsEditable = false,
+                SaveAndRestore = false,
             },
             
         };
 
         public static void Apply()
         {
-            Loggr.Log("IN KeyMappings.Apply()", ConsoleColor.Green);
+            // Loggr.Log("IN KeyMappings.Apply()", ConsoleColor.Green);
 
             foreach (var key in Keys)
             {
@@ -177,22 +187,24 @@ namespace DevTools.Humankind.GUITools.UI
 
         public static void WritePlayerPreferences(FloatingToolWindow Window)
         {
-            Loggr.Log("IN KeyMappings.WritePlayerPreferences()", ConsoleColor.Green);
+            // Loggr.Log("IN KeyMappings.WritePlayerPreferences()", ConsoleColor.Green);
 
             foreach (var key in Keys)
             {
-                PlayerPrefs.SetString(Window.GetPlayerPrefKey(key.ActionName), key.Key.Serialize());
+                if (key.SaveAndRestore)
+                    PlayerPrefs.SetString(Window.GetPlayerPrefKey(key.ActionName), key.Key.Serialize());
             }
         }
 
         public static void ReadPlayerPreferences(FloatingToolWindow Window)
         {
-            Loggr.Log("IN KeyMappings.ReadPlayerPreferences()", ConsoleColor.Green);
+            // Loggr.Log("IN KeyMappings.ReadPlayerPreferences()", ConsoleColor.Green);
             
             foreach (var key in Keys)
             {
-                key.Key = KeyboardShortcut.Deserialize(
-                    PlayerPrefs.GetString(Window.GetPlayerPrefKey(key.ActionName), key.Key.Serialize()));
+                if (key.SaveAndRestore)
+                    key.Key = KeyboardShortcut.Deserialize(
+                        PlayerPrefs.GetString(Window.GetPlayerPrefKey(key.ActionName), key.Key.Serialize()));
             }
         }
     }
@@ -207,6 +219,7 @@ namespace DevTools.Humankind.GUITools.UI
         public bool IsGlobalShortcut { get; set; } = true;
         public bool IsRemovable { get; set; } = true;
         public bool IsEditable { get; set; } = true;
+        public bool SaveAndRestore { get; set; } = true;
         
         private Action OnKeyChange { get; set; }
         private KeyboardShortcut _key = KeyboardShortcut.Empty;

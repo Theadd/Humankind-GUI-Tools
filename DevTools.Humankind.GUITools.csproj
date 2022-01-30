@@ -419,6 +419,10 @@
       <HintPath>$(HUMANKIND_REFERENCED_LIBRARIES_PATH)\UnityEngine.XRModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="Amplitude.Wwise">
+      <HintPath>$(HUMANKIND_REFERENCED_LIBRARIES_PATH)\Amplitude.Wwise.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
     <Reference Include="Modding.Humankind.DevTools">
       <HintPath>$(DevToolsPATH)</HintPath>
       <Private>false</Private>

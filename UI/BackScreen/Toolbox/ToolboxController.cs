@@ -23,8 +23,8 @@ namespace DevTools.Humankind.GUITools.UI
         
         // IInputService
         
-        private static IInputFilterService inputFilterService;
-        private static int inputFilterHandle = -1;
+        // private static IInputFilterService inputFilterService;
+        // private static int inputFilterHandle = -1;
 
         public static void Initialize(BackScreenWindow window)
         {
@@ -62,7 +62,7 @@ namespace DevTools.Humankind.GUITools.UI
 
             Toolbox.ConstructiblesGrid.VirtualGrid.Cursor.OnSelectionChange += LiveEditorMode.UpdatePaintBrush;
 
-            CreateInputFilter();
+            //CreateInputFilter();
         }
 
         public static void SetToolboxRect(Rect newRect)
@@ -122,7 +122,7 @@ namespace DevTools.Humankind.GUITools.UI
         private static bool AreKeysHeldDown(KeyboardShortcut shortcut) => 
             Input.GetKey(shortcut.MainKey) && shortcut.Modifiers.Count(key => !Input.GetKey(key)) == 0;
 
-        private static void CreateInputFilter()
+        /*private static void CreateInputFilter()
         {
             if (inputFilterService == null)
                 inputFilterService = Services.GetService<IInputFilterService>();
@@ -135,24 +135,24 @@ namespace DevTools.Humankind.GUITools.UI
                 InputLayer.InputFilter.PauseMenuModalWindow.Group, 
                 InputLayer.InputFilter.PauseMenuModalWindow.Priority, 
                 false);
-        }
+        }*/
         
         private static void OnShow()
         {
             IsVisible = true;
-            inputFilterService.SetFilterActive(inputFilterHandle, true);
+            //inputFilterService.SetFilterActive(inputFilterHandle, true);
         }
 
         private static void OnHide()
         {
             IsVisible = false;
-            inputFilterHandle = inputFilterService.DestroyFilter(inputFilterHandle);
-            CreateInputFilter();
+            //inputFilterHandle = inputFilterService.DestroyFilter(inputFilterHandle);
+            //CreateInputFilter();
         }
 
         public static void Unload()
         {
-            inputFilterHandle = inputFilterService.DestroyFilter(inputFilterHandle);
+            //inputFilterHandle = inputFilterService.DestroyFilter(inputFilterHandle);
             Toolbox.ConstructiblesGrid.VirtualGrid.Cursor.OnSelectionChange -= LiveEditorMode.UpdatePaintBrush;
         }
     }

@@ -3,13 +3,16 @@ using Amplitude.Mercury.AI;
 using Amplitude.Mercury.Terrain;
 using Amplitude.Mercury.Interop.AI.Data;
 using Amplitude.Mercury.Presentation;
-using Amplitude.Mercury.UI;
+using System;
+using Amplitude;
+using Amplitude.Mercury;
 using Amplitude.Mercury.Interop.AI;
+using Modding.Humankind.DevTools;
 using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public class HexOverlay
+    public class HexOverlay : ITileEx
     {
         public TerrainDebuggingService HexDrawingService { get; set; }
         public int DebugLayerID { get; set; }
@@ -20,11 +23,22 @@ namespace DevTools.Humankind.GUITools.UI
 
         public Color HexColor { get; set; } = new Color(1f, 1f, 1f, 0.3f);
 
-        public HexOverlay() { }
+        public int TileIndex { get; set; } = 0;
+        public Tile Tile { get; set; }
+
+        public Hexagon.OffsetCoords OffsetCoords { get; private set; } = new Hexagon.OffsetCoords(0, 0);
+
+        private Action OnTileChange { get; set; }
+
+        private bool _clear = true;
+
+        public HexOverlay(Action onTileChange)
+        {
+            OnTileChange = onTileChange;
+        }
 
         public void Draw()
         {
-
             if (HexDrawingService == null)
             {
                 HexDrawingService = RenderContextAccess.GetInstance<TerrainDebuggingService>(0);
@@ -43,21 +57,32 @@ namespace DevTools.Humankind.GUITools.UI
 
                 if (PrevTileIndex != tileIndex)
                 {
-                    HexDrawingService.ClearHexagons(DebugLayerID);
-                    PrevTileIndex = tileIndex;
-                }
-                
-                HexDrawingService.SetHexagonColor(
-                    DebugLayerID, 
-                    local1.WorldPosition.ToHexagonOffsetCoords(),
-                    HexColor);
-                
-                HexDrawingService.DisplayDebugLayer(DebugLayerID);
+                    TileIndex = tileIndex;
+                    Tile = Snapshots.World.Tiles[tileIndex];
+                    HexDrawingService.ClearHexagon(DebugLayerID, OffsetCoords);
+                    OffsetCoords = local1.WorldPosition.ToHexagonOffsetCoords();
+                    OnTileChange();
 
+                    PrevTileIndex = tileIndex;
+
+                    HexDrawingService.SetHexagonBorderColor(DebugLayerID, OffsetCoords, Color.green);
+                    HexDrawingService.SetHexagonInnerBorderWidth(DebugLayerID, OffsetCoords, 1f);
+                    HexDrawingService.SetHexagonColor(
+                        DebugLayerID,
+                        OffsetCoords,
+                        HexColor);
+
+                    HexDrawingService.DisplayDebugLayer(DebugLayerID);
+                    _clear = false;
+                }
                 return;
             }
             
-            HexDrawingService.ClearHexagons(DebugLayerID);
+            if (!_clear)
+            {
+                HexDrawingService.ClearHexagons(DebugLayerID);
+                _clear = true;
+            }
         }
     }
 }
