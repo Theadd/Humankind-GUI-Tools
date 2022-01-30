@@ -1,16 +1,24 @@
-// using System.Drawing;
 using System;
 using System.Reflection;
 using System.Linq;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.Core;
-using Modding.Humankind.DevTools.DeveloperTools.UI;
 using UnityEngine;
 using Amplitude.Mercury;
 using Amplitude.Mercury.Interop;
 
 namespace DevTools.Humankind.GUITools.UI
 {
+    public interface IDataType
+    {
+        
+    }
+    
+    public interface IEmpireSnapshotDataType : IDataType
+    {
+        
+    }
+
     public class GameStatsSnapshot
     {
         public int Turn { get; set; }
@@ -62,7 +70,7 @@ namespace DevTools.Humankind.GUITools.UI
         
     }
 
-    public class EmpireSnapshot
+    public class EmpireSnapshot : IEmpireSnapshotDataType
     {
         public string[] Values;
         private string primaryColor = "#FFFFFFFF";
@@ -74,6 +82,7 @@ namespace DevTools.Humankind.GUITools.UI
         public string SecondaryColor => secondaryColor;
         public Color ContrastColor => contrastColor;
         public string UserName = string.Empty;
+        public int Index { get; private set; }
 
         public EmpireSnapshot(HumankindEmpire empire)
         {
@@ -82,6 +91,7 @@ namespace DevTools.Humankind.GUITools.UI
 
         public EmpireSnapshot Snapshot(HumankindEmpire empire)
         {
+            Index = empire.EmpireIndex;
             Values = EmpireSnapshotUtils.MakeEmpireSnapshotValues(empire);
             
             if (R.Text.NormalizeColor(empire.PrimaryColor) != primaryColor)

@@ -1,14 +1,9 @@
 using System;
-using System.IO;
-using System.Linq;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
 using DevTools.Humankind.GUITools.UI;
-using HarmonyLib;
-using Amplitude.Mercury.Presentation;
-using BepInEx;
-using BepInEx.Configuration;
 using DevTools.Humankind.GUITools.UI.PauseMenu;
+using StyledGUI;
 
 namespace DevTools.Humankind.GUITools
 {
@@ -29,11 +24,14 @@ namespace DevTools.Humankind.GUITools
         public static FameToolWindow FameWindow { get; set; }
         public static EndGameToolWindow EndGameWindow { get; set; }
         public static GameStatsWindow StatsWindow { get; set; }
+        public static BackScreenWindow BackScreen { get; set; }
 
         public static void Main()
         {
             if (IsDebugModeEnabled) Debug();
             
+            UIController.OnceGUIHasLoaded(() => StyledGUIUtility.DefaultSkin = UIController.DefaultSkin);
+            PopupToolWindow.Open<BackScreenWindow>(w => BackScreen = w);
             PopupToolWindow.Open<MainToolbar>(w => Toolbar = w);
             PopupToolWindow.Open<InGameMenuWindow>(w => InGameMenu = w);
 
@@ -45,24 +43,31 @@ namespace DevTools.Humankind.GUITools
             // PopupToolWindow.Open<EndGameToolWindow>(w => EndGameWindow = w);
             // PopupToolWindow.Open<GameStatsWindow>(w => StatsWindow = w);
 
-            // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Home), "ToggleBasicToolWindow", ToggleBasicToolWindow);
-            HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Home), "ToggleHideToolbarWindow", ToggleHideToolbarWindow);
-            HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Tab), "ToggleGameOverviewWindow", ToggleGameOverviewWindow);
-   
-            HumankindDevTools.RegisterAction(
+                    // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.UpArrow, UnityEngine.KeyCode.LeftControl), "ToggleBasicToolWindow", ToggleBasicToolWindow);
+                    // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Home), "ToggleHideToolbarWindow", ToggleHideToolbarWindow);
+                    // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Tab), "ToggleGameOverviewWindow", ToggleGameOverviewWindow);
+           
+            /*HumankindDevTools.RegisterAction(
                 new KeyboardShortcut(UnityEngine.KeyCode.Insert), 
                 "ToggleHideAllGUITools", 
-                ToggleHideAllUIWindows);
-            
+                ToggleHideAllUIWindows);*/
+
             // Maps [ESC] key to: GodMode.Enabled = false 
             // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Escape), "CancelGodMode", CancelGodMode);
             
-            // ToggleGameOverviewWindow();
+            // ToggleGameOverviewWindow(); 
+            // ToggleBasicToolWindow(); 
+            
+            /*HumankindDevTools.RegisterAction(
+                new KeyboardShortcut(UnityEngine.KeyCode.F4, UnityEngine.KeyCode.LeftShift), 
+                "RebuildConstructibles", 
+                ConstructibleStore.Rebuild);*/
         }
 
         public static void ToggleHideToolbarWindow() => GlobalSettings.HideToolbarWindow.Value = !GlobalSettings.HideToolbarWindow.Value;
 
-        public static void ToggleHideAllUIWindows() => FloatingToolWindow.HideAllGUITools = !FloatingToolWindow.HideAllGUITools;
+        public static void ToggleHideAllUIWindows() =>
+            Loggr.Log("HIDDING ALL GUI TOOLS WINDOWS IS TEMPORARILY DISABLED", ConsoleColor.Magenta); //FloatingToolWindow.HideAllGUITools = !FloatingToolWindow.HideAllGUITools);
 
         // public static void CancelGodMode() => AccessTools.PropertySetter(typeof(GodMode), "Enabled")?.Invoke(null, new object[] { false });
 
@@ -103,20 +108,22 @@ namespace DevTools.Humankind.GUITools
             FameWindow?.Close();
             EndGameWindow?.Close();
             StatsWindow?.Close();
+            BackScreen?.Close();
+            ScreenLocker.Unload();
         }
         
         private static void Debug()
         {
-            var scriptsPath = Path.Combine(Paths.GameRootPath, "scripts");
+            /*var scriptsPath = Path.Combine(Paths.GameRootPath, "scripts");
             var files = Directory.GetFiles(scriptsPath, "*.cs", SearchOption.AllDirectories)
                 .Where(path => path.Substring(scriptsPath.Length, 5) != "\\obj\\");
 
-            Loggr.Log(string.Join("\n", files), ConsoleColor.DarkYellow);
+            Loggr.Log(string.Join("\n", files), ConsoleColor.DarkYellow);*/
 
             // When true, draws a colored border for all UIOverlays backing a FloatingToolWindow derived class
             UIOverlay.DEBUG_DRAW_OVERLAY = false;
             // When not true, adds more verbosity to console output
-            Modding.Humankind.DevTools.DevTools.QuietMode = true;
+            Modding.Humankind.DevTools.DevTools.QuietMode = false;
         }
     }
 }

@@ -78,7 +78,7 @@ namespace DevTools.Humankind.GUITools.UI
     
     public static class GlobalSettings
     {
-        public static bool ShouldHideTools => GameStatsWindow.IsVisibleFullscreen || PauseMenu.InGameMenuController.IsEndGameWindowVisible || (HideToolsInGameMenu.Value && PauseMenu.InGameMenuController.IsVisible);
+        public static bool ShouldHideTools => false;    // TODO: // GameStatsWindow.IsVisibleFullscreen || PauseMenu.InGameMenuController.IsEndGameWindowVisible || (HideToolsInGameMenu.Value && PauseMenu.InGameMenuController.IsVisible);
 
         public static CheckboxSetting WindowTransparency = new CheckboxSetting(
             "Toggles the background transparency of all tool windows.", 
@@ -95,7 +95,8 @@ namespace DevTools.Humankind.GUITools.UI
             "Hide the Toolbar window. \n<size=10>KEYBOARD SHORTCUT: <color=#33DD33DC>[<size=9> HOME </size>]</color></size>", "", false
         );
         public static CheckboxSetting HideToolsInGameMenu = new CheckboxSetting(
-            "Hide all Tool Windows in the Game Menu screen, including the Toolbar window."
+            "Hide all Tool Windows in the Game Menu screen, including the Toolbar window.",
+            "", false
         );
 
         public static CheckboxSetting CheatingTools = new CheckboxSetting(R.Text.Bold("Cheating Tools section".ToUpper()));
@@ -118,7 +119,7 @@ namespace DevTools.Humankind.GUITools.UI
         public static CheckboxSetting CivicsTool = new CheckboxSetting("Civics Tool.");
         public static CheckboxSetting CollectiblesTool = new CheckboxSetting("Collectibles Tool.", "", null, false);
         public static CheckboxSetting DiplomacyTool = new CheckboxSetting("Diplomacy Tool.", "", null, false);
-        public static CheckboxSetting TerrainPickingTool = new CheckboxSetting("Terrain Picking Tool.", "", null, false);
+        public static CheckboxSetting TerrainPickingTool = new CheckboxSetting("Terrain Picking Tool.", "", null, true);
         public static CheckboxSetting GameInfoTool = new CheckboxSetting("Game Info Tool.", "", null, false);
         public static CheckboxSetting DistrictPainterTool = new CheckboxSetting("District Painter Tool.", "", null, false);
         public static CheckboxSetting SettlementTools = new CheckboxSetting("Settlement Tools.", "", null, false);
@@ -166,10 +167,10 @@ namespace DevTools.Humankind.GUITools.UI
 
         public static void ReadPlayerPreferences(FloatingToolWindow Window)
         {
-            CheatingTools.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("CheatingTools"), CheatingTools.Value ? 1 : 0) != 0;
-            ProfilingTools.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("ProfilingTools"), ProfilingTools.Value ? 1 : 0) != 0;
-            DeveloperTools.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("DeveloperTools"), DeveloperTools.Value ? 1 : 0) != 0;
-            ExperimentalTools.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("ExperimentalTools"), ExperimentalTools.Value ? 1 : 0) != 0;
+            CheatingTools.Value = true;     // PlayerPrefs.GetInt(Window.GetPlayerPrefKey("CheatingTools"), CheatingTools.Value ? 1 : 0) != 0;
+            ProfilingTools.Value = false;   // PlayerPrefs.GetInt(Window.GetPlayerPrefKey("ProfilingTools"), ProfilingTools.Value ? 1 : 0) != 0;
+            DeveloperTools.Value = true;    // PlayerPrefs.GetInt(Window.GetPlayerPrefKey("DeveloperTools"), DeveloperTools.Value ? 1 : 0) != 0;
+            ExperimentalTools.Value = true; // PlayerPrefs.GetInt(Window.GetPlayerPrefKey("ExperimentalTools"), ExperimentalTools.Value ? 1 : 0) != 0;
             MilitaryTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("MilitaryTool"), MilitaryTool.Value ? 1 : 0) != 0;
             ArmyTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("ArmyTool"), ArmyTool.Value ? 1 : 0) != 0;
             TechnologyTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("TechnologyTool"), TechnologyTool.Value ? 1 : 0) != 0;
@@ -193,10 +194,10 @@ namespace DevTools.Humankind.GUITools.UI
             StatisticsAndAchievementsTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("StatisticsAndAchievementsTool"), StatisticsAndAchievementsTool.Value ? 1 : 0) != 0;
             FameTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("FameTool"), FameTool.Value ? 1 : 0) != 0;
             EndGameTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("EndGameTool"), EndGameTool.Value ? 1 : 0) != 0;
-            
+
             WindowTransparency.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("WindowTransparency"), WindowTransparency.Value ? 1 : 0) != 0;
             WindowTitleBar.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("WindowTitleBar"), WindowTitleBar.Value ? 1 : 0) != 0;
-            HideToolbarWindow.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("HideToolbarWindow"), HideToolbarWindow.Value ? 1 : 0) != 0;
+            HideToolbarWindow.Value = false;    // PlayerPrefs.GetInt(Window.GetPlayerPrefKey("HideToolbarWindow"), HideToolbarWindow.Value ? 1 : 0) != 0;
             HideToolsInGameMenu.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("HideToolsInGameMenu"), HideToolsInGameMenu.Value ? 1 : 0) != 0;
         }
     }

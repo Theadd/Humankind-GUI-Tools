@@ -307,6 +307,7 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
             base.OnWritePlayerPreferences();
 
             GlobalSettings.WritePlayerPreferences(this);
+            KeyMappings.WritePlayerPreferences(this);
         }
 
         public override void OnReadPlayerPreferences()
@@ -314,6 +315,8 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
             base.OnReadPlayerPreferences();
 
             GlobalSettings.ReadPlayerPreferences(this);
+            KeyMappings.ReadPlayerPreferences(this);
+            KeyMappings.Apply();
         }
 
         private static string GreenText(string text) => "<color=#33DD33DC>" + text + "</color>";

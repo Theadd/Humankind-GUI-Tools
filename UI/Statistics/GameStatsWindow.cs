@@ -1,16 +1,11 @@
-using System;
-using System.Reflection;
+using System.Linq;
 using UnityEngine;
 using Modding.Humankind.DevTools;
-using Modding.Humankind.DevTools.Core;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
-using UIToolManager = Modding.Humankind.DevTools.DeveloperTools.UI.UIController;
 using Amplitude.Mercury.Interop;
-using Amplitude.Mercury.Sandbox;
 using Amplitude.Framework;
-using Amplitude.Framework.Networking;
-using Amplitude.UI;
 using Amplitude.Mercury.UI;
+using StyledGUI;
 
 namespace DevTools.Humankind.GUITools.UI
 {
@@ -30,10 +25,17 @@ namespace DevTools.Humankind.GUITools.UI
         private static GameStatsSnapshot Snapshot;
         // True when the snapshot current snapshot can be "live" updated or it is a previously saved one.
         private static bool isLiveSnapshot;
+        
+        private int activeTab = 0;
+        private int previousActiveTab = 0;
 
-        private GameStatisticsGrid grid;
+        private string[] tabNames = {"OVERVIEW", "KEYBOARD SHORTCUTS"};
+        
+        public GameGrid GameOverviewGrid { get; set; }
+        public CommonHeadersGrid HeadersGrid { get; set; }
+        public KeyboardShortcutsGrid ShortcutsGrid { get; set; }
 
-        private GUIStyle bgStyle = new GUIStyle(UIToolManager.DefaultSkin.FindStyle("PopupWindow.Sidebar.Highlight")) {
+        private GUIStyle bgStyle = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Sidebar.Highlight")) {
             normal = new GUIStyleState() {
                 background = Utils.CreateSinglePixelTexture2D(new Color(0, 0, 0, 0.8f)),
                 textColor = Color.white
@@ -43,14 +45,20 @@ namespace DevTools.Humankind.GUITools.UI
                 textColor = Color.white
             }
         };
-
-        private GUIStyle backButtonStyle = new GUIStyle(UIToolManager.DefaultSkin.toggle) {
-            margin = new RectOffset(1, 1, 1, 1)
-        };
         
-        private GUIStyle CommonHeaderStyle = new GUIStyle(UIToolManager.DefaultSkin.toggle) {
-            margin = new RectOffset(1, 1, 1, 1),
-            alignment = TextAnchor.LowerRight
+        private GUIStyle bgStyleAlt = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Sidebar.Highlight")) {
+            normal = new GUIStyleState() {
+                background = Utils.CreateSinglePixelTexture2D(new Color(0.85f, 0.75f, 0f, 0.45f)),
+                textColor = Color.white
+            },
+            hover = new GUIStyleState() {
+                background = null,
+                textColor = Color.white
+            }
+        };
+
+        private GUIStyle backButtonStyle = new GUIStyle(UIController.DefaultSkin.toggle) {
+            margin = new RectOffset(1, 1, 1, 1)
         };
 
         private static bool initialized = false;
@@ -83,9 +91,38 @@ namespace DevTools.Humankind.GUITools.UI
                 localEmpireIndex = (int)Snapshots.GameSnapshot.PresentationData.LocalEmpireInfo.EmpireIndex;
 
                 Snapshot = new GameStatsSnapshot();
-                grid = new GameStatisticsGrid();
 
                 Snapshot.SetLocalEmpireIndex(localEmpireIndex);
+
+                GameOverviewGrid = new GameGrid()
+                {
+                    Snapshot = Snapshot,
+                    VirtualGrid = new VirtualGrid()
+                    {
+                        Grid = new GameOverviewGrid(),
+                        Distribution = HumankindGame.Empires.Select((e, i) => i).ToArray()
+                    }
+                };
+                HeadersGrid = new CommonHeadersGrid()
+                {
+                    Snapshot = Snapshot,
+                    VirtualGrid = new VirtualGrid()
+                    {
+                        Grid = new StaticHeaderGrid(),
+                        DrawRowHeaders = false,
+                        DrawSectionHeaders = false
+                    }
+                };
+                ShortcutsGrid = new KeyboardShortcutsGrid()
+                {
+                    VirtualGrid = new VirtualGrid()
+                    {
+                        Grid = new ShortcutsGrid(),
+                    }
+                };
+                
+                ShortcutsGrid.VirtualGrid.RowHeaderCellSpan = ShortcutsGrid.VirtualGrid.Grid.CellSpan8;
+                ShortcutsGrid.VirtualGrid.SectionHorizontalLineWidth = ShortcutsGrid.VirtualGrid.Grid.GetCellWidth() * 8;
 
                 initialized = true;
                 isValidSnapshot = true;
@@ -105,6 +142,7 @@ namespace DevTools.Humankind.GUITools.UI
         public override void Close(bool saveVisibilityStateBeforeClosing = false)
         {
             Unload();
+            HumankindGame.Update();
             base.Close(false);
         }
 
@@ -118,7 +156,7 @@ namespace DevTools.Humankind.GUITools.UI
             forceUpdate = false;
 
             if (UIManagerService == null) 
-                    return;
+                return;
             UIManagerService.IsUiVisible = true;
             UIManagerService.AreTooltipsVisible = true;
         }
@@ -150,6 +188,10 @@ namespace DevTools.Humankind.GUITools.UI
                         Snapshot
                             .Snapshot()
                             .SetLocalEmpireIndex(localEmpireIndex);
+                        
+                        GameOverviewGrid.Snapshot = Snapshot;
+                        GameOverviewGrid.IsDirty = true;
+                        HeadersGrid.IsDirty = true;
                     }
                 }
             }
@@ -158,45 +200,58 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 GUILayout.BeginVertical();
                 GUILayout.Space(4f);
-                GUILayout.Label("  NOT A VALID SNAPSHOT  ");
+                GUILayout.Label(" ");
                 GUILayout.Space(4f);
                 GUILayout.EndVertical();
 
                 return;
             }
 
-            grid.SetSnapshot(Snapshot);
+            GUILayout.BeginVertical(bgStyle, GUILayout.Width(Screen.width), GUILayout.Height(Screen.height));
             
+            DrawCommonContent();
+
             BeginBackgroundScrollView();
             {
-                GUILayout.BeginHorizontal(GUILayout.Width(Screen.width), GUILayout.Height(Screen.height));
+                GUILayout.BeginHorizontal();
                 {
+                    GUILayout.Space(60f);
                     GUILayout.FlexibleSpace();
 
                     GUILayout.BeginVertical();
                     {
-                        GUILayout.Space(24f);
-                        DrawCommonContent();
                         
-                        GUILayout.Space(72f);
+                        
+                        GUILayout.Space(85f);
+
+                        if (activeTab == 0)
+                        {
+                            GameOverviewGrid.Render();
+                        }
+                        else if (activeTab == 1)
+                        {
+                            if (previousActiveTab != 1)
+                                ShortcutsGrid.ResyncKeyMappings();
+                            
+                            ShortcutsGrid.Render();
+                        }
+                        
+                        GUILayout.Space(80f);
+
                         GUILayout.FlexibleSpace();
-                        
-                        DrawWindowContent();
-                        // GUILayout.Space(16f);
-                        // DrawWindowContent();
-                        
-                        GUILayout.FlexibleSpace();
-                        GUILayout.Space(72f);
 
                     }
                     GUILayout.EndVertical();
 
                     GUILayout.FlexibleSpace();
+                    GUILayout.Space(60f);
                 }
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndScrollView();
             DrawBackButton();
+
+            GUILayout.EndVertical();
         }
 
         private void BeginBackgroundScrollView()
@@ -207,37 +262,77 @@ namespace DevTools.Humankind.GUITools.UI
                 false, 
                 "horizontalscrollbar",
                 "verticalscrollbar",
-                bgStyle,
-                // "scrollview",
-                GUILayout.Height(Screen.height));
+                "scrollview",
+                GUILayout.ExpandHeight(true));
         }
 
+        
+
+        private GUIStyle TabButtonStyle = new GUIStyle(UIController.DefaultSkin.FindStyle("TabButton")) {
+            fixedHeight = 28f,
+            fontSize = 14,
+            fontStyle = FontStyle.Bold,
+            padding = new RectOffset(22, 22, 0, 5),
+            normal = new GUIStyleState() {
+                background = Utils.CreateSinglePixelTexture2D(new Color(0.85f, 0.75f, 0f, 0.45f)),
+                textColor = Color.white
+            },
+            onNormal = new GUIStyleState()
+            {
+                background = Utils.TransparentTexture,
+                textColor = new Color32(85, 136, 254, 255)
+            },
+            onHover = new GUIStyleState()
+            {
+                background = null,
+                textColor = Color.white
+            },
+            onActive = new GUIStyleState()
+            {
+                background = null,
+                textColor = Color.white
+            },
+            active = new GUIStyleState()
+            {
+                background = Utils.TransparentTexture,
+                textColor = new Color32(85, 136, 254, 255)
+            },
+            hover = new GUIStyleState()
+            {
+                background = Utils.CreateSinglePixelTexture2D(new Color32(85, 136, 254, 155)),
+                textColor = Color.white
+            }
+        };
+        
         private void DrawCommonContent()
         {
-            GUILayout.BeginHorizontal();
-            grid.DrawCommonHeader();
-            GUILayout.EndHorizontal();
-        }
-
-        private void DrawWindowContent()
-        {
+            GUILayout.BeginHorizontal(bgStyleAlt);
+            GUILayout.Space(271f);
             GUILayout.BeginVertical();
-                GUILayout.Space(4f);
-
-                grid.Draw();
-
-                GUILayout.Space(4f);
+            GUILayout.Space(26f);
+            HeadersGrid.Render();
+            GUILayout.Space(22f);
             GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.BeginHorizontal(bgStyleAlt, GUILayout.Height(28f));
+            GUILayout.Space(395f);
+            GUILayout.EndHorizontal();
+            previousActiveTab = activeTab;
+            activeTab = GUILayout.Toolbar(activeTab, tabNames, TabButtonStyle, GUI.ToolbarButtonSize.FitToContents);
+            GUILayout.BeginHorizontal(bgStyleAlt, GUILayout.Height(28f));
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+            GUILayout.EndHorizontal();
         }
 
         private void DrawBackButton()
         {
             GUI.backgroundColor = Color.white;
-            if (GUI.Button(new Rect(24f, 24f, 223f, 38f), "<b>BACK TO THE GAME</b>", backButtonStyle))
+            if (GUI.Button(new Rect(26f, 26f, 223f, 45f), "<b>BACK TO THE GAME</b>", backButtonStyle))
             {
                 MainTools.ToggleGameOverviewWindow();
             }
-            // GUILayout.Label("HELLO WORLD!"); 
             GUI.backgroundColor = Color.white;
         }
     }

@@ -8,8 +8,7 @@ namespace DevTools.Humankind.GUITools.UI
 {
     public class MainToolbar : FloatingToolWindow
     {
-        public override bool ShouldBeVisible => !GlobalSettings.ShouldHideTools && 
-            HumankindGame.IsGameLoaded && !GlobalSettings.HideToolbarWindow.Value;
+        public override bool ShouldBeVisible => !GlobalSettings.ShouldHideTools /* TODO: && HumankindGame.IsGameLoaded */ && !GlobalSettings.HideToolbarWindow.Value;
         public override bool ShouldRestoreLastWindowPosition => true;
         public override string WindowTitle { get; set; } = "TOOLBAR";
         public override Rect WindowRect { get; set; } = new Rect (30, 290, 170, 600);
@@ -107,9 +106,8 @@ namespace DevTools.Humankind.GUITools.UI
             GUILayout.BeginHorizontal(TintableBackgroundStyle);
             
             GUI.backgroundColor = Color.black;
-            GUILayout.BeginVertical(BackgroundContainerStyle); 
-        
-                
+            GUILayout.BeginVertical(BackgroundContainerStyle);
+            
                 OnDrawCheatingTools();
                 GUI.backgroundColor = Color.black;
                 OnDrawDeveloperTools();
