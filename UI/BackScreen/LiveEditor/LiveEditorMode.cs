@@ -6,6 +6,7 @@ using BepInEx.Configuration;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
 using StyledGUI.VirtualGridElements;
+using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI
 {
@@ -20,6 +21,12 @@ namespace DevTools.Humankind.GUITools.UI
         LandUnit = 16,
         MissileUnit = 32,
     }
+
+    public enum EditorModeType
+    {
+        TilePainter,
+        Settlement
+    }
     
     public static class LiveEditorMode
     {
@@ -28,12 +35,15 @@ namespace DevTools.Humankind.GUITools.UI
         public static readonly string CreateUnderCursorActionName = "CreateConstructibleUnderCursor";
         public static readonly string DestroyUnderCursorActionName = "DestroyAnythingUnderCursor";
         public static bool Enabled { get; set; } = false;
+        public static EditorModeType EditorMode { get; set; } = EditorModeType.TilePainter;
 
         public static ConstructibleDefinition ActivePaintBrush { get; private set; } = null;
         public static LiveBrushType BrushType { get; private set; } = LiveBrushType.None;
 
         private static KeyboardShortcut CreateKey { get; set; }
         private static KeyboardShortcut DestroyKey { get; set; }
+
+        public static KeyboardShortcut TestKey { get; set; } = new KeyboardShortcut(KeyCode.F5);
 
         public static void UpdateKeyMappings()
         {
@@ -66,13 +76,21 @@ namespace DevTools.Humankind.GUITools.UI
             if (!Enabled)
                 return;
 
-            if (CreateKey.IsDown())
+            if (TestKey.IsPressed())
             {
-                Loggr.Log("CREATE KEY DOWN");
+                Loggr.Log(DestroyKey.Serialize() + " F5 IS PRESSED! " + CreateKey.Serialize(), ConsoleColor.Magenta);
             }
-            if (DestroyKey.IsPressed())
+            if (EditorMode == EditorModeType.TilePainter)
             {
-                Loggr.Log("DESTROY KEY PRESSED");
+                if (CreateKey.IsDown())
+                {
+                    Loggr.Log("CREATE KEY DOWN");
+                }
+
+                if (DestroyKey.IsPressed())
+                {
+                    Loggr.Log("DESTROY KEY PRESSED");
+                }
             }
         }
 
