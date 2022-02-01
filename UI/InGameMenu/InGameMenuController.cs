@@ -56,14 +56,19 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
                 OnShowingEvent();
             else if (newState == UIAbstractShowable.VisibilityState.Hiding)
                 OnHidingEvent();
+            else if (newState == UIAbstractShowable.VisibilityState.Invisible)
+                ViewController.ViewMode = ViewModeType.Auto;
+            else if (newState == UIAbstractShowable.VisibilityState.Visible)
+                ViewController.ViewMode = ViewModeType.GameMenu;
             // else
-            //     Loggr.Log("Next VisibilityState unknown yet: " + newState + ", coming from: " + oldState);
+            //    Loggr.Log("Next VisibilityState unknown yet: " + newState + ", coming from: " + oldState);
         }
 
         private static void OnShowingEvent()
         {
             PreviousBackgroundColor = Background.Color;
             
+            ViewController.ViewMode = ViewModeType.GameMenu;
             // Do something here
             //SetBackgroundColor(new Color(0.7f, 0.65f, 0.1f, 0.45f));
             

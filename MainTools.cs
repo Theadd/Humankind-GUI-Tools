@@ -22,9 +22,9 @@ namespace DevTools.Humankind.GUITools
         public static SettlementToolsWindow SettlementWindow { get; set; }
         public static StatisticsAndAchievementsToolWindow StatisticsAndAchievementsWindow { get; set; }
         public static FameToolWindow FameWindow { get; set; }
-        public static EndGameToolWindow EndGameWindow { get; set; }
         public static GameStatsWindow StatsWindow { get; set; }
         public static BackScreenWindow BackScreen { get; set; }
+        public static EndGameStatisticsWindow EndGameWindow { get; set; }
 
         public static void Main()
         {
@@ -94,6 +94,30 @@ namespace DevTools.Humankind.GUITools
             StatsWindow.Close();
             StatsWindow = null;
         }
+
+        public static void ToggleEndGameStatisticsWindow()
+        {
+            if (EndGameWindow == null)
+            {
+                PopupToolWindow.Open<EndGameStatisticsWindow>(w => EndGameWindow = w);
+                ViewController.ViewMode = ViewModeType.EndGame;
+                return;
+            }
+
+            CloseEndGameStatisticsWindow();
+        }
+        
+        public static void CloseEndGameStatisticsWindow()
+        {
+            if (EndGameWindow != null)
+            {
+                EndGameWindow.Close(false);
+                EndGameWindow = null;
+            }
+        }
+
+        public static bool IsGameOverviewEnabled => StatsWindow != null;
+        public static bool IsEndGameWindowEnabled => EndGameWindow != null;
 
         public static void Unload() => Unload(true);
 

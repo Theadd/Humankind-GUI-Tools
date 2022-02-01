@@ -332,6 +332,7 @@ namespace DevTools.Humankind.GUITools.UI
             if (GUI.Button(new Rect(26f, 26f, 223f, 45f), "<b>BACK TO THE GAME</b>", backButtonStyle))
             {
                 MainTools.ToggleGameOverviewWindow();
+                ViewController.ViewMode = ViewModeType.Auto;
             }
             GUI.backgroundColor = Color.white;
         }

@@ -153,7 +153,8 @@ namespace DevTools.Humankind.GUITools.UI
         public static void Unload()
         {
             //inputFilterHandle = inputFilterService.DestroyFilter(inputFilterHandle);
-            Toolbox.ConstructiblesGrid.VirtualGrid.Cursor.OnSelectionChange -= LiveEditorMode.UpdatePaintBrush;
+            if (Toolbox != null)
+                Toolbox.ConstructiblesGrid.VirtualGrid.Cursor.OnSelectionChange -= LiveEditorMode.UpdatePaintBrush;
         }
     }
 }

@@ -151,12 +151,15 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
                     //PopupToolWindow.Open<GameStatsWindow>(w => {});
                     MainTools.ToggleGameOverviewWindow();
                     CloseInGameMenu();
+                    ViewController.ViewMode = ViewModeType.Overview;
                 }
                     
                 if (GUILayout.Button("<size=10><b>END GAME STATISTICS</b></size>"))
                 {
-                    PopupToolWindow.Open<EndGameStatisticsWindow>(w => {});
+                    //PopupToolWindow.Open<EndGameStatisticsWindow>(w => {});
+                    MainTools.ToggleEndGameStatisticsWindow();
                     CloseInGameMenu();
+                    ViewController.ViewMode = ViewModeType.EndGame;
                 }
                     
                 GUILayout.FlexibleSpace();

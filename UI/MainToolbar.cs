@@ -8,7 +8,7 @@ namespace DevTools.Humankind.GUITools.UI
 {
     public class MainToolbar : FloatingToolWindow
     {
-        public override bool ShouldBeVisible => !GlobalSettings.ShouldHideTools /* TODO: && HumankindGame.IsGameLoaded */ && !GlobalSettings.HideToolbarWindow.Value;
+        public override bool ShouldBeVisible => !GlobalSettings.ShouldHideTools && !GlobalSettings.HideToolbarWindow.Value;
         public override bool ShouldRestoreLastWindowPosition => true;
         public override string WindowTitle { get; set; } = "TOOLBAR";
         public override Rect WindowRect { get; set; } = new Rect (30, 290, 170, 600);

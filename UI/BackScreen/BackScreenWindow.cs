@@ -32,6 +32,11 @@ namespace DevTools.Humankind.GUITools.UI
 
         protected virtual void Initialize()
         {
+            if (!Modding.Humankind.DevTools.DevTools.QuietMode)
+                Loggr.Log("Initializing BackScreenWindow...", ConsoleColor.Green);
+            
+            ViewController.Initialize();
+            
             ScreenOverlay.SetInnerRectAsVisible(false);
             OnCollapse();
 
@@ -56,7 +61,6 @@ namespace DevTools.Humankind.GUITools.UI
 
         public override void OnDrawUI(int _)
         {
-            // TODO: RuntimeGameState.Refresh();
             
             GUILayout.BeginArea(new Rect(0f, 0f, WindowRect.width, WindowRect.height));
             GUILayout.BeginHorizontal();
@@ -71,18 +75,7 @@ namespace DevTools.Humankind.GUITools.UI
                 GUILayout.BeginHorizontal();
                 {
                     GUI.backgroundColor = Color.black;
-
-                    if (IsInGame && LiveEditorMode.Enabled)
-                    {
-                        GUILayout.Label("LIVE EDITOR MODE", ScreenTag);
-                        if (LiveEditorMode.BrushType != LiveBrushType.None)
-                            GUILayout.Label("BRUSH TYPE: <b>" + LiveEditorMode.BrushType.ToString().ToUpper() + "</b>", ScreenTag);
-                        if (PaintBrush.ActionNameOnCreate != string.Empty)
-                            GUILayout.Label("ON PAINT: <b>" + PaintBrush.ActionNameOnCreate + "</b>", ScreenTag);      
-                        if (PaintBrush.ActionNameOnCreate != string.Empty)
-                            GUILayout.Label("ON ERASE: <b>" + PaintBrush.ActionNameOnDestroy + "</b>", ScreenTag);
-                    }
-
+                    DrawStatusBar();
                     GUI.backgroundColor = Color.white;
                 }
                 GUILayout.EndHorizontal();
@@ -91,7 +84,7 @@ namespace DevTools.Humankind.GUITools.UI
             GUILayout.EndHorizontal();
 
             
-            if (IsInGame)
+            if (IsInGame && ViewController.View == ViewType.InGame)
             {
                 SyncInGameUI();
                 LiveEditorMode.HexPainter.IsVisible =
@@ -102,8 +95,6 @@ namespace DevTools.Humankind.GUITools.UI
                 {
                     if (Event.current.type == EventType.Repaint)
                         LiveEditorMode.Run();
-                    
-                    
 
                     if (IsToolboxVisible != ToolboxController.Draw())
                     {
@@ -132,6 +123,37 @@ namespace DevTools.Humankind.GUITools.UI
             GUILayout.EndArea();
         }
 
+        private void DrawStatusBar()
+        {
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("<b>" + ViewController.View.ToString().ToUpper() + "</b>", ScreenTag);
+                GUILayout.Label(UIController.IsAmplitudeUIVisible ? "<b>UI VISIBLE</b>" : "<b>NO UI VISIBLE</b>", ScreenTag);
+            }
+            GUILayout.EndHorizontal();
+            if (ViewController.View == ViewType.InGame)
+            {
+                if (IsInGame && LiveEditorMode.Enabled)
+                {
+                    GUILayout.BeginHorizontal();
+                    {
+                        GUILayout.Label("LIVE EDITOR MODE", ScreenTag);
+                        GUILayout.Label(
+                            "BRUSH TYPE: <b>" + LiveEditorMode.BrushType.ToString().ToUpper() + "</b>", ScreenTag);
+                        var onPaintText = PaintBrush.ActionNameOnCreate != string.Empty
+                            ? "ON PAINT: <b>" + PaintBrush.ActionNameOnCreate + "</b>"
+                            : "NO EFFECT ON PAINT";
+                        var onEraseText = PaintBrush.ActionNameOnCreate != string.Empty
+                            ? "ON ERASE: <b>" + PaintBrush.ActionNameOnDestroy + "</b>"
+                            : "NO EFFECT ON ERASE";
+                        GUILayout.Label(onPaintText, ScreenTag);
+                        GUILayout.Label(onEraseText, ScreenTag);
+                    }
+                    GUILayout.EndHorizontal();
+                }
+            }
+        }
+
         private void SyncInGameUI()
         {
             if (_wasLiveEditorEnabled != LiveEditorMode.Enabled)
@@ -154,6 +176,8 @@ namespace DevTools.Humankind.GUITools.UI
 
         public override void OnZeroGUI()
         {
+            // ViewController.Initialize();
+            
             if (!Initialized)
                 Initialize();
             

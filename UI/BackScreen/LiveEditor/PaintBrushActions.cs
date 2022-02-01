@@ -26,6 +26,7 @@ namespace DevTools.Humankind.GUITools.UI
         public static readonly string DestroyDistrictAction = "DESTROY DISTRICT";
         public static readonly string EvolveOutpostAction = "EVOLVE OUTPOST";
         public static readonly string CreateDistrictAction = "CREATE DISTRICT";
+        public static readonly string CreateCampAction = "CREATE OUTPOST";
         public static readonly string DetachTerritoryAction = "DETACH TERRITORY";
         public static readonly string RemoveMinorEmpireAction = "REMOVE MINOR EMPIRE";
         public static readonly string CreateArmyAction = "REMOVE MINOR EMPIRE";
@@ -47,6 +48,12 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 TileIndex = tileIndex,
                 DistrictDefinitionName = districtDefinitionName
+            });
+        public static void CreateCampAt(int tileIndex) => SandboxManager
+            .PostOrder(new EditorOrderCreateCampAt()
+            {
+                CampTileIndex = tileIndex,
+                EmpireIndex = Amplitude.Mercury.Interop.Snapshots.GameSnapshot.PresentationData.LocalEmpireInfo.EmpireIndex
             });
         
         public static void CreateArmyAt(int tileIndex, StaticString unitDefinitionName) => SandboxManager
@@ -83,7 +90,7 @@ namespace DevTools.Humankind.GUITools.UI
             });
 
 
-        private void Destroy(Action action, string actionName, bool isRepeatingSameActionAllowed = false)
+        private bool Destroy(Action action, string actionName, bool isRepeatingSameActionAllowed = false)
         {
             
             ActionNameOnDestroy = actionName;
@@ -98,9 +105,11 @@ namespace DevTools.Humankind.GUITools.UI
                 AudioPlayer.Play(AudioPlayer.CutForest);
                 action.Invoke();
             };
+
+            return true;
         }
         
-        private void Create(Action action, string actionName, bool isRepeatingSameActionAllowed = false)
+        private bool Create(Action action, string actionName, bool isRepeatingSameActionAllowed = false)
         {
             ActionNameOnCreate = actionName;
             
@@ -114,6 +123,8 @@ namespace DevTools.Humankind.GUITools.UI
                 AudioPlayer.Play(AudioPlayer.DistrictPlacement);
                 action.Invoke();
             };
+
+            return true;
         }
     }
 }
