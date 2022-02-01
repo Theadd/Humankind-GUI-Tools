@@ -7,6 +7,14 @@ namespace DevTools.Humankind.GUITools.UI
 {
     public static class RuntimeGameState
     {
+        public enum ViewType
+        {
+            Loading,    //EmptyView
+            OutGame,
+            InGame,
+            MapEditor
+        }
+        
         private static string _currentState = "UNKNOWN STATE";
         private static string _currentView = "UNKNOWN VIEW";
         private static bool _registeredToViewChanges = false;
@@ -60,12 +68,17 @@ namespace DevTools.Humankind.GUITools.UI
                 if (UnityEngine.Event.current.type == UnityEngine.EventType.Repaint)
                     RuntimeService = Services.GetService<Amplitude.Framework.Runtime.IRuntimeService>();
             }
+        }
 
+        public static void Initialize()
+        {
             if (ViewService == null)
-            {
-                ViewService = Services.GetService<Amplitude.Framework.Presentation.IViewService>();
-            }
-            else
+                ViewService = Services.GetService<IViewService>();
+            
+            if (ViewService == null)
+                Loggr.Log(new NotImplementedException("VIEWSERVICE INVALID AFTER CALL TO INITIALIZE IN RUNTIMEGAMESTATE."));
+            
+            if (ViewService != null && !_registeredToViewChanges)
             {
                 if (!_registeredToViewChanges)
                     RegisterToViewChangeEvents();
