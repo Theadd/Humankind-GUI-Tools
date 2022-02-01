@@ -162,7 +162,7 @@ namespace DevTools.Humankind.GUITools.UI
                     District = district;
                     var districtName = district.DistrictDefinitionName.ToString();
                     
-                    Loggr.Log(district.DistrictDefinitionName.ToString(), ConsoleColor.Magenta);
+                    // Loggr.Log(district.DistrictDefinitionName.ToString(), ConsoleColor.Magenta);
                     
                     if (districtName == "Extension_Base_AdministrativeCenter")
                         HexTile |= HexTileType.AdministrativeCenter;
@@ -191,7 +191,7 @@ namespace DevTools.Humankind.GUITools.UI
                 OnDestroy = null;
                 ActionNameOnDestroy = string.Empty;
             }
-            Loggr.Log("ACTIONS: " + ActionNameOnCreate + " / " + ActionNameOnDestroy, ConsoleColor.Magenta);
+            // Loggr.Log("ACTIONS: " + ActionNameOnCreate + " / " + ActionNameOnDestroy, ConsoleColor.Magenta);
         }
 
     }

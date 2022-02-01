@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BepInEx.Configuration;
 using Modding.Humankind.DevTools;
@@ -15,6 +16,30 @@ namespace DevTools.Humankind.GUITools.UI
         public static string InteractionKeysGroup = "GAME INTERACTION";
         public static string UserInterfacesKeysGroup = "GAME UI / GUI TOOLS";
         public static string LiveEditorKeysGroup = "LIVE EDITOR MODE";
+
+        private static Dictionary<string, string> KeyDisplayValues { get; set; } = new Dictionary<string, string>();
+
+        public static bool TryGetKeyDisplayValue(string actionName, out string displayValue) =>
+            KeyDisplayValues.TryGetValue(actionName, out displayValue);
+
+        public static void Trigger(string actionName)
+        {
+            try
+            {
+                KeyMap key = Keys.First(k => k.ActionName == actionName);
+
+                if (key.Action != null)
+                {
+                    key.Action.Invoke();
+                }
+            }
+            catch (Exception e)
+            {
+                if (!Modding.Humankind.DevTools.DevTools.QuietMode)
+                    Loggr.Log(e);
+            }
+            
+        }
         
         public static KeyMap[] Keys { get; set; } = new KeyMap[]
         {
@@ -48,7 +73,7 @@ namespace DevTools.Humankind.GUITools.UI
                 Key = new KeyboardShortcut(KeyCode.F2),
                 GroupName = GlobalKeysGroup,
                 IsEditable = true,
-                IsRemovable = false
+                IsRemovable = true
             },
             new KeyMap("ToggleHideToolbarWindow")
             {
@@ -234,12 +259,33 @@ namespace DevTools.Humankind.GUITools.UI
         public static void Apply()
         {
             // Loggr.Log("IN KeyMappings.Apply()", ConsoleColor.Green);
+            KeyDisplayValues = new Dictionary<string, string>();
 
             foreach (var key in Keys)
             {
+                AddKeyDisplayName(key);
                 if (key.IsGlobalShortcut)
                     HumankindDevTools.RegisterAction(key.Key, key.ActionName, key.Action);
             }
+
+            BackScreenWindow.IsDirty = true;
+        }
+
+        private static void AddKeyDisplayName(KeyMap key)
+        {
+            if (key.Key.Equals(KeyboardShortcut.Empty))
+                return;
+            
+            string displayValue = "<color=#22EE22FF>" + string.Join(" + ", key.Key
+                .Serialize()
+                .ToUpper()
+                .Replace("CONTROL", "CTRL")
+                .Replace("RIGHT", "R")
+                .Replace("LEFT", "L")
+                .Split(new string[] { " + " }, StringSplitOptions.None)
+                .Reverse()) + "</color>";
+            
+            KeyDisplayValues.Add(key.ActionName, displayValue);
         }
 
         public static void WritePlayerPreferences(FloatingToolWindow Window)
