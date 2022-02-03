@@ -139,8 +139,7 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
 
         private void OnDrawWindowHeader()
         {
-            Utils.DrawText("Press the " + GreenText("[<size=10> INSERT </size>]") + " key to toggle the visibility " + 
-                           "of all GUI windows made using the " + BlueText("Humankind Modding DevTools") + " library.");
+            Utils.DrawText("Customize keys and discover more features by switching to the " + BlueText("Keyboard Shortcuts") + " tab in the " + BlueText("Game Overview") + " window.");
 
             GUILayout.Space(IsBigScreen ? 12f : 8f);
 
@@ -206,9 +205,7 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
                 GlobalSettings.WindowTitleBar.Draw(/*"PopupWindow.RowEven"*/);
                 GUILayout.Space(8f);
                 GlobalSettings.HideToolbarWindow.Draw(/*"PopupWindow.Rown"*/);
-                GUILayout.Space(8f);
-                GlobalSettings.HideToolsInGameMenu.Draw(/*"PopupWindow.Rown"*/);
-                    
+
             GUILayout.EndVertical();
         }
         
@@ -315,6 +312,8 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
 
         public override void OnReadPlayerPreferences()
         {
+            GlobalSettings.ResetPlayerPreferencesIfNecessary(this);
+            
             base.OnReadPlayerPreferences();
 
             GlobalSettings.ReadPlayerPreferences(this);

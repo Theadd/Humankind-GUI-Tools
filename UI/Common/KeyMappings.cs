@@ -5,6 +5,7 @@ using BepInEx.Configuration;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
 using UnityEngine;
+using StyledGUI;
 
 namespace DevTools.Humankind.GUITools.UI
 {
@@ -85,7 +86,7 @@ namespace DevTools.Humankind.GUITools.UI
                         MainTools.ToggleHideToolbarWindow();
                     }
                 },
-                Key = new KeyboardShortcut(KeyCode.Home),
+                Key = new KeyboardShortcut(KeyCode.Space),
                 GroupName = GlobalKeysGroup,
                 Mask = ViewModeType.Normal
             },
@@ -101,7 +102,7 @@ namespace DevTools.Humankind.GUITools.UI
                         ActionController.TogglePresentationFogOfWar();
                     }
                 },
-                Key = KeyboardShortcut.Empty,
+                Key = new KeyboardShortcut(KeyCode.LeftArrow, KeyCode.UpArrow, KeyCode.RightArrow, KeyCode.DownArrow),
                 GroupName = CameraKeysGroup
             },
             new KeyMap("ToggleFreeCameraMode")
@@ -183,7 +184,7 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 DisplayName = "PRINT TILE DEBUG INFO TO CONSOLE",
                 Action = null,
-                Key = new KeyboardShortcut(KeyCode.Mouse1, KeyCode.LeftAlt),
+                Key = KeyboardShortcut.Empty,
                 GroupName = LiveEditorKeysGroup,
                 IsGlobalShortcut = false,
             },
@@ -276,14 +277,7 @@ namespace DevTools.Humankind.GUITools.UI
             if (key.Key.Equals(KeyboardShortcut.Empty))
                 return;
             
-            string displayValue = "<color=#22EE22FF>" + string.Join(" + ", key.Key
-                .Serialize()
-                .ToUpper()
-                .Replace("CONTROL", "CTRL")
-                .Replace("RIGHT", "R")
-                .Replace("LEFT", "L")
-                .Split(new string[] { " + " }, StringSplitOptions.None)
-                .Reverse()) + "</color>";
+            string displayValue = "<color=#22EE22FF>" + key.Key.AsDisplayValue() + "</color>";
             
             KeyDisplayValues.Add(key.ActionName, displayValue);
         }

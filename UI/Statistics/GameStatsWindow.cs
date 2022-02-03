@@ -118,6 +118,7 @@ namespace DevTools.Humankind.GUITools.UI
                     VirtualGrid = new VirtualGrid()
                     {
                         Grid = new ShortcutsGrid(),
+                        ExpandWidthOnSingleColumnGrid = false
                     }
                 };
                 

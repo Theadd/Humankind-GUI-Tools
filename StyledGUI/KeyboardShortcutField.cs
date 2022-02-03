@@ -1,9 +1,27 @@
+using System;
 using System.Linq;
 using BepInEx.Configuration;
 using UnityEngine;
 
 namespace StyledGUI
 {
+    public static class KeyboardShortcutEx
+    {
+        public static string AsDisplayValue(this KeyboardShortcut key)
+        {
+            return string.Join(" + ", key
+                .Serialize()
+                .ToUpper()
+                .Replace("CONTROL", "CTRL")
+                .Replace("RIGHT", "R")
+                .Replace("LEFT", "L")
+                .Replace("ARROW", "")
+                .Split(new string[] {" + "}, StringSplitOptions.None)
+                .Select(s => s == "L" ? "LEFT" : s == "R" ? "RIGHT" : s == "MOUSE0" ? "LCLICK" : s == "MOUSE1" ? "RCLICK" : s)
+                .Reverse());
+        }
+    }
+    
     public class KeyboardShortcutField
     {
         public KeyboardShortcut Value { get; private set; } = KeyboardShortcut.Empty;
@@ -30,7 +48,13 @@ namespace StyledGUI
 
         public string DisplayTextPrefix { get; set; } = "";
         public string DisplayTextPostfix { get; set; } = "";
-        public string DisplayText => DisplayTextPrefix + (Value.Equals(KeyboardShortcut.Empty) ? (initialValueProvided && !IsCapturing ? InitialValue.Serialize() : DefaultText) : Value.Serialize()) + DisplayTextPostfix;
+
+        public string DisplayText => DisplayTextPrefix +
+                                     (Value.Equals(KeyboardShortcut.Empty)
+                                         ? (initialValueProvided && !IsCapturing
+                                             ? InitialValue.AsDisplayValue()
+                                             : DefaultText)
+                                         : Value.AsDisplayValue()) + DisplayTextPostfix;
 
         /// <summary>
         /// 

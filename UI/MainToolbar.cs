@@ -43,6 +43,9 @@ namespace DevTools.Humankind.GUITools.UI
 
         public void RestoreVisibleWindows()
         {
+            if (!MainTools.IsDebugModeEnabled)
+                return;
+            
             if (GlobalSettings.AutoTurnTool.Value && WasVisible<AutoTurnToolWindow>()) Open<AutoTurnToolWindow>(window => AutoTurnTool = window);
             if (GlobalSettings.TechnologyTool.Value && WasVisible<TechnologyToolsWindow>()) Open<TechnologyToolsWindow>(window => TechnologyTool = window);
             if (GlobalSettings.MilitaryTool.Value && WasVisible<MilitaryToolsWindow>()) Open<MilitaryToolsWindow>(window => MilitaryTool = window);

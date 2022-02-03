@@ -17,11 +17,11 @@ namespace DevTools.Humankind.GUITools
 
         public static BasicToolWindow BasicWindow { get; set; }
 
-        public static GameInfoToolWindow GameInfoWindow { get; set; }
-        public static DistrictPainterToolWindow DistrictPainterWindow { get; set; }
-        public static SettlementToolsWindow SettlementWindow { get; set; }
-        public static StatisticsAndAchievementsToolWindow StatisticsAndAchievementsWindow { get; set; }
-        public static FameToolWindow FameWindow { get; set; }
+        // public static GameInfoToolWindow GameInfoWindow { get; set; }
+        // public static DistrictPainterToolWindow DistrictPainterWindow { get; set; }
+        // public static SettlementToolsWindow SettlementWindow { get; set; }
+        // public static StatisticsAndAchievementsToolWindow StatisticsAndAchievementsWindow { get; set; }
+        // public static FameToolWindow FameWindow { get; set; }
         public static GameStatsWindow StatsWindow { get; set; }
         public static BackScreenWindow BackScreen { get; set; }
         public static EndGameStatisticsWindow EndGameWindow { get; set; }
@@ -125,11 +125,11 @@ namespace DevTools.Humankind.GUITools
             Toolbar?.Close(saveState);
             InGameMenu?.Close();
             BasicWindow?.Close();
-            GameInfoWindow?.Close();
-            DistrictPainterWindow?.Close();
-            SettlementWindow?.Close();
-            StatisticsAndAchievementsWindow?.Close();
-            FameWindow?.Close();
+            // GameInfoWindow?.Close();
+            // DistrictPainterWindow?.Close();
+            // SettlementWindow?.Close();
+            // StatisticsAndAchievementsWindow?.Close();
+            // FameWindow?.Close();
             EndGameWindow?.Close();
             StatsWindow?.Close();
             BackScreen?.Close();
@@ -147,7 +147,7 @@ namespace DevTools.Humankind.GUITools
             // When true, draws a colored border for all UIOverlays backing a FloatingToolWindow derived class
             UIOverlay.DEBUG_DRAW_OVERLAY = false;
             // When not true, adds more verbosity to console output
-            Modding.Humankind.DevTools.DevTools.QuietMode = false;
+            Modding.Humankind.DevTools.DevTools.QuietMode = true;
         }
     }
 }
