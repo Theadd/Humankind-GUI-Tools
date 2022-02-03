@@ -158,7 +158,8 @@ namespace DevTools.Humankind.GUITools.UI
 
             KeyboardShortcut capturedKey = Entries[index].Field.Value;
 
-            Entries[index].HasInvalidValue = Entries.Any(entry => entry.Index != index && entry.KeyMap.Key.Equals(capturedKey));
+            Entries[index].HasInvalidValue = Entries
+                .Any(entry => entry.Index != index && entry.KeyMap.Key.Equals(capturedKey));
             IsDirty = true;
         }
         

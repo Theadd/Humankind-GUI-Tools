@@ -23,15 +23,24 @@ namespace DevTools.Humankind.GUITools.UI
 
         public bool IsInGame { get; private set; } = false;
 
+        public static bool IsDirty { get; set; }
+
         public bool IsInLoadingScreen => Amplitude.Mercury.LoadingScreen.Visible;
 
         protected bool Initialized = false;
         protected bool InitializedInGame = false;
         private bool _wasLiveEditorEnabled;
+        private int _lastScreenWidth;
+        private int _lastScreenHeight;
         
 
         protected virtual void Initialize()
         {
+            if (!Modding.Humankind.DevTools.DevTools.QuietMode)
+                Loggr.Log("Initializing BackScreenWindow...", ConsoleColor.Green);
+            
+            ViewController.Initialize();
+            
             ScreenOverlay.SetInnerRectAsVisible(false);
             OnCollapse();
 
@@ -40,6 +49,7 @@ namespace DevTools.Humankind.GUITools.UI
 
         protected virtual void InitializeInGame()
         {
+            SyncToScreenSize();
             LiveEditorMode.Initialize();
             ScreenOverlay.SetInnerRectAsVisible(false);
             ToolboxController.Initialize(this);
@@ -53,10 +63,16 @@ namespace DevTools.Humankind.GUITools.UI
             padding = new RectOffset(8, 8, 4, 4),
             fontSize = 10
         };
+        
+        public GUIStyle ScreenTagToggleButton { get; set; } = new GUIStyle(Styles.ColorableCellToggleStyle)
+        {
+            margin = new RectOffset(2, 0, 0, 0),
+            padding = new RectOffset(8, 8, 4, 4),
+            fontSize = 10
+        };
 
         public override void OnDrawUI(int _)
         {
-            // TODO: RuntimeGameState.Refresh();
             
             GUILayout.BeginArea(new Rect(0f, 0f, WindowRect.width, WindowRect.height));
             GUILayout.BeginHorizontal();
@@ -71,18 +87,7 @@ namespace DevTools.Humankind.GUITools.UI
                 GUILayout.BeginHorizontal();
                 {
                     GUI.backgroundColor = Color.black;
-
-                    if (IsInGame && LiveEditorMode.Enabled)
-                    {
-                        GUILayout.Label("LIVE EDITOR MODE", ScreenTag);
-                        if (LiveEditorMode.BrushType != LiveBrushType.None)
-                            GUILayout.Label("BRUSH TYPE: <b>" + LiveEditorMode.BrushType.ToString().ToUpper() + "</b>", ScreenTag);
-                        if (PaintBrush.ActionNameOnCreate != string.Empty)
-                            GUILayout.Label("ON PAINT: <b>" + PaintBrush.ActionNameOnCreate + "</b>", ScreenTag);      
-                        if (PaintBrush.ActionNameOnCreate != string.Empty)
-                            GUILayout.Label("ON ERASE: <b>" + PaintBrush.ActionNameOnDestroy + "</b>", ScreenTag);
-                    }
-
+                    DrawStatusBar();
                     GUI.backgroundColor = Color.white;
                 }
                 GUILayout.EndHorizontal();
@@ -91,7 +96,7 @@ namespace DevTools.Humankind.GUITools.UI
             GUILayout.EndHorizontal();
 
             
-            if (IsInGame)
+            if (IsInGame && ViewController.View == ViewType.InGame)
             {
                 SyncInGameUI();
                 LiveEditorMode.HexPainter.IsVisible =
@@ -102,8 +107,6 @@ namespace DevTools.Humankind.GUITools.UI
                 {
                     if (Event.current.type == EventType.Repaint)
                         LiveEditorMode.Run();
-                    
-                    
 
                     if (IsToolboxVisible != ToolboxController.Draw())
                     {
@@ -132,6 +135,124 @@ namespace DevTools.Humankind.GUITools.UI
             GUILayout.EndArea();
         }
 
+        private static string _normalModeTitle = string.Empty;
+        private static string _freeCamModeTitle = string.Empty;
+        private static string _liveEditorModeTitle = string.Empty;
+        private static string _overviewModeTitle = string.Empty;
+        
+        private static string _onPaintTitle = string.Empty;
+        private static string _onEraseTitle = string.Empty;
+        private static string _brushTypeTitle = string.Empty;
+        private static string _toolbarTitle = string.Empty;
+        private void UpdateDirtyStuff()
+        {
+            _normalModeTitle = (KeyMappings.TryGetKeyDisplayValue(
+                "BackToNormalModeInGameView", out var normalText) ? 
+                normalText + " " : "") + "<b>DEFAULT MODE</b>";
+            _freeCamModeTitle = (KeyMappings.TryGetKeyDisplayValue(
+                "ToggleFreeCameraMode", out var freeCamText) ? 
+                freeCamText + " " : "") + "<b>FREE CAMERA</b>";
+            _liveEditorModeTitle = (KeyMappings.TryGetKeyDisplayValue(
+                "ToggleLiveEditor", out var liveEditorText) ? 
+                liveEditorText + " " : "") + "<b>LIVE EDITOR</b>";
+            _overviewModeTitle = (KeyMappings.TryGetKeyDisplayValue(
+                "ToggleGameOverviewWindow", out var overviewText) ? 
+                overviewText + " " : "") + "<b>OVERVIEW</b>";
+            
+            
+            _brushTypeTitle = (KeyMappings.TryGetKeyDisplayValue(
+                LiveEditorMode.StickedToolboxActionName, out var brushKeyText) ? 
+                brushKeyText + " " : "") + "BRUSH TYPE: ";
+            _onPaintTitle = (KeyMappings.TryGetKeyDisplayValue(
+                LiveEditorMode.CreateUnderCursorActionName, out var onPaintKeyText) ? 
+                onPaintKeyText + " " : "") + "ON PAINT: ";
+            _onEraseTitle = (KeyMappings.TryGetKeyDisplayValue(
+                LiveEditorMode.DestroyUnderCursorActionName, out var onEraseKeyText) ? 
+                onEraseKeyText + " " : "") + "ON ERASE: ";
+            _toolbarTitle = (KeyMappings.TryGetKeyDisplayValue(
+                "ToggleHideToolbarWindow", out var toolbarKeyText) ? 
+                toolbarKeyText + " " : "") + "<b>TOOLBAR</b>";
+            
+            IsDirty = false;
+        }
+        
+        private void ViewModeToggleButton(string actionName, string displayText, ViewModeType viewMode)
+        {
+            var activeColor = (Color) new Color32(42, 42, 192, 240);
+            var active = ViewController.ViewMode == viewMode;
+            GUI.backgroundColor = active ? activeColor : Color.black;
+            if (GUILayout.Toggle(active, displayText, ScreenTagToggleButton) != active)
+            {
+                KeyMappings.Trigger(actionName);
+            }
+        }
+
+        private bool _drawNotInGameTags = false;
+        private bool _drawInGameTags = false;
+        private bool _drawLiveEditorTags = false;
+        private bool _drawDefaultModeTags = false;
+        
+        private void DrawStatusBar()
+        {
+            GUILayout.Space(8f);
+            if (_drawNotInGameTags)
+            {
+                GUILayout.BeginHorizontal();
+                {
+                    GUILayout.Label("<b>" + ViewController.View.ToString().ToUpper() + "</b>", ScreenTag);
+                }
+                GUILayout.EndHorizontal();
+            }
+            if (_drawInGameTags)
+            {
+                GUILayout.BeginHorizontal();
+                {
+                    ViewModeToggleButton("BackToNormalModeInGameView", _normalModeTitle, ViewModeType.Normal);
+                    ViewModeToggleButton("ToggleFreeCameraMode", _freeCamModeTitle, ViewModeType.FreeCamera);
+                    ViewModeToggleButton("ToggleLiveEditor", _liveEditorModeTitle, ViewModeType.LiveEditor);
+                    ViewModeToggleButton("ToggleGameOverviewWindow", _overviewModeTitle, ViewModeType.Overview);
+                    GUI.backgroundColor = Color.black;
+                }
+                GUILayout.EndHorizontal();
+                GUILayout.Space(12f);
+                
+                if (_drawLiveEditorTags)
+                {
+                    GUILayout.BeginHorizontal();
+                    {
+                        GUILayout.Label(
+                            _brushTypeTitle + "<b>" + LiveEditorMode.BrushType.ToString().ToUpper() + "</b>", ScreenTag);
+                        var onPaintText = PaintBrush.ActionNameOnCreate != string.Empty
+                            ? _onPaintTitle + "<b>" + PaintBrush.ActionNameOnCreate + "</b>"
+                            : "NO EFFECT ON PAINT";
+                        var onEraseText = PaintBrush.ActionNameOnDestroy != string.Empty
+                            ? _onEraseTitle + "<b>" + PaintBrush.ActionNameOnDestroy + "</b>"
+                            : "NO EFFECT ON ERASE";
+                        GUILayout.Label(onPaintText, ScreenTag);
+                        GUILayout.Label(onEraseText, ScreenTag);
+                    }
+                    GUILayout.EndHorizontal();
+                }
+                else if (_drawDefaultModeTags)
+                {
+                    GUILayout.BeginHorizontal();
+                    {
+                        GUILayout.Label(_toolbarTitle, ScreenTag);
+                    }
+                    GUILayout.EndHorizontal();
+                }
+            }
+
+            if (Event.current.type == EventType.Repaint)
+            {
+                _drawNotInGameTags = ViewController.View != ViewType.InGame;
+                _drawInGameTags = ViewController.View == ViewType.InGame;
+                _drawLiveEditorTags = IsInGame && LiveEditorMode.Enabled;
+                _drawDefaultModeTags = ViewController.ViewMode == ViewModeType.Normal;
+            }
+            GUILayout.Space(8f);
+        }
+
         private void SyncInGameUI()
         {
             if (_wasLiveEditorEnabled != LiveEditorMode.Enabled)
@@ -151,11 +272,28 @@ namespace DevTools.Humankind.GUITools.UI
                 _wasLiveEditorEnabled = LiveEditorMode.Enabled;
             }
         }
+        
+        protected virtual void SyncToScreenSize()
+        {
+            MinWindowRect = new Rect (0, 0, Screen.width, 24f);
+            MaxWindowRect = new Rect (0, 0, Screen.width, Screen.height);
+            _lastScreenWidth = Screen.width;
+            _lastScreenHeight = Screen.height;
+            InGameUIController.AdaptUIForBackScreenToFit(this);
+        }
 
         public override void OnZeroGUI()
         {
+            // ViewController.Initialize();
+            
             if (!Initialized)
                 Initialize();
+            
+            if (IsDirty) 
+                UpdateDirtyStuff();
+
+            if (InitializedInGame && (_lastScreenWidth != Screen.width || _lastScreenHeight != Screen.height))
+                SyncToScreenSize();
             
             bool isInGame = Amplitude.Mercury.Presentation.Presentation.IsPresentationRunning;
 

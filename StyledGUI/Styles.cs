@@ -90,6 +90,32 @@ namespace StyledGUI
                 },
             };
 
+        public static GUIStyle ColorableCellToggleStyle { get; set; } = new GUIStyle(StyledGUIUtility.DefaultSkin.button)
+        {
+            fontSize = 12,
+            margin = StyledGUIUtility.DefaultSkin.FindStyle("PopupWindow.Grid").margin,
+            padding = StyledGUIUtility.DefaultSkin.FindStyle("PopupWindow.Grid").padding,
+            normal = new GUIStyleState()
+            {
+                background = Alpha65WhitePixel,
+                textColor = Color.white
+            },
+            hover = new GUIStyleState()
+            {
+                background = ButtonHoverPixel,
+                textColor = Color.white
+            },
+            active = new GUIStyleState()
+            {
+                background = ButtonActivePixel,
+                textColor = BlueTextColor
+            },
+            onNormal = new GUIStyleState()
+            {
+                background = ButtonNormalPixel,
+                textColor = Color.white
+            }
+        };
         
         public static GUIStyle ColorableCellStyle { get; set; } =
             new GUIStyle(StyledGUIUtility.DefaultSkin.FindStyle("PopupWindow.Grid"))

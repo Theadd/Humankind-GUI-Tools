@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using BepInEx.Configuration;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
 using UnityEngine;
+using StyledGUI;
 
 namespace DevTools.Humankind.GUITools.UI
 {
@@ -14,37 +17,109 @@ namespace DevTools.Humankind.GUITools.UI
         public static string InteractionKeysGroup = "GAME INTERACTION";
         public static string UserInterfacesKeysGroup = "GAME UI / GUI TOOLS";
         public static string LiveEditorKeysGroup = "LIVE EDITOR MODE";
+
+        private static Dictionary<string, string> KeyDisplayValues { get; set; } = new Dictionary<string, string>();
+
+        public static bool TryGetKeyDisplayValue(string actionName, out string displayValue) =>
+            KeyDisplayValues.TryGetValue(actionName, out displayValue);
+
+        public static void Trigger(string actionName)
+        {
+            try
+            {
+                KeyMap key = Keys.First(k => k.ActionName == actionName);
+
+                if (key.Action != null)
+                {
+                    key.Action.Invoke();
+                }
+            }
+            catch (Exception e)
+            {
+                if (!Modding.Humankind.DevTools.DevTools.QuietMode)
+                    Loggr.Log(e);
+            }
+            
+        }
         
         public static KeyMap[] Keys { get; set; } = new KeyMap[]
         {
             new KeyMap("ToggleGameOverviewWindow")
             {
                 DisplayName = "GAME OVERVIEW FULLSCREEN OVERLAY",
-                Action = MainTools.ToggleGameOverviewWindow,
+                Action = () =>
+                {
+                    if (ViewController.View == ViewType.InGame)
+                    {
+                        bool wasEnabled = MainTools.IsGameOverviewEnabled;
+                        MainTools.ToggleGameOverviewWindow();
+                        ViewController.ViewMode = wasEnabled ? ViewModeType.Auto : ViewModeType.Overview;
+                    }
+                },
                 Key = new KeyboardShortcut(KeyCode.Tab),
                 GroupName = GlobalKeysGroup,
                 IsEditable = false,
                 IsRemovable = false
             },
+            new KeyMap("BackToNormalModeInGameView")
+            {
+                DisplayName = "DEFAULT VIEW MODE (IN GAME)",
+                Action = () =>
+                {
+                    if (ViewController.View == ViewType.InGame)
+                    {
+                        ViewController.ViewMode = ViewModeType.Normal;
+                    }
+                },
+                Key = new KeyboardShortcut(KeyCode.F2),
+                GroupName = GlobalKeysGroup,
+                IsEditable = true,
+                IsRemovable = true
+            },
             new KeyMap("ToggleHideToolbarWindow")
             {
                 DisplayName = "HIDE TOOLBAR WINDOW",
-                Action = MainTools.ToggleHideToolbarWindow,
-                Key = new KeyboardShortcut(KeyCode.Home),
-                GroupName = GlobalKeysGroup
+                Action = () =>
+                {
+                    if (ViewController.View == ViewType.InGame && ViewController.ViewMode == ViewModeType.Normal)
+                    {
+                        MainTools.ToggleHideToolbarWindow();
+                    }
+                },
+                Key = new KeyboardShortcut(KeyCode.Space),
+                GroupName = GlobalKeysGroup,
+                Mask = ViewModeType.Normal
             },
             new KeyMap("TogglePresentationFogOfWar")
             {
                 DisplayName = "PRESENTATION FOG OF WAR",
-                Action = ActionController.TogglePresentationFogOfWar,
-                Key = KeyboardShortcut.Empty,
+                Action = () =>
+                {
+                    if (ViewController.View == ViewType.InGame 
+                        && (ViewModeType.Normal | ViewModeType.LiveEditor | ViewModeType.FreeCamera)
+                        .HasFlag(ViewController.ViewMode))
+                    {
+                        ActionController.TogglePresentationFogOfWar();
+                    }
+                },
+                Key = new KeyboardShortcut(KeyCode.LeftArrow, KeyCode.UpArrow, KeyCode.RightArrow, KeyCode.DownArrow),
                 GroupName = CameraKeysGroup
             },
             new KeyMap("ToggleFreeCameraMode")
             {
                 DisplayName = "FREE CAMERA MODE",
-                Action = ActionController.ToggleFreeCameraMode,
-                Key = KeyboardShortcut.Empty,
+                Action = () =>
+                {
+                    if (ViewController.View == ViewType.InGame)
+                    {
+                        bool wasEnabled = FreeCameraController.Enabled;
+                        ActionController.ToggleFreeCameraMode();
+                        ViewController.ViewMode = wasEnabled ? ViewModeType.Auto : ViewModeType.FreeCamera;
+                        if (FreeCameraController.Enabled)
+                            UIController.IsAmplitudeUIVisible = false;
+                    }
+                },
+                Key = new KeyboardShortcut(KeyCode.F3),
                 GroupName = CameraKeysGroup
             },
             new KeyMap("SwitchCameraFieldOfView")
@@ -57,7 +132,15 @@ namespace DevTools.Humankind.GUITools.UI
             new KeyMap("ToggleLiveEditor")
             {
                 DisplayName = "TOGGLE LIVE EDITOR MODE ON/OFF",
-                Action = ActionController.ToggleLiveEditorMode,
+                Action = () =>
+                {
+                    if (ViewController.View == ViewType.InGame)
+                    {
+                        bool wasEnabled = LiveEditorMode.Enabled;
+                        ActionController.ToggleLiveEditorMode();
+                        ViewController.ViewMode = wasEnabled ? ViewModeType.Auto : ViewModeType.LiveEditor;
+                    }
+                },
                 Key = new KeyboardShortcut(KeyCode.F4),
                 GroupName = LiveEditorKeysGroup
             },
@@ -83,7 +166,7 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 DisplayName = "PAINT/CREATE SELECTED CONSTRUCTIBLE",
                 Action = null,
-                Key = new KeyboardShortcut(KeyCode.Mouse0),
+                Key = new KeyboardShortcut(KeyCode.Mouse1),
                 GroupName = LiveEditorKeysGroup,
                 IsGlobalShortcut = false,
                 IsRemovable = false,
@@ -92,7 +175,7 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 DisplayName = "DESTROY ARMY/DISTRICT/SETTLEMENT/ETC",
                 Action = null,
-                Key = new KeyboardShortcut(KeyCode.Mouse1),
+                Key = new KeyboardShortcut(KeyCode.Mouse1, KeyCode.LeftShift),
                 GroupName = LiveEditorKeysGroup,
                 IsGlobalShortcut = false,
                 IsRemovable = false,
@@ -101,7 +184,7 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 DisplayName = "PRINT TILE DEBUG INFO TO CONSOLE",
                 Action = null,
-                Key = new KeyboardShortcut(KeyCode.Mouse0, KeyCode.LeftAlt),
+                Key = KeyboardShortcut.Empty,
                 GroupName = LiveEditorKeysGroup,
                 IsGlobalShortcut = false,
             },
@@ -177,12 +260,26 @@ namespace DevTools.Humankind.GUITools.UI
         public static void Apply()
         {
             // Loggr.Log("IN KeyMappings.Apply()", ConsoleColor.Green);
+            KeyDisplayValues = new Dictionary<string, string>();
 
             foreach (var key in Keys)
             {
+                AddKeyDisplayName(key);
                 if (key.IsGlobalShortcut)
                     HumankindDevTools.RegisterAction(key.Key, key.ActionName, key.Action);
             }
+
+            BackScreenWindow.IsDirty = true;
+        }
+
+        private static void AddKeyDisplayName(KeyMap key)
+        {
+            if (key.Key.Equals(KeyboardShortcut.Empty))
+                return;
+            
+            string displayValue = "<color=#22EE22FF>" + key.Key.AsDisplayValue() + "</color>";
+            
+            KeyDisplayValues.Add(key.ActionName, displayValue);
         }
 
         public static void WritePlayerPreferences(FloatingToolWindow Window)
@@ -220,7 +317,9 @@ namespace DevTools.Humankind.GUITools.UI
         public bool IsRemovable { get; set; } = true;
         public bool IsEditable { get; set; } = true;
         public bool SaveAndRestore { get; set; } = true;
-        
+        // TODO: Apply Mask
+        public ViewModeType Mask { get; set; } = ViewModeType.All;
+
         private Action OnKeyChange { get; set; }
         private KeyboardShortcut _key = KeyboardShortcut.Empty;
 

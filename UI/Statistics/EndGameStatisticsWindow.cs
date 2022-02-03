@@ -101,21 +101,8 @@ namespace DevTools.Humankind.GUITools.UI
                 if (GUILayout.Button("<b>BACK TO THE GAME</b>", backButtonStyle,
                     GUILayout.Width(228f), GUILayout.Height(38f)))
                 {
-                    isClosing = true;
-
-                    // redundancy on purpose
-                    if ((EmpireEndGameStatus)EmpireEndGameStatusField.GetValue(HumankindGame.Empires[localEmpireIndex].Simulation) == EmpireEndGameStatus.Resigned)
-                    {
-                        EmpireEndGameStatusField.SetValue(HumankindGame.Empires[localEmpireIndex].Simulation, EmpireEndGameStatus.InGame);
-                        isEndGameStatusRestored = true;
-                    }
-
-                    Services.GetService<INetworkingService>()?.CreateMessageSender().SendLocalMessage(
-                        (LocalMessage) new SandboxControlMessage(
-                            (ISandboxControlInstruction) new ChangeLocalEmpireInstruction(localEmpireIndex)
-                        )
-                    );
-                    this.Close(false);
+                    MainTools.CloseEndGameStatisticsWindow();
+                    ViewController.ViewMode = ViewModeType.Auto;
                 }
                 GUI.backgroundColor = Color.white;
 
@@ -124,7 +111,22 @@ namespace DevTools.Humankind.GUITools.UI
 
         public override void Close(bool saveVisibilityStateBeforeClosing = false)
         {
-            base.Close(saveVisibilityStateBeforeClosing);
+            isClosing = true;
+
+            // redundancy on purpose
+            if ((EmpireEndGameStatus)EmpireEndGameStatusField.GetValue(HumankindGame.Empires[localEmpireIndex].Simulation) == EmpireEndGameStatus.Resigned)
+            {
+                EmpireEndGameStatusField.SetValue(HumankindGame.Empires[localEmpireIndex].Simulation, EmpireEndGameStatus.InGame);
+                isEndGameStatusRestored = true;
+            }
+
+            Services.GetService<INetworkingService>()?.CreateMessageSender().SendLocalMessage(
+                (LocalMessage) new SandboxControlMessage(
+                    (ISandboxControlInstruction) new ChangeLocalEmpireInstruction(localEmpireIndex)
+                )
+            );
+            
+            base.Close(false);
         }
     }
 }

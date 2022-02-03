@@ -69,11 +69,6 @@ namespace DevTools.Humankind.GUITools.UI
             CreateKey = KeyMappings.Keys.First(map => map.ActionName == CreateUnderCursorActionName).Key;
             DestroyKey = KeyMappings.Keys.First(map => map.ActionName == DestroyUnderCursorActionName).Key;
             DebugKey = KeyMappings.Keys.First(map => map.ActionName == DebugUnderCursorActionName).Key;
-                
-            var str = "\nCreateKey = " + CreateKey.Serialize() + 
-                      "\nDestroyKey = " + DestroyKey.Serialize() + "\n";
-            
-            Loggr.Log("\t>>> LiveEditorMode.UpdateKeyMappings()" + str, ConsoleColor.Magenta);
         }
 
         public static void UpdatePaintBrush()

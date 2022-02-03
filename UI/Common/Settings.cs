@@ -1,3 +1,6 @@
+using System;
+using DevTools.Humankind.GUITools.UI.PauseMenu;
+using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.Core;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
 using UnityEngine;
@@ -78,7 +81,8 @@ namespace DevTools.Humankind.GUITools.UI
     
     public static class GlobalSettings
     {
-        public static bool ShouldHideTools => false;    // TODO: // GameStatsWindow.IsVisibleFullscreen || PauseMenu.InGameMenuController.IsEndGameWindowVisible || (HideToolsInGameMenu.Value && PauseMenu.InGameMenuController.IsVisible);
+        public static bool ShouldHideTools => ViewController.View != ViewType.InGame 
+                                              || (ViewController.View == ViewType.InGame && ViewController.ViewMode != ViewModeType.Normal);    // TODO: // GameStatsWindow.IsVisibleFullscreen || PauseMenu.InGameMenuController.IsEndGameWindowVisible || (HideToolsInGameMenu.Value && PauseMenu.InGameMenuController.IsVisible);
 
         public static CheckboxSetting WindowTransparency = new CheckboxSetting(
             "Toggles the background transparency of all tool windows.", 
@@ -92,12 +96,12 @@ namespace DevTools.Humankind.GUITools.UI
             true
         );
         public static CheckboxSetting HideToolbarWindow = new CheckboxSetting(
-            "Hide the Toolbar window. \n<size=10>KEYBOARD SHORTCUT: <color=#33DD33DC>[<size=9> HOME </size>]</color></size>", "", false
+            "Shows/Hides the Toolbar window.", "", false
         );
-        public static CheckboxSetting HideToolsInGameMenu = new CheckboxSetting(
+        /*public static CheckboxSetting HideToolsInGameMenu = new CheckboxSetting(
             "Hide all Tool Windows in the Game Menu screen, including the Toolbar window.",
             "", false
-        );
+        );*/
 
         public static CheckboxSetting CheatingTools = new CheckboxSetting(R.Text.Bold("Cheating Tools section".ToUpper()));
         public static CheckboxSetting ProfilingTools = new CheckboxSetting(R.Text.Bold("Profiling Tools section".ToUpper()), "", null, false);
@@ -160,45 +164,68 @@ namespace DevTools.Humankind.GUITools.UI
             
             PlayerPrefs.SetInt(Window.GetPlayerPrefKey("WindowTransparency"), WindowTransparency.Value ? 1 : 0);
             PlayerPrefs.SetInt(Window.GetPlayerPrefKey("WindowTitleBar"), WindowTitleBar.Value ? 1 : 0);
-            PlayerPrefs.SetInt(Window.GetPlayerPrefKey("HideToolbarWindow"), HideToolbarWindow.Value ? 1 : 0);
-            PlayerPrefs.SetInt(Window.GetPlayerPrefKey("HideToolsInGameMenu"), HideToolsInGameMenu.Value ? 1 : 0);
+            // PlayerPrefs.SetInt(Window.GetPlayerPrefKey("HideToolbarWindow"), HideToolbarWindow.Value ? 1 : 0);
+            // PlayerPrefs.SetInt(Window.GetPlayerPrefKey("HideToolsInGameMenu"), HideToolsInGameMenu.Value ? 1 : 0);
 
         }
 
-        public static void ReadPlayerPreferences(FloatingToolWindow Window)
+        public static void ReadPlayerPreferences(FloatingToolWindow window)
         {
-            CheatingTools.Value = true;     // PlayerPrefs.GetInt(Window.GetPlayerPrefKey("CheatingTools"), CheatingTools.Value ? 1 : 0) != 0;
-            ProfilingTools.Value = false;   // PlayerPrefs.GetInt(Window.GetPlayerPrefKey("ProfilingTools"), ProfilingTools.Value ? 1 : 0) != 0;
-            DeveloperTools.Value = true;    // PlayerPrefs.GetInt(Window.GetPlayerPrefKey("DeveloperTools"), DeveloperTools.Value ? 1 : 0) != 0;
-            ExperimentalTools.Value = true; // PlayerPrefs.GetInt(Window.GetPlayerPrefKey("ExperimentalTools"), ExperimentalTools.Value ? 1 : 0) != 0;
-            MilitaryTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("MilitaryTool"), MilitaryTool.Value ? 1 : 0) != 0;
-            ArmyTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("ArmyTool"), ArmyTool.Value ? 1 : 0) != 0;
-            TechnologyTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("TechnologyTool"), TechnologyTool.Value ? 1 : 0) != 0;
-            ResourcesTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("ResourcesTool"), ResourcesTool.Value ? 1 : 0) != 0;
-            FramerateTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("FramerateTool"), FramerateTool.Value ? 1 : 0) != 0;
-            AutoTurnTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("AutoTurnTool"), AutoTurnTool.Value ? 1 : 0) != 0;
-            AITool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("AITool"), AITool.Value ? 1 : 0) != 0;
-            GPUProfilerTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("GPUProfilerTool"), GPUProfilerTool.Value ? 1 : 0) != 0;
-            MemoryProfilerTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("MemoryProfilerTool"), MemoryProfilerTool.Value ? 1 : 0) != 0;
-            AffinityTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("AffinityTool"), AffinityTool.Value ? 1 : 0) != 0;
-            ArchetypesTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("ArchetypesTool"), ArchetypesTool.Value ? 1 : 0) != 0;
-            GraphicsTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("GraphicsTool"), GraphicsTool.Value ? 1 : 0) != 0;
-            BattleAITool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("BattleAITool"), BattleAITool.Value ? 1 : 0) != 0;
-            CivicsTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("CivicsTool"), CivicsTool.Value ? 1 : 0) != 0;
-            CollectiblesTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("CollectiblesTool"), CollectiblesTool.Value ? 1 : 0) != 0;
-            DiplomacyTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("DiplomacyTool"), DiplomacyTool.Value ? 1 : 0) != 0;
-            TerrainPickingTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("TerrainPickingTool"), TerrainPickingTool.Value ? 1 : 0) != 0;
-            GameInfoTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("GameInfoTool"), GameInfoTool.Value ? 1 : 0) != 0;
-            DistrictPainterTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("DistrictPainterTool"), DistrictPainterTool.Value ? 1 : 0) != 0;
-            SettlementTools.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("SettlementTools"), SettlementTools.Value ? 1 : 0) != 0;
-            StatisticsAndAchievementsTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("StatisticsAndAchievementsTool"), StatisticsAndAchievementsTool.Value ? 1 : 0) != 0;
-            FameTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("FameTool"), FameTool.Value ? 1 : 0) != 0;
-            EndGameTool.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("EndGameTool"), EndGameTool.Value ? 1 : 0) != 0;
+            CheatingTools.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("CheatingTools"), CheatingTools.Value ? 1 : 0) != 0;
+            ProfilingTools.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("ProfilingTools"), ProfilingTools.Value ? 1 : 0) != 0;
+            DeveloperTools.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("DeveloperTools"), DeveloperTools.Value ? 1 : 0) != 0;
+            ExperimentalTools.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("ExperimentalTools"), ExperimentalTools.Value ? 1 : 0) != 0;
+            MilitaryTool.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("MilitaryTool"), MilitaryTool.Value ? 1 : 0) != 0;
+            ArmyTool.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("ArmyTool"), ArmyTool.Value ? 1 : 0) != 0;
+            TechnologyTool.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("TechnologyTool"), TechnologyTool.Value ? 1 : 0) != 0;
+            ResourcesTool.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("ResourcesTool"), ResourcesTool.Value ? 1 : 0) != 0;
+            FramerateTool.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("FramerateTool"), FramerateTool.Value ? 1 : 0) != 0;
+            AutoTurnTool.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("AutoTurnTool"), AutoTurnTool.Value ? 1 : 0) != 0;
+            AITool.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("AITool"), AITool.Value ? 1 : 0) != 0;
+            GPUProfilerTool.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("GPUProfilerTool"), GPUProfilerTool.Value ? 1 : 0) != 0;
+            MemoryProfilerTool.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("MemoryProfilerTool"), MemoryProfilerTool.Value ? 1 : 0) != 0;
+            AffinityTool.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("AffinityTool"), AffinityTool.Value ? 1 : 0) != 0;
+            ArchetypesTool.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("ArchetypesTool"), ArchetypesTool.Value ? 1 : 0) != 0;
+            GraphicsTool.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("GraphicsTool"), GraphicsTool.Value ? 1 : 0) != 0;
+            BattleAITool.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("BattleAITool"), BattleAITool.Value ? 1 : 0) != 0;
+            CivicsTool.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("CivicsTool"), CivicsTool.Value ? 1 : 0) != 0;
+            CollectiblesTool.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("CollectiblesTool"), CollectiblesTool.Value ? 1 : 0) != 0;
+            DiplomacyTool.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("DiplomacyTool"), DiplomacyTool.Value ? 1 : 0) != 0;
+            TerrainPickingTool.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("TerrainPickingTool"), TerrainPickingTool.Value ? 1 : 0) != 0;
+            GameInfoTool.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("GameInfoTool"), GameInfoTool.Value ? 1 : 0) != 0;
+            DistrictPainterTool.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("DistrictPainterTool"), DistrictPainterTool.Value ? 1 : 0) != 0;
+            SettlementTools.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("SettlementTools"), SettlementTools.Value ? 1 : 0) != 0;
+            StatisticsAndAchievementsTool.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("StatisticsAndAchievementsTool"), StatisticsAndAchievementsTool.Value ? 1 : 0) != 0;
+            FameTool.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("FameTool"), FameTool.Value ? 1 : 0) != 0;
+            EndGameTool.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("EndGameTool"), EndGameTool.Value ? 1 : 0) != 0;
 
-            WindowTransparency.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("WindowTransparency"), WindowTransparency.Value ? 1 : 0) != 0;
-            WindowTitleBar.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("WindowTitleBar"), WindowTitleBar.Value ? 1 : 0) != 0;
+            WindowTransparency.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("WindowTransparency"), WindowTransparency.Value ? 1 : 0) != 0;
+            WindowTitleBar.Value = PlayerPrefs.GetInt(window.GetPlayerPrefKey("WindowTitleBar"), WindowTitleBar.Value ? 1 : 0) != 0;
             HideToolbarWindow.Value = false;    // PlayerPrefs.GetInt(Window.GetPlayerPrefKey("HideToolbarWindow"), HideToolbarWindow.Value ? 1 : 0) != 0;
-            HideToolsInGameMenu.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("HideToolsInGameMenu"), HideToolsInGameMenu.Value ? 1 : 0) != 0;
+            // HideToolsInGameMenu.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("HideToolsInGameMenu"), HideToolsInGameMenu.Value ? 1 : 0) != 0;
+        }
+
+        private static readonly int _revisionId = 304;
+
+        public static void ResetPlayerPreferencesIfNecessary(FloatingToolWindow window)
+        {
+            if (window is InGameMenuWindow repository)
+            {
+                string revisionIdKey = repository.GetPlayerPrefKey("REVISION_ID");
+                if (_revisionId != PlayerPrefs.GetInt(revisionIdKey, 0))
+                {
+                    Loggr.Log("PREVIOUS REVISION_ID DIFFERS, RESETTING PLAYER PREFERENCES...", ConsoleColor.DarkMagenta);
+                    PlayerPrefs.DeleteAll();
+                    PlayerPrefs.Save();
+
+                    PlayerPrefs.SetInt(revisionIdKey, _revisionId);
+                    PlayerPrefs.Save();
+                }
+            }
+            else
+            {
+                throw new Exception("Invalid call to ResetPlayerPreferencesIfNecessary()");
+            }
         }
     }
 }

@@ -7,7 +7,7 @@ namespace DevTools.Humankind.GUITools.UI
 {
     public class FreeCameraController
     {
-        public bool cameraBool;
+        public static bool Enabled { get; set; } = false;
         public float nearClip = 33.93487f; //orig values
         public float farClip = 113.942f;
 
@@ -18,7 +18,7 @@ namespace DevTools.Humankind.GUITools.UI
 
         public void Setup()
         {
-            cameraBool = false;
+            Enabled = false;
             cameraGo = GameObject.Find("Camera");
             if (cameraGo == null)
             {
@@ -49,30 +49,26 @@ namespace DevTools.Humankind.GUITools.UI
         public void ToggleFreeCameraMode()
         {
             if (!cameraGo)
-            {
                 Setup();
-            }
 
-            cameraBool = !cameraBool;
-            presCamMover.enabled = !cameraBool;
-            FreeCam.enabled = cameraBool;
+            Enabled = !Enabled;
+            presCamMover.enabled = !Enabled;
+            FreeCam.enabled = Enabled;
             //GUI.enabled = !GUI.enabled;
 
-            if (cameraBool == true)
+            if (Enabled)
             {
                 UnityEngine.Cursor.lockState = CursorLockMode.Locked;
                 cameraCam.nearClipPlane = 0.01f;
                 cameraCam.farClipPlane = farClip * 2;
-                if (UIController.AreTooltipsVisible)
-                    ActionController.ToggleAmplitudeUIVisibility();
+                UIController.IsAmplitudeUIVisible = false;
             }
             else
             {
                 UnityEngine.Cursor.lockState = CursorLockMode.None;
                 cameraCam.nearClipPlane = nearClip;
                 cameraCam.farClipPlane = farClip;
-                if (!UIController.AreTooltipsVisible)
-                    ActionController.ToggleAmplitudeUIVisibility();
+                UIController.IsAmplitudeUIVisible = true;
             }
         }
     }
