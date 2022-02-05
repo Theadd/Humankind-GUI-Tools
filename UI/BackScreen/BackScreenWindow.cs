@@ -63,73 +63,90 @@ namespace DevTools.Humankind.GUITools.UI
             fontSize = 10
         };
 
+        private bool _drawOnLiveEditorEnabled = false;
+        private bool _drawInGame = false;
+        private bool _hexPainterVisible = false;
+        
         public override void OnDrawUI(int _)
         {
-            
-            GUILayout.BeginArea(new Rect(0f, 0f, WindowRect.width, WindowRect.height));
-            GUILayout.BeginHorizontal();
-            
-            GUILayout.BeginVertical();
-            
-            GUILayout.Space(2f);
-            
-            GUILayout.BeginHorizontal();
+            try
             {
-                if (!_drawOnToolboxVisible)
-                    GUILayout.FlexibleSpace();
-                else
-                    GUILayout.Space(ToolboxController.PanelWidth);
-                
+                GUILayout.BeginArea(new Rect(0f, 0f, WindowRect.width, WindowRect.height));
+                GUILayout.BeginHorizontal();
+
+                GUILayout.BeginVertical();
+
+                GUILayout.Space(2f);
+
                 GUILayout.BeginHorizontal();
                 {
-                    GUI.backgroundColor = Color.black;
-                    DrawStatusBar();
-                    GUI.backgroundColor = Color.white;
+                    if (!_drawOnToolboxVisible)
+                        GUILayout.FlexibleSpace();
+                    else
+                        GUILayout.Space(ToolboxController.PanelWidth);
+
+                    GUILayout.BeginHorizontal();
+                    {
+                        GUI.backgroundColor = Color.black;
+                        DrawStatusBar();
+                        GUI.backgroundColor = Color.white;
+                    }
+                    GUILayout.EndHorizontal();
+                    if (!_drawOnToolboxVisible)
+                        GUILayout.FlexibleSpace();
                 }
                 GUILayout.EndHorizontal();
-                if (!_drawOnToolboxVisible)
-                    GUILayout.FlexibleSpace();
-            }
-            GUILayout.EndHorizontal();
 
-            
-            if (IsInGame && ViewController.View == ViewType.InGame)
-            {
-                SyncInGameUI();
-                LiveEditorMode.HexPainter.IsVisible =
-                    LiveEditorMode.Enabled && LiveEditorMode.EditorMode == EditorModeType.TilePainter;
-                LiveEditorMode.HexPainter.Draw();
-                
-                if (LiveEditorMode.Enabled)
+
+                if (_drawInGame)
                 {
-                    if (Event.current.type == EventType.Repaint)
-                        LiveEditorMode.Run();
+                    SyncInGameUI();
+                    LiveEditorMode.HexPainter.IsVisible = _hexPainterVisible;
+                    LiveEditorMode.HexPainter.Draw();
 
-                    if (IsToolboxVisible != ToolboxController.Draw())
+                    if (_drawOnLiveEditorEnabled)
                     {
-                        IsToolboxVisible = !IsToolboxVisible;
+                        if (Event.current.type == EventType.Repaint)
+                            LiveEditorMode.Run();
 
-                        ScreenOverlay
-                            .SetInnerRect(ToolboxController.ToolboxRect)
-                            .SetInnerRectAsVisible(IsToolboxVisible);
+                        if (IsToolboxVisible != ToolboxController.Draw())
+                        {
+                            IsToolboxVisible = !IsToolboxVisible;
 
-                        if (IsToolboxVisible)
-                        {
-                            OnExpand();
-                        }
-                        else
-                        {
-                            OnCollapse();
+                            ScreenOverlay
+                                .SetInnerRect(ToolboxController.ToolboxRect)
+                                .SetInnerRectAsVisible(IsToolboxVisible);
+
+                            if (IsToolboxVisible)
+                            {
+                                OnExpand();
+                            }
+                            else
+                            {
+                                OnCollapse();
+                            }
                         }
                     }
                 }
+
+                if (Event.current.type == EventType.Repaint)
+                {
+                    _drawOnLiveEditorEnabled =
+                        IsInGame && ViewController.View == ViewType.InGame && LiveEditorMode.Enabled;
+                    _drawInGame = IsInGame && ViewController.View == ViewType.InGame;
+                    _hexPainterVisible = _drawOnLiveEditorEnabled &&
+                                         LiveEditorMode.EditorMode == EditorModeType.TilePainter;
+                }
+
+                GUILayout.EndVertical();
+
+                GUILayout.EndHorizontal();
+                GUILayout.EndArea();
             }
-            
-            
-            GUILayout.EndVertical();
-            
-            GUILayout.EndHorizontal();
-            GUILayout.EndArea();
+            catch (Exception)
+            {
+                // Ignored
+            }
         }
 
         private static string _normalModeTitle = string.Empty;
@@ -257,12 +274,16 @@ namespace DevTools.Humankind.GUITools.UI
             GUILayout.Space(8f);
         }
 
+        private bool _wasToolboxSticked = true;
+        
         private void SyncInGameUI()
         {
             if (_wasLiveEditorEnabled != LiveEditorMode.Enabled)
             {
                 if (LiveEditorMode.Enabled)
                 {
+                    if (_wasToolboxSticked)
+                        ToolboxController.IsSticked = true;
                     //ScreenLocker.LockFullScreenMouseEvents = true;
                     InGameUIController.SetVisibilityOfInGameOverlays(false);
                 }
@@ -271,6 +292,7 @@ namespace DevTools.Humankind.GUITools.UI
                     IsToolboxVisible = false;
                     ScreenOverlay.SetInnerRectAsVisible(false);
                     InGameUIController.SetVisibilityOfInGameOverlays(true);
+                    _wasToolboxSticked = ToolboxController.IsSticked;
                     ToolboxController.IsSticked = false;
                     ScreenLocker.LockFullScreenMouseEvents = false;
                     OnCollapse();

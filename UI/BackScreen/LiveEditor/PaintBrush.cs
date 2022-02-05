@@ -54,20 +54,14 @@ namespace DevTools.Humankind.GUITools.UI
         {
             var brush = LiveEditorMode.ActivePaintBrush; // ConstructibleDefinition
             var brushType = LiveEditorMode.BrushType;   // LiveBrushType
-            
-            Loggr.Log("LiveBrushType = " + brushType.ToString());
 
             if ((brushType | LiveBrushType.Unit) != brushType)
             {
                 if ((HexTile | HexTileType.Mountain) == HexTile)
                     return false;
 
-                
-                
                 if (EmpireIndex != -1)
                 {
-                    
-                    
                     if ((HexTile | HexTileType.Settlement) == HexTile)
                     {
                         // If Settlement is an Outpost, upgrade Outpost to city
@@ -154,20 +148,6 @@ namespace DevTools.Humankind.GUITools.UI
 
         public void Debug()
         {
-            /*Loggr.Log(Tile);
-            Loggr.Log(District);
-            Loggr.Log(HexTile.ToString());
-            if (Tile.Army != null)
-            {
-                Loggr.Log(Tile.Army);
-                PresentationArmy armyAtPosition = Presentation
-                    .PresentationEntityFactoryController
-                    .GetArmyAtPosition(Presentation.PresentationCursorController.CurrentHighlightedPosition) as PresentationArmy;
-                
-                Loggr.Log(armyAtPosition);
-            }*/
-            
-
             var found = TryGetSimulationEntitiesAt(
                 TileIndex,
                 out int empireIndex,
@@ -188,16 +168,6 @@ namespace DevTools.Humankind.GUITools.UI
             Loggr.Log(settlement, ConsoleColor.DarkBlue);
             Loggr.Log(district, ConsoleColor.DarkBlue);
             Loggr.Log(army, ConsoleColor.DarkBlue);
-            Loggr.Log("FOUND = " + found.ToString() + ", empireIndex = " + empireIndex, ConsoleColor.DarkBlue);
-            
-
-            /*ISerializable iTerritory;
-
-            var territoryFound = TryGetSimulationTerritoryAt(TileIndex, out iTerritory);
-
-            Amplitude.Mercury.Simulation.Territory territory = iTerritory as Amplitude.Mercury.Simulation.Territory;
-
-            Loggr.Log(territory);*/
         }
 
         public void UpdateTile()
@@ -309,8 +279,10 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 OnDestroy = null;
                 ActionNameOnDestroy = string.Empty;
-            } 
-            Loggr.Log(HexTile.ToString() + " " + TileIndex + " >> ACTIONS: " + ActionNameOnCreate + " / " + ActionNameOnDestroy + " \t\t" + districtName, ConsoleColor.Magenta);
+            }
+            
+            if (!Modding.Humankind.DevTools.DevTools.QuietMode)
+                Loggr.Log(HexTile.ToString() + " " + TileIndex + " >> ACTIONS: " + ActionNameOnCreate + " / " + ActionNameOnDestroy + " \t\t" + districtName, ConsoleColor.Magenta);
         }
 
     }

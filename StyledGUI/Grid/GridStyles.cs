@@ -19,6 +19,7 @@ namespace StyledGUI
         VirtualGridDisplayMode DisplayMode { get; set; }
         int GridModeChunkSize { get; set; }
         RectOffset CellPadding { get; set; }
+        Texture2D MissingTexture { get; set; }
     }
     
     public abstract class GridStyles : CellSpanGrid, IStyledGrid
@@ -31,5 +32,6 @@ namespace StyledGUI
         public virtual VirtualGridDisplayMode DisplayMode { get; set; } = VirtualGridDisplayMode.List;
         public virtual int GridModeChunkSize { get; set; } = 1;
         public virtual RectOffset CellPadding { get; set; } = new RectOffset(0, 0, 0, 0);
+        public virtual Texture2D MissingTexture { get; set; } = Graphics.TransparentTexture;
     }
 }

@@ -49,10 +49,18 @@ namespace DevTools.Humankind.GUITools.UI
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Button("<size=10><b>SELECT NONE</b></size>");
-                GUILayout.Button("<size=10><b>ZOOM IN</b></size>");
-                GUILayout.Button("<size=10><b>ZOOM OUT</b></size>");
+                if (GUILayout.Button("<size=10><b>SELECT NONE</b></size>"))
+                    ToolboxController.Toolbox.ConstructiblesGrid.VirtualGrid.Cursor.ClearSelection();
+                
+                GUI.enabled = ToolboxController.Toolbox.ConstructiblesGrid.GridModeChunkSize > 1;
+                if (GUILayout.Button("<size=10><b>ZOOM IN</b></size>"))
+                    ToolboxController.Toolbox.ConstructiblesGrid.GridModeChunkSize -= 1;
+                
+                GUI.enabled = ToolboxController.Toolbox.ConstructiblesGrid.GridModeChunkSize < 12;
+                if (GUILayout.Button("<size=10><b>ZOOM OUT</b></size>"))
+                    ToolboxController.Toolbox.ConstructiblesGrid.GridModeChunkSize += 1;
 
+                GUI.enabled = true;
                 GUILayout.FlexibleSpace();
 
                 var shouldDisplayAsGrid =
@@ -67,7 +75,7 @@ namespace DevTools.Humankind.GUITools.UI
             }
             GUILayout.EndHorizontal();
             
-            GUILayout.Space(30f);
+            GUILayout.Space(12f);
         }
         
         public void Draw()
@@ -85,11 +93,7 @@ namespace DevTools.Humankind.GUITools.UI
                 false, 
                 "horizontalscrollbar",
                 "verticalscrollbar",
-                "scrollview",
-                new GUILayoutOption[]
-                {
-                    // GUILayout.Height(300f)
-                });
+                "scrollview");
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(ScrollViewPadding.left);

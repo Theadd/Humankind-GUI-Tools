@@ -232,18 +232,13 @@ namespace StyledGUI.VirtualGridElements
                 var cellWidth = grid.Grid.GetCellWidth();
                 var cellHeight = grid.Grid.GetCellHeight();
                 var r = GUILayoutUtility.GetRect(cellWidth, cellHeight);
-                var nR = new Rect(
-                    r.x + grid.Grid.CellPadding.left,
-                    r.y + grid.Grid.CellPadding.top,
-                    cellWidth - grid.Grid.CellPadding.left - grid.Grid.CellPadding.right,
-                    cellHeight - grid.Grid.CellPadding.top - grid.Grid.CellPadding.bottom);
                 GUI.DrawTexture(
                     new Rect(
                         r.x + grid.Grid.CellPadding.left, 
                         r.y + grid.Grid.CellPadding.top, 
                         cellWidth - grid.Grid.CellPadding.left - grid.Grid.CellPadding.right, 
                         cellHeight - grid.Grid.CellPadding.top - grid.Grid.CellPadding.bottom), 
-                    self.Image ?? Graphics.TransparentTexture, 
+                    self.Image ? self.Image : grid.Grid.MissingTexture,
                     ScaleMode.ScaleToFit, 
                     true, 
                     1f,
@@ -251,8 +246,7 @@ namespace StyledGUI.VirtualGridElements
                     0, 
                     0
                 );
-                // Loggr.Log(self.Style ?? Styles.ColorableCellStyle);
-                // Loggr.Log(nR.ToString());
+
             }
 
             GUI.backgroundColor = prevTint;

@@ -44,12 +44,12 @@ namespace DevTools.Humankind.GUITools
                 TerrainWindow.OverrideVisibility = true;
             });*/
 
-            Loggr.Log("ViewController.View = " + ViewController.View.ToString(), ConsoleColor.Magenta);
+            // Loggr.Log("ViewController.View = " + ViewController.View.ToString(), ConsoleColor.Magenta);
 
-            if (ViewController.View == ViewType.InGame && IsDebugModeEnabled && !LiveEditorMode.Enabled)
+            /*if (ViewController.View == ViewType.InGame && IsDebugModeEnabled && !LiveEditorMode.Enabled)
             {
                 MappedActions.ToggleLiveEditorMode();
-            }
+            }*/
 
                     // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.UpArrow, UnityEngine.KeyCode.LeftControl), "ToggleBasicToolWindow", ToggleBasicToolWindow);
                     // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Home), "ToggleHideToolbarWindow", ToggleHideToolbarWindow);

@@ -16,7 +16,8 @@ namespace DevTools.Humankind.GUITools.UI
         public override VirtualGridDisplayMode DisplayMode { get; set; } = VirtualGridDisplayMode.Grid;
         public float CellHeight = 48f;
         public override RectOffset CellPadding { get; set; } = new RectOffset(8, 8, 2, 2);
-
+        public override Texture2D MissingTexture => _missingTex ? _missingTex : (_missingTex = Utils.LoadTexture("Missing"));
+        private Texture2D _missingTex;
     }
 
     public class ConstructiblesGrid
@@ -156,22 +157,9 @@ namespace DevTools.Humankind.GUITools.UI
                 {
                     Title = "<size=13><b>" + group.Title.ToUpper() + "</b></size>",
                     View = 1,
-                    Rows = group.Values.Select(c => new Row()
-                    {
-                        Cells = new[]
-                        {
-                            new Clickable4xCell()
-                            {
-                                Title = "<size=11><b>" + c.Title.ToUpper() + "</b></size>",
-                                Subtitle = c.Name,
-                                UniqueName = c.DefinitionName.ToString(),
-                                Category = c.Category == "None" ? "" : "<size=9>" + c.Category.ToUpper() + "</size>",
-                                Tags = c.Era > 0 ? "<size=10>ERA " + c.Era + "</size>" : "",
-                                Image = c.Image
-                                // Span = Grid.CellSpan8
-                            }
-                        }
-                    }).ToArray()
+                    Rows = Grid.DisplayMode == VirtualGridDisplayMode.Grid 
+                        ? GetRowsInGridMode(group.Values) 
+                        : GetRowsInListMode(group.Values)
                 }))
                 .ToArray();
         }
