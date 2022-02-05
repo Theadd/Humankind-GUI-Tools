@@ -12,13 +12,21 @@ namespace DevTools.Humankind.GUITools.UI
         public BackScreenWindow Window { get; set; }
         public ConstructiblesGrid ConstructiblesGrid { get; set; }
         public Vector2 ScrollViewPosition { get; set; } = Vector2.zero;
+        public float VScrollbarWidth { get; set; } = 10f;
+        public RectOffset ScrollViewPadding { get; set; } = new RectOffset(8, 8, 0, 0);
 
         public int ActiveTab { get; set; } = 0;
 
         private string[] tabNames =
         {
-            "<size=10><b> UNITS </b></size>", 
-            "<size=10><b> DISTRICTS </b></size>"
+            "<size=14><b> UNITS </b></size>", 
+            "<size=14><b> DISTRICTS </b></size>"
+        };
+        
+        private string[] displayModeNames =
+        {
+            "<size=10><b>LIST</b></size>", 
+            "<size=10><b>GRID</b></size>"
         };
 
         private List<Vector2> _storedScrollViewPositions = new List<Vector2>() {Vector2.zero, Vector2.zero};
@@ -27,17 +35,48 @@ namespace DevTools.Humankind.GUITools.UI
         {
             GUILayout.BeginArea(targetRect);
             {
+                if ((int)ConstructiblesGrid.FixedWidth != (int)(targetRect.width - VScrollbarWidth - ScrollViewPadding.left - ScrollViewPadding.right))
+                    ConstructiblesGrid.FixedWidth = (int)(targetRect.width - VScrollbarWidth - ScrollViewPadding.left - ScrollViewPadding.right);
+                
                 Draw();
             }
             GUILayout.EndArea();
         }
 
+        private void DrawToolboxHeader()
+        {
+            GUILayout.Space(8f);
+
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Button("<size=10><b>SELECT NONE</b></size>");
+                GUILayout.Button("<size=10><b>ZOOM IN</b></size>");
+                GUILayout.Button("<size=10><b>ZOOM OUT</b></size>");
+
+                GUILayout.FlexibleSpace();
+
+                var shouldDisplayAsGrid =
+                    (GUILayout.Toolbar(ToolboxController.IsDisplayModeGrid ? 1 : 0, displayModeNames) == 1);
+
+                if (shouldDisplayAsGrid != ToolboxController.IsDisplayModeGrid)
+                {
+                    ToolboxController.IsDisplayModeGrid = shouldDisplayAsGrid;
+                }
+
+                GUILayout.Space(8f);
+            }
+            GUILayout.EndHorizontal();
+            
+            GUILayout.Space(30f);
+        }
+        
         public void Draw()
         {
             GUILayout.BeginHorizontal();
             GUILayout.BeginVertical();
-            //GUILayout.Space(1f);
 
+            DrawToolboxHeader();
+            
             DrawTabs();
             
             ScrollViewPosition = GUILayout.BeginScrollView(
@@ -52,7 +91,9 @@ namespace DevTools.Humankind.GUITools.UI
                     // GUILayout.Height(300f)
                 });
             {
-                GUILayout.BeginVertical();
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(ScrollViewPadding.left);
+                GUILayout.BeginVertical(GUILayout.Width(ConstructiblesGrid.FixedWidth));
                 {
                     if (Event.current.type == EventType.MouseDown)
                         ConstructiblesGrid.VirtualGrid.FindCellAtPosition(Event.current.mousePosition, OnClickHandler);
@@ -60,13 +101,10 @@ namespace DevTools.Humankind.GUITools.UI
                     ConstructiblesGrid.Render();
 
                     GUILayout.Space(8f);
-                    GUILayout.Label("FOCUSED CONTROL: " + GUI.GetNameOfFocusedControl());
-                    if (GUILayout.Button("TESTME"))
-                    {
-                        Loggr.Log("EVENT TYPE = " + Event.current.type.ToString());
-                    }
                 }
                 GUILayout.EndVertical();
+                //GUILayout.Space(ScrollViewPadding.right);
+                GUILayout.EndHorizontal();
             }
             GUILayout.EndScrollView();
             GUILayout.Space(1f);

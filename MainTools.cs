@@ -22,6 +22,7 @@ namespace DevTools.Humankind.GUITools
         // public static SettlementToolsWindow SettlementWindow { get; set; }
         // public static StatisticsAndAchievementsToolWindow StatisticsAndAchievementsWindow { get; set; }
         // public static FameToolWindow FameWindow { get; set; }
+        public static TerrainPickingToolWindow TerrainWindow { get; set; }
         public static GameStatsWindow StatsWindow { get; set; }
         public static BackScreenWindow BackScreen { get; set; }
         public static EndGameStatisticsWindow EndGameWindow { get; set; }
@@ -30,18 +31,25 @@ namespace DevTools.Humankind.GUITools
         {
             if (IsDebugModeEnabled) Debug();
             
+            ViewController.Initialize(true);
+            
             UIController.OnceGUIHasLoaded(() => StyledGUIUtility.DefaultSkin = UIController.DefaultSkin);
             PopupToolWindow.Open<BackScreenWindow>(w => BackScreen = w);
             PopupToolWindow.Open<MainToolbar>(w => Toolbar = w);
             PopupToolWindow.Open<InGameMenuWindow>(w => InGameMenu = w);
+            
+            /*PopupToolWindow.Open<TerrainPickingToolWindow>(w =>
+            {
+                TerrainWindow = w;
+                TerrainWindow.OverrideVisibility = true;
+            });*/
 
-            // PopupToolWindow.Open<GameInfoToolWindow>(w => GameInfoWindow = w);
-            // PopupToolWindow.Open<DistrictPainterToolWindow>(w => DistrictPainterWindow = w);
-            // PopupToolWindow.Open<SettlementToolsWindow>(w => SettlementWindow = w);
-            // PopupToolWindow.Open<StatisticsAndAchievementsToolWindow>(w => StatisticsAndAchievementsWindow = w);
-            // PopupToolWindow.Open<FameToolWindow>(w => FameWindow = w);
-            // PopupToolWindow.Open<EndGameToolWindow>(w => EndGameWindow = w);
-            // PopupToolWindow.Open<GameStatsWindow>(w => StatsWindow = w);
+            Loggr.Log("ViewController.View = " + ViewController.View.ToString(), ConsoleColor.Magenta);
+
+            if (ViewController.View == ViewType.InGame && IsDebugModeEnabled && !LiveEditorMode.Enabled)
+            {
+                MappedActions.ToggleLiveEditorMode();
+            }
 
                     // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.UpArrow, UnityEngine.KeyCode.LeftControl), "ToggleBasicToolWindow", ToggleBasicToolWindow);
                     // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Home), "ToggleHideToolbarWindow", ToggleHideToolbarWindow);
@@ -62,8 +70,10 @@ namespace DevTools.Humankind.GUITools
                 new KeyboardShortcut(UnityEngine.KeyCode.F4, UnityEngine.KeyCode.LeftShift), 
                 "RebuildConstructibles", 
                 ConstructibleStore.Rebuild);*/
-        }
 
+            //ConstructibleStore.PrintBatchProcess();
+        }
+        
         public static void ToggleHideToolbarWindow() => GlobalSettings.HideToolbarWindow.Value = !GlobalSettings.HideToolbarWindow.Value;
 
         public static void ToggleHideAllUIWindows() =>
@@ -133,6 +143,7 @@ namespace DevTools.Humankind.GUITools
             EndGameWindow?.Close();
             StatsWindow?.Close();
             BackScreen?.Close();
+            TerrainWindow?.Close();
             ScreenLocker.Unload();
         }
         
@@ -147,7 +158,7 @@ namespace DevTools.Humankind.GUITools
             // When true, draws a colored border for all UIOverlays backing a FloatingToolWindow derived class
             UIOverlay.DEBUG_DRAW_OVERLAY = false;
             // When not true, adds more verbosity to console output
-            Modding.Humankind.DevTools.DevTools.QuietMode = true;
+            Modding.Humankind.DevTools.DevTools.QuietMode = false;
         }
     }
 }

@@ -102,6 +102,20 @@ namespace StyledGUI.VirtualGridElements
         public GUIStyle Style { get; set; } = null;
         public bool Enabled { get; set; } = true;
     }
+    
+    public class ClickableImageCell : ICell
+    {
+        public string Title { get; set; }
+        public string Subtitle { get; set; }
+        public string Tags { get; set; }
+        public string Category { get; set; }
+        public string UniqueName { get; set; }
+        public Texture Image { get; set; }
+        public Action<int> Action { get; set; }
+        public GUILayoutOption Span { get; set; } = null;
+        public GUIStyle Style { get; set; } = null;
+        public bool Enabled { get; set; } = true;
+    }
 
     public class TextElement : IElement
     {

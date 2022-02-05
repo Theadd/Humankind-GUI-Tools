@@ -46,5 +46,43 @@ namespace DevTools.Humankind.GUITools.UI
 
             }
         }
+
+        public static void SetVisibilityOfInGameOverlays(bool shouldBeVisible)
+        {
+            var inGameOverlays = GameObject.Find("/WindowsRoot/InGameOverlays")?.GetComponent<UITransform>();
+            var diplomaticBanner = GameObject.Find("/WindowsRoot/InGameSelection/DiplomaticBanner")?.GetComponent<UITransform>();
+            var terrainTooltipHolder = GameObject.Find("/WindowsRoot/InGameBackground/TerrainTooltipHolderWindow")?.GetComponent<UITransform>();
+            var terrainTooltipAnchorShift = GameObject.Find("/WindowsRoot/InGameBackground/TerrainTooltipHolderWindow/LowerLeftAnchorShifted")?.GetComponent<UITransform>();
+
+            if (inGameOverlays != null)
+                inGameOverlays.VisibleSelf = shouldBeVisible;
+            if (diplomaticBanner != null)
+                diplomaticBanner.VisibleSelf = shouldBeVisible;
+
+            if (ToolboxController.IsDocked && terrainTooltipHolder != null)
+            {
+                if (shouldBeVisible)
+                {
+                    terrainTooltipHolder.LeftAnchor = new UIBorderAnchor(true, terrainTooltipHolder.LeftAnchor.Percent,
+                        terrainTooltipHolder.LeftAnchor.Margin, 0);
+                    terrainTooltipHolder.BottomAnchor = new UIBorderAnchor(true, terrainTooltipHolder.BottomAnchor.Percent,
+                        terrainTooltipHolder.BottomAnchor.Margin, 0);
+                }
+                else
+                {
+                    Rect uiRect = terrainTooltipHolder.Parent.GlobalRect;
+                    float nextX = uiRect.width * ToolboxController.ToolboxRect.width / Screen.width;
+                    terrainTooltipHolder.LeftAnchor = new UIBorderAnchor(true, terrainTooltipHolder.LeftAnchor.Percent,
+                        terrainTooltipHolder.LeftAnchor.Margin, nextX);
+
+                    if (terrainTooltipAnchorShift != null)
+                    {
+                        terrainTooltipHolder.BottomAnchor = new UIBorderAnchor(true, terrainTooltipHolder.BottomAnchor.Percent,
+                            terrainTooltipHolder.BottomAnchor.Margin, terrainTooltipAnchorShift.BottomAnchor.Offset * -1);
+                    }
+                }
+            }
+
+        }
     }
 }

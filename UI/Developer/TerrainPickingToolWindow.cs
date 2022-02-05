@@ -27,7 +27,9 @@ namespace DevTools.Humankind.GUITools.UI
 
         public override string WindowGUIStyle { get; set; } = "PopupWindow";
 
-        public override bool ShouldBeVisible => !GlobalSettings.ShouldHideTools;
+        public override bool ShouldBeVisible => !GlobalSettings.ShouldHideTools || OverrideVisibility;
+        
+        public bool OverrideVisibility { get; set; } = false;
 
         public override bool ShouldRestoreLastWindowPosition => true;
 

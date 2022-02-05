@@ -10,7 +10,6 @@ using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.Core;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
 using UnityEngine;
-using String = System.String;
 
 namespace DevTools.Humankind.GUITools.UI
 {
@@ -34,11 +33,82 @@ namespace DevTools.Humankind.GUITools.UI
     {
         public static DefinitionsGroup[] Districts { get; set; }
         public static DefinitionsGroup[] Units { get; set; }
-        
-        private static string LastName(string name) => name.Substring(name.LastIndexOf('_') + 1);
-        private static int EraLevel(string name) => int.TryParse(name.Substring(name.LastIndexOf('_') - 1, 1), out int level) ? level : 0;
-        private static string UnitLastName(string name) => name.Substring(name.LastIndexOf('_', name.LastIndexOf('_') - 1) + 1);
-        private static int UnitEraLevel(string name) => int.TryParse(name.Substring(name.LastIndexOf('_', name.LastIndexOf('_') - 1) - 1, 1), out int level) ? level : 0;
+
+        public static string[] ExcludeNames { get; set; } = new[]
+        {
+            "Extension_Base_WondrousExtractor",
+            "Extension_Camp_BeforeCamp",
+            "Extension_Camp_CampCenter",
+            "Extension_Prototype_Base",
+            "Extension_Prototype_BaseEconomy",
+            "Extension_Prototype_BaseMilitary",
+            "Extension_Prototype_Emblematic",
+            "Ruin",
+        };
+
+        private static string LastName(string name)
+        {
+            string result;
+            
+            try
+            {
+                result = name.Substring(name.LastIndexOf('_') + 1);
+            }
+            catch (Exception)
+            {
+                result = name;
+            }
+
+            return result;
+        }
+
+        private static int EraLevel(string name)
+        {
+            int result = 0;
+            
+            try
+            {
+                result = int.TryParse(name.Substring(name.LastIndexOf('_') - 1, 1), out int level) ? level : 0;
+            }
+            catch (Exception)
+            {
+                result = 0;
+            }
+
+            return result;
+        }
+
+        private static string UnitLastName(string name)
+        {
+            string result;
+            
+            try
+            {
+                result = name.Substring(name.LastIndexOf('_', name.LastIndexOf('_') - 1) + 1);
+            }
+            catch (Exception)
+            {
+                result = name;
+            }
+
+            return result;
+        }
+
+        private static int UnitEraLevel(string name)
+        {
+            int result = 0;
+            
+            try
+            {
+                result = int.TryParse(name.Substring(name.LastIndexOf('_', name.LastIndexOf('_') - 1) - 1, 1), out int level) ? level : 0;
+            }
+            catch (Exception)
+            {
+                result = 0;
+            }
+
+            return result;
+        }
 
         public static Constructible CreateDistrictConstructible(DistrictDefinition definition)
         {
@@ -51,7 +121,7 @@ namespace DevTools.Humankind.GUITools.UI
                 Name = name,
                 Category = definition.Category.ToString(),
                 Era = EraLevel(definition.name),
-                Image = Utils.LoadTexture(definition.name)
+                Image = AssetHunter.LoadTexture(definition)     // Utils.LoadTexture(definition.name)
             };
         }
         
@@ -66,7 +136,7 @@ namespace DevTools.Humankind.GUITools.UI
                 Name = name,
                 Category = UIController.GetLocalizedTitle(definition.UnitClassName),
                 Era = UnitEraLevel(definition.name),
-                Image = Utils.LoadTexture(definition.name)
+                Image = AssetHunter.LoadTexture(definition)     // Utils.LoadTexture(definition.name)
             };
         }
 
@@ -89,11 +159,19 @@ namespace DevTools.Humankind.GUITools.UI
                 {
                     Title = "Common Districts",
                     Values = districts
-                        .Where(d => d.Prototype == "Extension_Prototype_BaseEconomy")
+                        .Where(d => 
+                            d.Prototype == "Extension_Prototype_BaseEconomy" || 
+                            d.Prototype == "Extension_Prototype_BaseMilitary" || 
+                            d.Prototype == "Extension_Prototype_Base" || 
+                            d.name == "Extension_Base_Harbour" || 
+                            d.name == "Extension_Base_Extractor" || 
+                            d.name == "Extension_Base_Luxury" || 
+                            d.name == "Exploitation" || 
+                            d.name == "Extension_Base_WondrousExtractor")
                         .Select(CreateDistrictConstructible)
                         .ToArray()
                 },
-                new DefinitionsGroup()
+                new DefinitionsGroup() 
                 {
                     Title = "Extractors & Manufactories",
                     Values = districts
@@ -139,6 +217,28 @@ namespace DevTools.Humankind.GUITools.UI
                         .ToArray()
                 }
             };
+        }
+
+        public static void PrintAllDistricts()
+        {
+            var constructibles = Databases
+                .GetDatabase<ConstructibleDefinition>(false);
+            var districts = constructibles
+                .OfType<DistrictDefinition>()
+                // .Take(6)
+                .ToArray();
+            
+            foreach (var district in districts)
+            {
+                var tex = AssetHunter.LoadTexture(district);
+                if (tex == null)
+                {
+                    Loggr.Log("%RED% TEXTURE FOR " + district.name + " NOT FOUND.");
+                    continue;
+                }
+                Loggr.Log(tex.name + " %GREEN% " + tex.width + "x" + tex.height);
+                // Loggr.Log("" + district.Name.ToString() + " => " + district.Prototype, ConsoleColor.DarkYellow);
+            }
         }
 
         public static void PrintBatchProcess()
@@ -191,6 +291,68 @@ namespace DevTools.Humankind.GUITools.UI
             foreach (var s in result)
             {
                 Loggr.Log(s, ConsoleColor.Green);
+            }
+            
+            Loggr.Log("\n\n");
+        }
+        
+        
+        public static void TempPrintAll()
+        {
+            var constructibles = Databases
+                .GetDatabase<ConstructibleDefinition>(false);
+
+            var key = new StaticString("Small");
+            var key2 = new StaticString("Default_Small");
+            List<ConstructibleDefinition> remaining = new List<ConstructibleDefinition>();
+            List<string> result = new List<string>();
+            int failCount = 0;
+            int count = 0;
+            string assetPath = "";
+            foreach (var definition in constructibles.GetValues())
+            {
+                count++;
+                try
+                {
+                    var uiTexture = UIController.DataUtils.GetImage(definition.Name, key);
+                    assetPath = "" + uiTexture.AssetPath;
+                    if (assetPath.Length == 0)
+                    {
+                        assetPath = "" + UIController.DataUtils.GetImage(definition.Name, key2).AssetPath;
+                    }
+                    if (assetPath.Length == 0)
+                    {
+                        remaining.Add(definition);
+                        failCount++;
+                        continue;
+                    }
+
+                    if (assetPath.Contains("Hawaiians"))
+                    {
+                        Loggr.Log(uiTexture);
+                        Loggr.Log(UIController.DataUtils.GetImage(definition.Name, key2));
+                    }
+
+                    // var filename = assetPath.Substring(assetPath.LastIndexOf('/') + 1);
+                    result.Add("%GREEN%" + definition.name + " %RED% " + assetPath);
+                }
+                catch (Exception)
+                {
+                    failCount++;
+                }
+            }
+            Loggr.Log(failCount.ToString() + " FAILED OUT OF " + count + ", REMAINING = " + remaining.Count, ConsoleColor.Green);
+            
+            foreach (var constructibleDefinition in remaining)
+            {
+                Loggr.Log("" + constructibleDefinition.name.ToString(), ConsoleColor.DarkCyan);
+            }
+            
+            Loggr.Log("\n\n");
+            
+            foreach (var s in result)
+            {
+                // Loggr.Log(s, ConsoleColor.Green);
             }
             
             Loggr.Log("\n\n");

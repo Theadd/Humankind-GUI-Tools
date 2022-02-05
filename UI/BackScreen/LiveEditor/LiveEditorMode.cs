@@ -79,12 +79,18 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 ActivePaintBrush = UIController.GameUtils.GetConstructibleDefinition(new StaticString(cell.UniqueName));
             }
+            else if (gridCell != null && gridCell.Cell is ClickableImageCell imageCell)
+            {
+                ActivePaintBrush = UIController.GameUtils.GetConstructibleDefinition(new StaticString(imageCell.UniqueName));
+            }
             else
             {
                 ActivePaintBrush = null;
             }
             UpdateBrushType();
         }
+
+        private static int _dirtyBrushCounter = 1;
 
         public static void Run()
         {
@@ -93,9 +99,22 @@ namespace DevTools.Humankind.GUITools.UI
 
             if (EditorMode == EditorModeType.TilePainter)
             {
-                if (DebugKey.IsPressed()) BrushPainter.Debug();
-                if (CreateKey.IsPressed()) BrushPainter.Paint();
-                if (DestroyKey.IsPressed()) BrushPainter.Erase();
+                if (BrushPainter.IsDirty)
+                {
+                    if (_dirtyBrushCounter-- == 0)
+                    {
+                        _dirtyBrushCounter = 1;
+                        BrushPainter.UpdateTile();
+                    }
+                }
+                
+                // if (DebugKey.IsPressed()) BrushPainter.Debug();
+                // if (CreateKey.IsPressed()) BrushPainter.Paint();
+                // if (DestroyKey.IsPressed()) BrushPainter.Erase();
+                
+                if (DebugKey.IsDown()) BrushPainter.Debug();
+                if (CreateKey.IsDown()) BrushPainter.Paint();
+                if (DestroyKey.IsDown()) BrushPainter.Erase();
             }
         }
 
@@ -128,7 +147,8 @@ namespace DevTools.Humankind.GUITools.UI
                 
                 // ...
             }
-
+            Loggr.Log("hellow orld");
+            Loggr.Log(ActivePaintBrush);
         }
     }
 }

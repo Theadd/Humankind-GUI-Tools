@@ -1,12 +1,6 @@
 ﻿using System;
-using Amplitude.Framework.Overlay;
-using Amplitude.Framework.Runtime;
-using Amplitude.Mercury.Overlay;
-using Amplitude.UI;
-using BepInEx.Configuration;
 using Modding.Humankind.DevTools;
 using UnityEngine;
-using Modding.Humankind.DevTools.DeveloperTools.UI;
 using StyledGUI;
 
 namespace DevTools.Humankind.GUITools.UI
@@ -36,9 +30,6 @@ namespace DevTools.Humankind.GUITools.UI
 
         protected virtual void Initialize()
         {
-            if (!Modding.Humankind.DevTools.DevTools.QuietMode)
-                Loggr.Log("Initializing BackScreenWindow...", ConsoleColor.Green);
-            
             ViewController.Initialize();
             
             ScreenOverlay.SetInnerRectAsVisible(false);
@@ -55,6 +46,7 @@ namespace DevTools.Humankind.GUITools.UI
             ToolboxController.Initialize(this);
 
             InitializedInGame = true;
+            ToolboxController.SetDocked(true);
         }
 
         public GUIStyle ScreenTag { get; set; } = new GUIStyle(Styles.ColorableCellStyle)
@@ -83,7 +75,11 @@ namespace DevTools.Humankind.GUITools.UI
             
             GUILayout.BeginHorizontal();
             {
-                GUILayout.FlexibleSpace();
+                if (!_drawOnToolboxVisible)
+                    GUILayout.FlexibleSpace();
+                else
+                    GUILayout.Space(ToolboxController.PanelWidth);
+                
                 GUILayout.BeginHorizontal();
                 {
                     GUI.backgroundColor = Color.black;
@@ -91,7 +87,8 @@ namespace DevTools.Humankind.GUITools.UI
                     GUI.backgroundColor = Color.white;
                 }
                 GUILayout.EndHorizontal();
-                GUILayout.FlexibleSpace();
+                if (!_drawOnToolboxVisible)
+                    GUILayout.FlexibleSpace();
             }
             GUILayout.EndHorizontal();
 
@@ -191,6 +188,7 @@ namespace DevTools.Humankind.GUITools.UI
         private bool _drawInGameTags = false;
         private bool _drawLiveEditorTags = false;
         private bool _drawDefaultModeTags = false;
+        private bool _drawOnToolboxVisible = false;
         
         private void DrawStatusBar()
         {
@@ -214,14 +212,19 @@ namespace DevTools.Humankind.GUITools.UI
                     GUI.backgroundColor = Color.black;
                 }
                 GUILayout.EndHorizontal();
-                GUILayout.Space(12f);
+                if (!_drawOnToolboxVisible)
+                    GUILayout.Space(12f);
                 
                 if (_drawLiveEditorTags)
                 {
+                    if (_drawOnToolboxVisible)
+                        GUILayout.FlexibleSpace();
+                    
                     GUILayout.BeginHorizontal();
                     {
-                        GUILayout.Label(
-                            _brushTypeTitle + "<b>" + LiveEditorMode.BrushType.ToString().ToUpper() + "</b>", ScreenTag);
+                        if (!_drawOnToolboxVisible)
+                            GUILayout.Label(
+                                _brushTypeTitle + "<b>" + LiveEditorMode.BrushType.ToString().ToUpper() + "</b>", ScreenTag);
                         var onPaintText = PaintBrush.ActionNameOnCreate != string.Empty
                             ? _onPaintTitle + "<b>" + PaintBrush.ActionNameOnCreate + "</b>"
                             : "NO EFFECT ON PAINT";
@@ -249,6 +252,7 @@ namespace DevTools.Humankind.GUITools.UI
                 _drawInGameTags = ViewController.View == ViewType.InGame;
                 _drawLiveEditorTags = IsInGame && LiveEditorMode.Enabled;
                 _drawDefaultModeTags = ViewController.ViewMode == ViewModeType.Normal;
+                _drawOnToolboxVisible = IsToolboxVisible;
             }
             GUILayout.Space(8f);
         }
@@ -260,11 +264,13 @@ namespace DevTools.Humankind.GUITools.UI
                 if (LiveEditorMode.Enabled)
                 {
                     //ScreenLocker.LockFullScreenMouseEvents = true;
+                    InGameUIController.SetVisibilityOfInGameOverlays(false);
                 }
                 else
                 {
                     IsToolboxVisible = false;
                     ScreenOverlay.SetInnerRectAsVisible(false);
+                    InGameUIController.SetVisibilityOfInGameOverlays(true);
                     ToolboxController.IsSticked = false;
                     ScreenLocker.LockFullScreenMouseEvents = false;
                     OnCollapse();

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Linq;
-using Amplitude.Framework;
-using Amplitude.Mercury.Data;
-using Amplitude.Mercury.Input;
+﻿using System.Linq;
+using Amplitude.Framework.Runtime;
 using BepInEx.Configuration;
 using Modding.Humankind.DevTools;
 using StyledGUI;
@@ -18,20 +15,17 @@ namespace DevTools.Humankind.GUITools.UI
         public static KeyboardShortcut ToolboxPreviewKey { get; set; } = new KeyboardShortcut(KeyCode.LeftControl);
         public static KeyboardShortcut StickedToolboxKey { get; set; } = new KeyboardShortcut(KeyCode.Space, KeyCode.LeftControl);
         public static bool IsVisible { get; private set; } = false;
-        public static bool IsSticked { get; set; } = false;
+        public static bool IsSticked { get; set; } = true;
+        public static bool IsDocked { get; private set; } = true;
         public static string InputFilter { get; set; } = string.Empty;
-        
-        // IInputService
-        
-        // private static IInputFilterService inputFilterService;
-        // private static int inputFilterHandle = -1;
+        public static RectOffset DockedMargin { get; set; } = new RectOffset(-2, 0, -2, -2);
+        public static float PanelWidth { get; set; } = 390f;
+        private static BackScreenWindow _backScreenWindow;
 
         public static void Initialize(BackScreenWindow window)
         {
-            if (ToolboxRect.Equals(Rect.zero))
-                SetToolboxRect(new Rect(
-                    300f, 220f, 360f,
-                    Mathf.Min(640f, Mathf.Ceil(Screen.height * 0.66f))));
+            _backScreenWindow = window;
+            AutoResize();
             
             ConstructibleStore.Rebuild();
             
@@ -61,8 +55,20 @@ namespace DevTools.Humankind.GUITools.UI
             };
 
             Toolbox.ConstructiblesGrid.VirtualGrid.Cursor.OnSelectionChange += LiveEditorMode.UpdatePaintBrush;
+            Toolbox.ConstructiblesGrid.GridModeChunkSize = 4;
+            IsDisplayModeGrid = true;
+        }
 
-            //CreateInputFilter();
+        public static bool IsDisplayModeGrid
+        {
+            get => Toolbox.ConstructiblesGrid.VirtualGrid.Grid.DisplayMode == VirtualGridDisplayMode.Grid;
+            set
+            {
+                Toolbox.ConstructiblesGrid.VirtualGrid.Grid.DisplayMode =
+                    value ? VirtualGridDisplayMode.Grid : VirtualGridDisplayMode.List;
+                Toolbox.ConstructiblesGrid.VirtualGrid.ExpandWidthOnSingleColumnGrid = !value;
+                Toolbox.ConstructiblesGrid.GridModeChunkSize = Toolbox.ConstructiblesGrid.GridModeChunkSize * 1;
+            }
         }
 
         public static void SetToolboxRect(Rect newRect)
@@ -122,37 +128,52 @@ namespace DevTools.Humankind.GUITools.UI
         private static bool AreKeysHeldDown(KeyboardShortcut shortcut) => 
             Input.GetKey(shortcut.MainKey) && shortcut.Modifiers.Count(key => !Input.GetKey(key)) == 0;
 
-        /*private static void CreateInputFilter()
-        {
-            if (inputFilterService == null)
-                inputFilterService = Services.GetService<IInputFilterService>();
-            
-            inputFilterHandle = inputFilterService.CreateFilter(
-                InputFilterDeviceMask.Keyboard 
-                    | InputFilterDeviceMask.Gamepad 
-                    | InputFilterDeviceMask.Mouse 
-                    | InputFilterDeviceMask.Touch, 
-                InputLayer.InputFilter.PauseMenuModalWindow.Group, 
-                InputLayer.InputFilter.PauseMenuModalWindow.Priority, 
-                false);
-        }*/
-        
         private static void OnShow()
         {
+            AutoResize();
+            
             IsVisible = true;
-            //inputFilterService.SetFilterActive(inputFilterHandle, true);
         }
 
         private static void OnHide()
         {
             IsVisible = false;
-            //inputFilterHandle = inputFilterService.DestroyFilter(inputFilterHandle);
-            //CreateInputFilter();
+        }
+
+        public static void AutoResize()
+        {
+            if (IsDocked)
+            {
+                SetToolboxRect(new Rect(DockedMargin.left, DockedMargin.top, PanelWidth,
+                    Screen.height - (DockedMargin.top + DockedMargin.bottom)));
+            }
+            else if (ToolboxRect.Equals(Rect.zero))
+                SetToolboxRect(new Rect(
+                    300f, 220f, PanelWidth,
+                    Mathf.Min(640f, Mathf.Ceil(Screen.height * 0.66f))));
+        }
+
+        public static void SetDocked(bool shouldBeDocked)
+        {
+            if (_backScreenWindow == null)
+            {
+                Loggr.Log(new RuntimeException("ToolboxController has not been initialized yet."));
+                return;
+            }
+            IsDocked = shouldBeDocked;
+            if (IsDocked)
+            {
+                _backScreenWindow.ScreenOverlay.InnerCanvas.CornerRadius = 0;
+            }
+            else
+            {
+                _backScreenWindow.ScreenOverlay.InnerCanvas.CornerRadius = 7f;
+            }
+            AutoResize();
         }
 
         public static void Unload()
         {
-            //inputFilterHandle = inputFilterService.DestroyFilter(inputFilterHandle);
             if (Toolbox != null)
                 Toolbox.ConstructiblesGrid.VirtualGrid.Cursor.OnSelectionChange -= LiveEditorMode.UpdatePaintBrush;
         }

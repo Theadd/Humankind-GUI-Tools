@@ -65,8 +65,8 @@ namespace StyledGUI
             return this;
         }
 
-        public float GetCellWidth() => CellWidth;
-        public float GetCellSpace() => CellSpace;
+        public virtual float GetCellWidth() => CellWidth;
+        public virtual float GetCellSpace() => CellSpace;
         public virtual float GetCellHeight() => 22f;
     }
 
