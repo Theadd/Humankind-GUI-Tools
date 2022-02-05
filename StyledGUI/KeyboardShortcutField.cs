@@ -15,9 +15,13 @@ namespace StyledGUI
                 .Replace("CONTROL", "CTRL")
                 .Replace("RIGHT", "R")
                 .Replace("LEFT", "L")
-                .Replace("ARROW", "")
                 .Split(new string[] {" + "}, StringSplitOptions.None)
-                .Select(s => s == "L" ? "LEFT" : s == "R" ? "RIGHT" : s == "MOUSE0" ? "LCLICK" : s == "MOUSE1" ? "RCLICK" : s)
+                .Select(s => s == "LARROW" ? "LEFT" : 
+                    s == "RARROW" ? "RIGHT" : 
+                    s == "UPARROW" ? "UP" : 
+                    s == "DOWNARROW" ? "DOWN" : 
+                    s == "MOUSE0" ? "LCLICK" : 
+                    s == "MOUSE1" ? "RCLICK" : s)
                 .Reverse());
         }
     }
