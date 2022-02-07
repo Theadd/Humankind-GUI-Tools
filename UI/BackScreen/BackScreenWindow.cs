@@ -1,4 +1,5 @@
 ﻿using System;
+using Amplitude.UI.Interactables;
 using Modding.Humankind.DevTools;
 using UnityEngine;
 using StyledGUI;
@@ -338,12 +339,28 @@ namespace DevTools.Humankind.GUITools.UI
         {
             GUI.BringWindowToBack(WindowID);
             WindowRect = MinWindowRect;
+            ScreenOverlay.InnerControl.MouseEnter -= OnMouseEnterEventHandler;
+            ScreenOverlay.InnerControl.MouseLeave -= OnMouseLeaveEventHandler;
         }
 
         public void OnExpand()
         {
             GUI.BringWindowToFront(WindowID);
             WindowRect = MaxWindowRect;
+            ScreenOverlay.InnerControl.MouseEnter += OnMouseEnterEventHandler;
+            ScreenOverlay.InnerControl.MouseLeave += OnMouseLeaveEventHandler;
+        }
+        
+        public void OnMouseEnterEventHandler(IUIControl control, Vector2 coords)
+        {
+            Loggr.Log("OnMouseEnterEventHandler");
+            LiveEditorMode.SetMouseOverUIControls(true);
+        }
+        
+        public void OnMouseLeaveEventHandler(IUIControl control, Vector2 coords)
+        {
+            Loggr.Log("\tOnMouseLeaveEventHandler");
+            LiveEditorMode.SetMouseOverUIControls(false);
         }
     }
 }

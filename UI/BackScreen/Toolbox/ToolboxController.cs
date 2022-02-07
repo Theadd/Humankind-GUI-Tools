@@ -11,7 +11,7 @@ namespace DevTools.Humankind.GUITools.UI
     {
         public static Rect ToolboxRect { get; private set; } = Rect.zero;
         public static Rect InputFilterRect { get; private set; } = Rect.zero;
-        public static BackScreenToolbox Toolbox { get; set; }
+        public static ConstructiblesToolbox Toolbox { get; set; }
         public static KeyboardShortcut ToolboxPreviewKey { get; set; } = new KeyboardShortcut(KeyCode.LeftControl);
         public static KeyboardShortcut StickedToolboxKey { get; set; } = new KeyboardShortcut(KeyCode.Space, KeyCode.LeftControl);
         public static bool IsVisible { get; private set; } = false;
@@ -29,7 +29,7 @@ namespace DevTools.Humankind.GUITools.UI
             
             ConstructibleStore.Rebuild();
             
-            Toolbox = new BackScreenToolbox()
+            Toolbox = new ConstructiblesToolbox()
             {
                 Window = window,
                 ConstructiblesGrid = new ConstructiblesGrid()

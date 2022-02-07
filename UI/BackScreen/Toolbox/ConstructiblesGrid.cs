@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Modding.Humankind.DevTools;
 using StyledGUI;
 using StyledGUI.VirtualGridElements;
 using UnityEngine;
@@ -41,8 +40,6 @@ namespace DevTools.Humankind.GUITools.UI
                 var cellWidth = totalCellWidth - Grid.CellPadding.left - Grid.CellPadding.right;
                 ((ConstructiblesStyledGrid) Grid).CellHeight = (float) cellWidth + Grid.CellPadding.top + Grid.CellPadding.bottom;
                 ((ConstructiblesStyledGrid) Grid).Resize(totalCellWidth, ((ConstructiblesStyledGrid) Grid).GetCellSpace());
-                // Loggr.Log("CELL BOUNDS = (" + Grid.GetCellWidth() + "x" + Grid.GetCellHeight() + ") +" + Grid.GetCellSpace());
-                // Loggr.Log("FixedWidth = " + FixedWidth); 
             }
         }
 

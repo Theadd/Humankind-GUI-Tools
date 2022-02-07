@@ -46,17 +46,25 @@ namespace DevTools.Humankind.GUITools.UI
         private static KeyboardShortcut DebugKey { get; set; }
 
         private static PaintBrush BrushPainter { get; set; }
+        private static bool IsMouseOverUIControls { get; set; }
 
         public static void Initialize()
         {
             HexPainter = new HexOverlay(HandleOnTileChange);
             BrushPainter = new PaintBrush();
+            IsMouseOverUIControls = false;
             UpdateKeyMappings();
         }
 
         private static void HandleOnTileChange()
         {
             BrushPainter.UpdateTile();
+        }
+        
+        public static void SetMouseOverUIControls(bool isMouseOverUIControls)
+        {
+            IsMouseOverUIControls = isMouseOverUIControls;
+            HexPainter.IsVisible = !IsMouseOverUIControls;
         }
         
         public static void UpdateKeyMappings()
@@ -97,7 +105,7 @@ namespace DevTools.Humankind.GUITools.UI
             if (!Enabled)
                 return;
 
-            if (EditorMode == EditorModeType.TilePainter)
+            if (EditorMode == EditorModeType.TilePainter && !IsMouseOverUIControls)
             {
                 if (BrushPainter.IsDirty)
                 {
@@ -147,8 +155,6 @@ namespace DevTools.Humankind.GUITools.UI
                 
                 // ...
             }
-            Loggr.Log("hellow orld");
-            Loggr.Log(ActivePaintBrush);
         }
     }
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public class BackScreenToolbox
+    public class ConstructiblesToolbox
     {
         public BackScreenWindow Window { get; set; }
         public ConstructiblesGrid ConstructiblesGrid { get; set; }
