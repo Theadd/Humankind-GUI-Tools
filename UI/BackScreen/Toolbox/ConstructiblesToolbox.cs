@@ -60,6 +60,7 @@ namespace DevTools.Humankind.GUITools.UI
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndScrollView();
+            DrawSelectionPreview();
             GUILayout.Space(1f);
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();

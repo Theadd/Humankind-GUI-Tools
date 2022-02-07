@@ -1,12 +1,20 @@
-﻿using Amplitude.UI;
+﻿using System.Reflection;
+using Amplitude.UI;
 using Modding.Humankind.DevTools;
+using Modding.Humankind.DevTools.Core;
 using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI
 {
     public static class InGameUIController
     {
-
+        public static bool IsMouseCovered =>
+            (bool) mouseCovered.GetValue(Amplitude.Mercury.Presentation.Presentation.PresentationCursorController);
+        
+        private static readonly FieldInfo mouseCovered =
+            typeof(Amplitude.Mercury.Presentation.PresentationCursorController).GetField("mouseCovered",
+                R.NonPublicInstance);
+        
         public static void AdaptUIForBackScreenToFit(BackScreenWindow backScreen)
         {
             var battleScreen = GameObject.Find("/WindowsRoot/InGameSelection/BattleScreen")

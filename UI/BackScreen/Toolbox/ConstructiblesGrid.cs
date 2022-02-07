@@ -118,10 +118,10 @@ namespace DevTools.Humankind.GUITools.UI
                     {
                         Cells = group.Select(c => new ClickableImageCell()
                         {
-                            Title = "<size=11><b>" + c.Title.ToUpper() + "</b></size>",
+                            Title = c.Title.ToUpper(),
                             Subtitle = c.Name,
                             UniqueName = c.DefinitionName.ToString(),
-                            Category = c.Category == "None" ? "" : "<size=9>" + c.Category.ToUpper() + "</size>",
+                            Category = c.Category == "" ? "" : "" + c.Category.ToUpper(),
                             Tags = c.Era > 0 ? "<size=10>ERA " + c.Era + "</size>" : "",
                             Image = c.Image,
                             Style = CellImageStyle,

@@ -339,19 +339,19 @@ namespace DevTools.Humankind.GUITools.UI
         {
             GUI.BringWindowToBack(WindowID);
             WindowRect = MinWindowRect;
-            ScreenOverlay.InnerControl.MouseEnter -= OnMouseEnterEventHandler;
-            ScreenOverlay.InnerControl.MouseLeave -= OnMouseLeaveEventHandler;
+            // ScreenOverlay.InnerControl.MouseEnter -= OnMouseEnterEventHandler;
+            // ScreenOverlay.InnerControl.MouseLeave -= OnMouseLeaveEventHandler;
         }
 
         public void OnExpand()
         {
             GUI.BringWindowToFront(WindowID);
             WindowRect = MaxWindowRect;
-            ScreenOverlay.InnerControl.MouseEnter += OnMouseEnterEventHandler;
-            ScreenOverlay.InnerControl.MouseLeave += OnMouseLeaveEventHandler;
+            // ScreenOverlay.InnerControl.MouseEnter += OnMouseEnterEventHandler;
+            // ScreenOverlay.InnerControl.MouseLeave += OnMouseLeaveEventHandler;
         }
         
-        public void OnMouseEnterEventHandler(IUIControl control, Vector2 coords)
+        /*public void OnMouseEnterEventHandler(IUIControl control, Vector2 coords)
         {
             Loggr.Log("OnMouseEnterEventHandler");
             LiveEditorMode.SetMouseOverUIControls(true);
@@ -361,6 +361,6 @@ namespace DevTools.Humankind.GUITools.UI
         {
             Loggr.Log("\tOnMouseLeaveEventHandler");
             LiveEditorMode.SetMouseOverUIControls(false);
-        }
+        }*/
     }
 }

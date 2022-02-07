@@ -19,7 +19,7 @@ namespace DevTools.Humankind.GUITools.UI
         public static bool IsDocked { get; private set; } = true;
         public static string InputFilter { get; set; } = string.Empty;
         public static RectOffset DockedMargin { get; set; } = new RectOffset(-2, 0, -2, -2);
-        public static float PanelWidth { get; set; } = 390f;
+        public static float PanelWidth { get; set; } = 410f;
         private static BackScreenWindow _backScreenWindow;
 
         public static void Initialize(BackScreenWindow window)
@@ -45,7 +45,7 @@ namespace DevTools.Humankind.GUITools.UI
                         DrawRowHeaders = false,
                         DrawSectionHeaders = true,
                         VisibleViews = new[] { 0 },
-                        AlternateType = VirtualGridAlternateType.Rows,
+                        AlternateType = VirtualGridAlternateType.Columns,
                         Cursor = new VirtualGridCursor()
                         {
                             SelectionType = VirtualGridSelectionType.OptionalSingleCell,
@@ -55,7 +55,7 @@ namespace DevTools.Humankind.GUITools.UI
             };
 
             Toolbox.ConstructiblesGrid.VirtualGrid.Cursor.OnSelectionChange += LiveEditorMode.UpdatePaintBrush;
-            Toolbox.ConstructiblesGrid.GridModeChunkSize = 4;
+            Toolbox.ConstructiblesGrid.GridModeChunkSize = 5;
             IsDisplayModeGrid = true;
         }
 
@@ -66,6 +66,8 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 Toolbox.ConstructiblesGrid.VirtualGrid.Grid.DisplayMode =
                     value ? VirtualGridDisplayMode.Grid : VirtualGridDisplayMode.List;
+                Toolbox.ConstructiblesGrid.VirtualGrid.AlternateType =
+                    value ? VirtualGridAlternateType.Columns : VirtualGridAlternateType.Rows;
                 Toolbox.ConstructiblesGrid.VirtualGrid.ExpandWidthOnSingleColumnGrid = !value;
                 Toolbox.ConstructiblesGrid.GridModeChunkSize = Toolbox.ConstructiblesGrid.GridModeChunkSize * 1;
             }

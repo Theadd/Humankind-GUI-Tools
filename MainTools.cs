@@ -46,15 +46,13 @@ namespace DevTools.Humankind.GUITools
 
             // Loggr.Log("ViewController.View = " + ViewController.View.ToString(), ConsoleColor.Magenta);
 
-            /*if (ViewController.View == ViewType.InGame && IsDebugModeEnabled && !LiveEditorMode.Enabled)
-            {
-                MappedActions.ToggleLiveEditorMode();
-            }*/
+            if (IsDebugModeEnabled)
+                TestingPlayground.Run();
 
-                    // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.UpArrow, UnityEngine.KeyCode.LeftControl), "ToggleBasicToolWindow", ToggleBasicToolWindow);
-                    // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Home), "ToggleHideToolbarWindow", ToggleHideToolbarWindow);
-                    // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Tab), "ToggleGameOverviewWindow", ToggleGameOverviewWindow);
-           
+            // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.UpArrow, UnityEngine.KeyCode.LeftControl), "ToggleBasicToolWindow", ToggleBasicToolWindow);
+            // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Home), "ToggleHideToolbarWindow", ToggleHideToolbarWindow);
+            // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Tab), "ToggleGameOverviewWindow", ToggleGameOverviewWindow);
+
             /*HumankindDevTools.RegisterAction(
                 new KeyboardShortcut(UnityEngine.KeyCode.Insert), 
                 "ToggleHideAllGUITools", 
@@ -62,10 +60,10 @@ namespace DevTools.Humankind.GUITools
 
             // Maps [ESC] key to: GodMode.Enabled = false 
             // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Escape), "CancelGodMode", CancelGodMode);
-            
+
             // ToggleGameOverviewWindow(); 
             // ToggleBasicToolWindow(); 
-            
+
             /*HumankindDevTools.RegisterAction(
                 new KeyboardShortcut(UnityEngine.KeyCode.F4, UnityEngine.KeyCode.LeftShift), 
                 "RebuildConstructibles", 

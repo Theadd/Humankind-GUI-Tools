@@ -61,11 +61,11 @@ namespace DevTools.Humankind.GUITools.UI
             BrushPainter.UpdateTile();
         }
         
-        public static void SetMouseOverUIControls(bool isMouseOverUIControls)
+        /*public static void SetMouseOverUIControls(bool isMouseOverUIControls)
         {
             IsMouseOverUIControls = isMouseOverUIControls;
             HexPainter.IsVisible = !IsMouseOverUIControls;
-        }
+        }*/
         
         public static void UpdateKeyMappings()
         {
@@ -105,7 +105,7 @@ namespace DevTools.Humankind.GUITools.UI
             if (!Enabled)
                 return;
 
-            if (EditorMode == EditorModeType.TilePainter && !IsMouseOverUIControls)
+            if (EditorMode == EditorModeType.TilePainter && !InGameUIController.IsMouseCovered)
             {
                 if (BrushPainter.IsDirty)
                 {
