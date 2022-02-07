@@ -45,23 +45,40 @@ namespace DevTools.Humankind.GUITools.UI
 
         private void DrawToolboxHeader()
         {
-            GUILayout.Space(8f);
+            GUILayout.Space(12f);
 
             GUILayout.BeginHorizontal();
             {
+                GUILayout.Space(10f);
+                
                 if (GUILayout.Button("<size=10><b>SELECT NONE</b></size>"))
                     ToolboxController.Toolbox.ConstructiblesGrid.VirtualGrid.Cursor.ClearSelection();
                 
-                GUI.enabled = ToolboxController.Toolbox.ConstructiblesGrid.GridModeChunkSize > 1;
-                if (GUILayout.Button("<size=10><b>ZOOM IN</b></size>"))
+                GUILayout.FlexibleSpace();
+                
+                if (GUILayout.Button("<size=10><b>REFRESH</b></size>"))
+                {
+                    ConstructibleStore.Rebuild();
+                    ConstructiblesGrid.Snapshot = new ConstructibleStoreSnapshot()
+                    {
+                        Districts = ConstructibleStore.Districts,
+                        Units = ConstructibleStore.Units,
+                    };
+                    ConstructiblesGrid.IsDirty = true;
+                }
+                
+                GUILayout.Space(8f);
+
+                GUI.enabled = ToolboxController.Toolbox.ConstructiblesGrid.GridModeChunkSize > 1 && ToolboxController.IsDisplayModeGrid;
+                if (GUILayout.Button("<size=15><b> ＋</b></size>", GUILayout.Width(22f), GUILayout.Height(21f)))
                     ToolboxController.Toolbox.ConstructiblesGrid.GridModeChunkSize -= 1;
                 
-                GUI.enabled = ToolboxController.Toolbox.ConstructiblesGrid.GridModeChunkSize < 12;
-                if (GUILayout.Button("<size=10><b>ZOOM OUT</b></size>"))
+                GUI.enabled = ToolboxController.Toolbox.ConstructiblesGrid.GridModeChunkSize < 12 && ToolboxController.IsDisplayModeGrid;
+                if (GUILayout.Button("<size=13><b>—</b></size>", GUILayout.Width(22f), GUILayout.Height(21f)))
                     ToolboxController.Toolbox.ConstructiblesGrid.GridModeChunkSize += 1;
 
                 GUI.enabled = true;
-                GUILayout.FlexibleSpace();
+                GUILayout.Space(8f);
 
                 var shouldDisplayAsGrid =
                     (GUILayout.Toolbar(ToolboxController.IsDisplayModeGrid ? 1 : 0, displayModeNames) == 1);
