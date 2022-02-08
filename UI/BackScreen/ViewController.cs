@@ -1,8 +1,6 @@
 ﻿using System;
 using Amplitude.Framework;
 using Amplitude.Framework.Presentation;
-using Amplitude.Framework.Runtime;
-using Amplitude.Framework.Session;
 using Amplitude.Mercury.Presentation;
 using Amplitude.Mercury.UI;
 using DevTools.Humankind.GUITools.UI.PauseMenu;
@@ -15,7 +13,8 @@ namespace DevTools.Humankind.GUITools.UI
         Loading,    //EmptyView
         OutGame,
         InGame,
-        MapEditor
+        MapEditor,
+        ShuttingDown
     }
     
     [Flags]
@@ -47,26 +46,28 @@ namespace DevTools.Humankind.GUITools.UI
         
         private static ViewModeType _viewMode = ViewModeType.Normal;
         private static bool _registeredToViewChanges = false;
-
-        public static IRuntimeService RuntimeService { get; private set; }
         public static IViewService ViewService { get; private set; }
         public static IUIService UIService { get; private set; }
-        public static ISessionService SessionService { get; private set; }
 
         private static void OnUIStateChange(UIState newState)
         {
             if (!Modding.Humankind.DevTools.DevTools.QuietMode)
                 Loggr.Log("IN OnUIStateChange(newState = " + newState.ToString() + ")", ConsoleColor.DarkCyan);
+
+            if (newState == UIState.ShuttingDown || newState == UIState.Shutdown)
+                View = ViewType.ShuttingDown;
+            
             State = newState;
         }
 
-        public static void Initialize()
+        public static void Initialize(bool onErrorIgnore = false)
         {
             if (ViewService == null)
                 ViewService = Services.GetService<IViewService>();
-            
-            if (ViewService == null)
-                Loggr.Log(new NotImplementedException("VIEWSERVICE INVALID AFTER CALL TO INITIALIZE IN RUNTIMEGAMESTATE."));
+
+            if (ViewService == null && !onErrorIgnore)
+                Loggr.Log(new NotImplementedException(
+                    "VIEWSERVICE INVALID AFTER CALL TO INITIALIZE IN RUNTIMEGAMESTATE."));
             
             if (ViewService != null && !_registeredToViewChanges)
             {
@@ -78,15 +79,16 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 UIService = Services.GetService<IUIService>();
                 
-                if (UIService == null)
-                {
+                if (UIService == null && !onErrorIgnore)
                     Loggr.Log(new NotImplementedException(
                         "UIService not expected to be null after requesting it."));
-                    return;
+
+                if (UIService != null)
+                {
+                    UIService.UIStateChange -= OnUIStateChange;
+                    UIService.UIStateChange += OnUIStateChange;
+                    OnUIStateChange(UIService.UIState);
                 }
-                UIService.UIStateChange -= OnUIStateChange;
-                UIService.UIStateChange += OnUIStateChange;
-                OnUIStateChange(UIService.UIState);
             }
         }
 

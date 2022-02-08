@@ -89,7 +89,35 @@ namespace StyledGUI.VirtualGridElements
         public GUIStyle Style { get; set; } = null;
     }
     
-    public class Clickable4xCell : ICell
+    public interface IClickableImageCell : ICell
+    {
+        string Title { get; set; }
+        string Subtitle { get; set; }
+        string Tags { get; set; }
+        string Category { get; set; }
+        string UniqueName { get; set; }
+        Texture Image { get; set; }
+        Action<int> Action { get; set; }
+        GUILayoutOption Span { get; set; }
+        GUIStyle Style { get; set; }
+        bool Enabled { get; set; }
+    }
+
+    public class Clickable4xCell : IClickableImageCell
+    {
+        public string Title { get; set; }
+        public string Subtitle { get; set; }
+        public string Tags { get; set; }
+        public string Category { get; set; }
+        public string UniqueName { get; set; }
+        public Texture Image { get; set; }
+        public Action<int> Action { get; set; }
+        public GUILayoutOption Span { get; set; } = null;
+        public GUIStyle Style { get; set; } = null;
+        public bool Enabled { get; set; } = true;
+    }
+    
+    public class ClickableImageCell : IClickableImageCell
     {
         public string Title { get; set; }
         public string Subtitle { get; set; }

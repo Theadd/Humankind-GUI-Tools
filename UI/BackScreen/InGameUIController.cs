@@ -1,12 +1,20 @@
-﻿using Amplitude.UI;
+﻿using System.Reflection;
+using Amplitude.UI;
 using Modding.Humankind.DevTools;
+using Modding.Humankind.DevTools.Core;
 using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI
 {
     public static class InGameUIController
     {
-
+        public static bool IsMouseCovered =>
+            (bool) mouseCovered.GetValue(Amplitude.Mercury.Presentation.Presentation.PresentationCursorController);
+        
+        private static readonly FieldInfo mouseCovered =
+            typeof(Amplitude.Mercury.Presentation.PresentationCursorController).GetField("mouseCovered",
+                R.NonPublicInstance);
+        
         public static void AdaptUIForBackScreenToFit(BackScreenWindow backScreen)
         {
             var battleScreen = GameObject.Find("/WindowsRoot/InGameSelection/BattleScreen")
@@ -45,6 +53,44 @@ namespace DevTools.Humankind.GUITools.UI
                     settlementPopulationScreen.TopAnchor = new UIBorderAnchor(true, 0, height, 0);
 
             }
+        }
+
+        public static void SetVisibilityOfInGameOverlays(bool shouldBeVisible)
+        {
+            var inGameOverlays = GameObject.Find("/WindowsRoot/InGameOverlays")?.GetComponent<UITransform>();
+            var diplomaticBanner = GameObject.Find("/WindowsRoot/InGameSelection/DiplomaticBanner")?.GetComponent<UITransform>();
+            var terrainTooltipHolder = GameObject.Find("/WindowsRoot/InGameBackground/TerrainTooltipHolderWindow")?.GetComponent<UITransform>();
+            var terrainTooltipAnchorShift = GameObject.Find("/WindowsRoot/InGameBackground/TerrainTooltipHolderWindow/LowerLeftAnchorShifted")?.GetComponent<UITransform>();
+
+            if (inGameOverlays != null)
+                inGameOverlays.VisibleSelf = shouldBeVisible;
+            if (diplomaticBanner != null)
+                diplomaticBanner.VisibleSelf = shouldBeVisible;
+
+            if (ToolboxController.IsDocked && terrainTooltipHolder != null)
+            {
+                if (shouldBeVisible)
+                {
+                    terrainTooltipHolder.LeftAnchor = new UIBorderAnchor(true, terrainTooltipHolder.LeftAnchor.Percent,
+                        terrainTooltipHolder.LeftAnchor.Margin, 0);
+                    terrainTooltipHolder.BottomAnchor = new UIBorderAnchor(true, terrainTooltipHolder.BottomAnchor.Percent,
+                        terrainTooltipHolder.BottomAnchor.Margin, 0);
+                }
+                else
+                {
+                    Rect uiRect = terrainTooltipHolder.Parent.GlobalRect;
+                    float nextX = uiRect.width * ToolboxController.ToolboxRect.width / Screen.width;
+                    terrainTooltipHolder.LeftAnchor = new UIBorderAnchor(true, terrainTooltipHolder.LeftAnchor.Percent,
+                        terrainTooltipHolder.LeftAnchor.Margin, nextX);
+
+                    if (terrainTooltipAnchorShift != null)
+                    {
+                        terrainTooltipHolder.BottomAnchor = new UIBorderAnchor(true, terrainTooltipHolder.BottomAnchor.Percent,
+                            terrainTooltipHolder.BottomAnchor.Margin, terrainTooltipAnchorShift.BottomAnchor.Offset * -1);
+                    }
+                }
+            }
+
         }
     }
 }

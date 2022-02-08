@@ -22,6 +22,7 @@ namespace DevTools.Humankind.GUITools
         // public static SettlementToolsWindow SettlementWindow { get; set; }
         // public static StatisticsAndAchievementsToolWindow StatisticsAndAchievementsWindow { get; set; }
         // public static FameToolWindow FameWindow { get; set; }
+        public static TerrainPickingToolWindow TerrainWindow { get; set; }
         public static GameStatsWindow StatsWindow { get; set; }
         public static BackScreenWindow BackScreen { get; set; }
         public static EndGameStatisticsWindow EndGameWindow { get; set; }
@@ -30,40 +31,17 @@ namespace DevTools.Humankind.GUITools
         {
             if (IsDebugModeEnabled) Debug();
             
+            ViewController.Initialize(true);
+            
             UIController.OnceGUIHasLoaded(() => StyledGUIUtility.DefaultSkin = UIController.DefaultSkin);
             PopupToolWindow.Open<BackScreenWindow>(w => BackScreen = w);
             PopupToolWindow.Open<MainToolbar>(w => Toolbar = w);
             PopupToolWindow.Open<InGameMenuWindow>(w => InGameMenu = w);
-
-            // PopupToolWindow.Open<GameInfoToolWindow>(w => GameInfoWindow = w);
-            // PopupToolWindow.Open<DistrictPainterToolWindow>(w => DistrictPainterWindow = w);
-            // PopupToolWindow.Open<SettlementToolsWindow>(w => SettlementWindow = w);
-            // PopupToolWindow.Open<StatisticsAndAchievementsToolWindow>(w => StatisticsAndAchievementsWindow = w);
-            // PopupToolWindow.Open<FameToolWindow>(w => FameWindow = w);
-            // PopupToolWindow.Open<EndGameToolWindow>(w => EndGameWindow = w);
-            // PopupToolWindow.Open<GameStatsWindow>(w => StatsWindow = w);
-
-                    // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.UpArrow, UnityEngine.KeyCode.LeftControl), "ToggleBasicToolWindow", ToggleBasicToolWindow);
-                    // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Home), "ToggleHideToolbarWindow", ToggleHideToolbarWindow);
-                    // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Tab), "ToggleGameOverviewWindow", ToggleGameOverviewWindow);
-           
-            /*HumankindDevTools.RegisterAction(
-                new KeyboardShortcut(UnityEngine.KeyCode.Insert), 
-                "ToggleHideAllGUITools", 
-                ToggleHideAllUIWindows);*/
-
-            // Maps [ESC] key to: GodMode.Enabled = false 
-            // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Escape), "CancelGodMode", CancelGodMode);
             
-            // ToggleGameOverviewWindow(); 
-            // ToggleBasicToolWindow(); 
-            
-            /*HumankindDevTools.RegisterAction(
-                new KeyboardShortcut(UnityEngine.KeyCode.F4, UnityEngine.KeyCode.LeftShift), 
-                "RebuildConstructibles", 
-                ConstructibleStore.Rebuild);*/
+            // if (IsDebugModeEnabled)
+            //     TestingPlayground.Run();
         }
-
+        
         public static void ToggleHideToolbarWindow() => GlobalSettings.HideToolbarWindow.Value = !GlobalSettings.HideToolbarWindow.Value;
 
         public static void ToggleHideAllUIWindows() =>
@@ -133,6 +111,7 @@ namespace DevTools.Humankind.GUITools
             EndGameWindow?.Close();
             StatsWindow?.Close();
             BackScreen?.Close();
+            TerrainWindow?.Close();
             ScreenLocker.Unload();
         }
         

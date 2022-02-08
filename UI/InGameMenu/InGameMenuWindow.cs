@@ -13,7 +13,7 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
 
         public override string WindowTitle { get; set; } = "GAME MENU";
 
-        public override bool ShouldBeVisible => InGameMenuController.IsVisible && UIController.IsAmplitudeUIVisible;
+        public override bool ShouldBeVisible => InGameMenuController.IsVisible && UIController.IsAmplitudeUIVisible && ViewController.View == ViewType.InGame;
 
         public override bool ShouldRestoreLastWindowPosition => false;
         

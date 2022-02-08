@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace DevTools.Humankind.GUITools
 {
-    [BepInPlugin(PLUGIN_GUID, "GUITools", "1.3.0.0")]
+    [BepInPlugin(PLUGIN_GUID, "GUITools", "1.3.1.0")]
     [BepInDependency("Modding.Humankind.DevTools")]
     [BepInDependency("DevTools.Humankind.SharedAssets")]
     public class GUITools : BaseUnityPlugin 

@@ -1,25 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using Modding.Humankind.DevTools;
-using Modding.Humankind.DevTools.DeveloperTools.UI;
+﻿using System.Collections.Generic;
 using StyledGUI.VirtualGridElements;
 using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public class BackScreenToolbox
+    public partial class ConstructiblesToolbox
     {
         public BackScreenWindow Window { get; set; }
         public ConstructiblesGrid ConstructiblesGrid { get; set; }
         public Vector2 ScrollViewPosition { get; set; } = Vector2.zero;
-
+        public float VScrollbarWidth { get; set; } = 10f;
+        public RectOffset ScrollViewPadding { get; set; } = new RectOffset(8, 8, 0, 0);
         public int ActiveTab { get; set; } = 0;
-
-        private string[] tabNames =
-        {
-            "<size=10><b> UNITS </b></size>", 
-            "<size=10><b> DISTRICTS </b></size>"
-        };
 
         private List<Vector2> _storedScrollViewPositions = new List<Vector2>() {Vector2.zero, Vector2.zero};
         
@@ -27,6 +19,9 @@ namespace DevTools.Humankind.GUITools.UI
         {
             GUILayout.BeginArea(targetRect);
             {
+                if ((int)ConstructiblesGrid.FixedWidth != (int)(targetRect.width - VScrollbarWidth - ScrollViewPadding.left - ScrollViewPadding.right))
+                    ConstructiblesGrid.FixedWidth = (int)(targetRect.width - VScrollbarWidth - ScrollViewPadding.left - ScrollViewPadding.right);
+                
                 Draw();
             }
             GUILayout.EndArea();
@@ -36,8 +31,9 @@ namespace DevTools.Humankind.GUITools.UI
         {
             GUILayout.BeginHorizontal();
             GUILayout.BeginVertical();
-            //GUILayout.Space(1f);
 
+            DrawToolboxHeader();
+            
             DrawTabs();
             
             ScrollViewPosition = GUILayout.BeginScrollView(
@@ -46,13 +42,11 @@ namespace DevTools.Humankind.GUITools.UI
                 false, 
                 "horizontalscrollbar",
                 "verticalscrollbar",
-                "scrollview",
-                new GUILayoutOption[]
-                {
-                    // GUILayout.Height(300f)
-                });
+                "scrollview");
             {
-                GUILayout.BeginVertical();
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(ScrollViewPadding.left);
+                GUILayout.BeginVertical(GUILayout.Width(ConstructiblesGrid.FixedWidth));
                 {
                     if (Event.current.type == EventType.MouseDown)
                         ConstructiblesGrid.VirtualGrid.FindCellAtPosition(Event.current.mousePosition, OnClickHandler);
@@ -60,39 +54,18 @@ namespace DevTools.Humankind.GUITools.UI
                     ConstructiblesGrid.Render();
 
                     GUILayout.Space(8f);
-                    GUILayout.Label("FOCUSED CONTROL: " + GUI.GetNameOfFocusedControl());
-                    if (GUILayout.Button("TESTME"))
-                    {
-                        Loggr.Log("EVENT TYPE = " + Event.current.type.ToString());
-                    }
                 }
                 GUILayout.EndVertical();
+                //GUILayout.Space(ScrollViewPadding.right);
+                GUILayout.EndHorizontal();
             }
             GUILayout.EndScrollView();
+            DrawSelectionPreview();
             GUILayout.Space(1f);
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
         }
-
-        private void DrawTabs()
-        {
-            GUILayout.Space(6f);
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(12f);
-            
-            var activeTab = GUILayout.Toolbar(ActiveTab, tabNames, "TabButton", GUI.ToolbarButtonSize.FitToContents);
-
-            if (activeTab != ActiveTab)
-            {
-                _storedScrollViewPositions[ActiveTab] = ScrollViewPosition;
-                ScrollViewPosition = _storedScrollViewPositions[activeTab];
-                ActiveTab = activeTab;
-                ConstructiblesGrid.VirtualGrid.VisibleViews = new[] { ActiveTab };
-            }
-            GUILayout.EndHorizontal();
-            Utils.DrawHorizontalLine();
-        }
-
+        
         public void OnClickHandler(ICell cell)
         {
             ConstructiblesGrid.VirtualGrid.Cursor.AddToSelection();

@@ -17,7 +17,7 @@ namespace DevTools.Humankind.GUITools.UI
 {
     public class EndGameStatisticsWindow : FloatingToolWindow
     {
-        public override bool ShouldBeVisible => true;   // PauseMenu.InGameMenuController.IsEndGameWindowVisible;
+        public override bool ShouldBeVisible => ViewController.View == ViewType.InGame;   // PauseMenu.InGameMenuController.IsEndGameWindowVisible;
         public override bool ShouldRestoreLastWindowPosition => false;
         public override string WindowTitle { get; set; } = "STATISTICS WINDOW";
         public override Rect WindowRect { get; set; } = new Rect (24f, 24f, 230f, 40f);

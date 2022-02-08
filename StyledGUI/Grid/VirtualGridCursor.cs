@@ -10,6 +10,7 @@ namespace StyledGUI
     {
         public int RowIndex { get; set; }
         public int CellIndex { get; set; }
+        public int CellSubIndex { get; set; }
         public int ColumnIndex { get; set; }
         public ICell Cell { get; set; }
     }
@@ -52,6 +53,7 @@ namespace StyledGUI
         ///     Index of Cell within the within a CellGroup, or 0 if there's a single Cell within the Column in that row.
         /// </summary>
         public int CellIndex { get; set; }
+        public int CellSubIndex { get; set; }
         
         /// <summary>
         ///     RowIndex within it's section
@@ -76,11 +78,23 @@ namespace StyledGUI
             ICell currentCell = null;
             try
             {
-                currentCell = Owner.Sections[SectionIndex].Rows[SectionRowIndex].Cells.ElementAt(CellIndex);
+                currentCell = Owner
+                    .Sections[SectionIndex]
+                    .Rows[SectionRowIndex]
+                    .Cells.ElementAt(CellIndex);
+
+                if (CellSubIndex != -1 && currentCell is CellGroup cellGroup)
+                {
+                    currentCell = cellGroup.Cells.ElementAt(CellSubIndex);
+                }
 
                 if (currentCell is Clickable4xCell cell)
                 {
                     Loggr.Log(cell.Title, ConsoleColor.Green);
+                }
+                else if (currentCell is ClickableImageCell imageCell)
+                {
+                    Loggr.Log(imageCell.Title, ConsoleColor.Blue);
                 }
             }
             catch (Exception e)
@@ -102,6 +116,7 @@ namespace StyledGUI
             CellIndex = 0;
             VisibleSectionIndex = 0;
             VisibleRowIndex = 0;
+            CellSubIndex = 0;
             Y = 0;
             X = 0;
         }
@@ -149,6 +164,7 @@ namespace StyledGUI
                         RowIndex = RowIndex,
                         ColumnIndex = ColumnIndex,
                         CellIndex = CellIndex,
+                        CellSubIndex = CellSubIndex,
                         Cell = GetCurrentCell()
                     };
                     InvokeOnSelectionChange();
@@ -182,7 +198,14 @@ namespace StyledGUI
             IsSelectionActive && 
             SelectedGridCell.RowIndex == RowIndex && 
             SelectedGridCell.ColumnIndex == ColumnIndex &&
-            SelectedGridCell.CellIndex == CellIndex;
+            SelectedGridCell.CellIndex == CellIndex && 
+            (
+                SelectedGridCell.CellSubIndex == -1 || 
+                (
+                    SelectedGridCell.CellSubIndex != -1 && 
+                    SelectedGridCell.CellSubIndex == CellSubIndex
+                )
+            );
         
         private void InvokeOnSelectionChange()
         {

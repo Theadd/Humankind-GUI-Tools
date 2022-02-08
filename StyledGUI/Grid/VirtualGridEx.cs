@@ -14,7 +14,13 @@ namespace StyledGUI.VirtualGridElements
             bool drawGap = false;
             int count = sequence.Count();
 
-            grid.Cursor.CellIndex = 0;
+            if (addColumnGap)
+            {
+                grid.Cursor.CellIndex = 0;
+                grid.Cursor.CellSubIndex = -1;
+            }
+            else
+                grid.Cursor.CellSubIndex = 0;
             
             for (var i = 0; i < count; i++)
             {
@@ -57,11 +63,18 @@ namespace StyledGUI.VirtualGridElements
                 {
                     clickable4XCell.Render(grid);
                 }
+                else if (element is ClickableImageCell clickableImageCell)
+                {
+                    clickableImageCell.Render(grid);
+                }
 
                 drawGap = addColumnGap;
                 grid.Cursor.SyncXY();
                 grid.Cursor.X += grid.Cursor.LastWidth;
-                grid.Cursor.CellIndex++;
+                if (addColumnGap)
+                    grid.Cursor.CellIndex++;
+                else
+                    grid.Cursor.CellSubIndex++;
             }
             
             return sequence;
@@ -192,6 +205,49 @@ namespace StyledGUI.VirtualGridElements
                 GUILayout.EndVertical();
                 
                 
+            }
+
+            GUI.backgroundColor = prevTint;
+            GUI.enabled = true;
+        }
+
+        public static void Render(this ClickableImageCell self, VirtualGrid grid)
+        {
+            GUI.enabled = self.Enabled;
+
+            if (grid.IsLookingForCell)
+                DoCellLookup(self, grid, self.Span ?? grid.DefaultCellSpan);
+            
+            var prevTint = GUI.backgroundColor;
+            var selected = grid.Cursor.IsCurrentCellSelected;
+            
+            if (selected)
+                GUI.backgroundColor = grid.Grid.CellButtonTintColor;
+            else
+                AlternateBackgroundColor(grid);
+
+            using (var cellScope = new GUILayout.HorizontalScope(
+                selected ? Styles.ActiveCellImageStyle : (self.Style ?? Styles.CellImageStyle), 
+                self.Span ?? grid.DefaultCellSpan))
+            {
+                var cellWidth = grid.Grid.GetCellWidth();
+                var cellHeight = grid.Grid.GetCellHeight();
+                var r = GUILayoutUtility.GetRect(cellWidth, cellHeight);
+                GUI.DrawTexture(
+                    new Rect(
+                        r.x + grid.Grid.CellPadding.left, 
+                        r.y + grid.Grid.CellPadding.top, 
+                        cellWidth - grid.Grid.CellPadding.left - grid.Grid.CellPadding.right, 
+                        cellHeight - grid.Grid.CellPadding.top - grid.Grid.CellPadding.bottom), 
+                    self.Image ? self.Image : grid.Grid.MissingTexture,
+                    ScaleMode.ScaleToFit, 
+                    true, 
+                    1f,
+                    Color.white, 
+                    0, 
+                    0
+                );
+
             }
 
             GUI.backgroundColor = prevTint;

@@ -8,6 +8,8 @@ namespace StyledGUI
             Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.65f));
         public static Texture2D Alpha35WhitePixel { get; set; } =
             Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.35f));
+        public static Texture2D Alpha25BlackPixel { get; set; } =
+            Graphics.CreateSinglePixelTexture2D(new Color(0, 0, 0, 0.35f));
         public static Texture2D WhitePixel { get; set; } =
             Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 1f));
         public static Texture2D ButtonNormalPixel { get; set; } =
@@ -132,9 +134,29 @@ namespace StyledGUI
                     textColor = Color.white
                 }
             };
-
+        
         public static readonly RectOffset RectOffsetZero = new RectOffset(0, 0, 0, 0);
 
+        public static GUIStyle CellImageStyle { get; set; } = new GUIStyle(ColorableCellStyle)
+        {
+            padding = RectOffsetZero,
+            normal = new GUIStyleState()
+            {
+                background = Alpha25BlackPixel,
+                textColor = Color.white
+            },
+            hover = new GUIStyleState()
+            {
+                background = ButtonHoverPixel,
+                textColor = Color.white
+            },
+        };
+        
+        public static GUIStyle ActiveCellImageStyle { get; set; } = new GUIStyle(ColorableCellStyle)
+        {
+            padding = RectOffsetZero,
+        };
+        
         public static GUIStyle InlineCellContentStyle { get; set; } =
             new GUIStyle(StyledGUIUtility.DefaultSkin.FindStyle("PopupWindow.Grid"))
             {

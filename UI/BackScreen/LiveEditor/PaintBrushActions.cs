@@ -1,4 +1,5 @@
-﻿using Amplitude;
+﻿using System;
+using Amplitude;
 using Amplitude.Mercury;
 using Amplitude.Mercury.Interop;
 using Amplitude.Mercury.Interop.AI.Data;
@@ -22,6 +23,7 @@ namespace DevTools.Humankind.GUITools.UI
 
         // ACTION NAME IDENTIFIERS
         public static readonly string RemoveUnitAction = "REMOVE UNIT FROM ARMY";
+        public static readonly string RemoveArmyAction = "REMOVE ARMY";
         public static readonly string DestroySettlementAction = "DESTROY SETTLEMENT";
         public static readonly string DestroyDistrictAction = "DESTROY DISTRICT";
         public static readonly string EvolveOutpostAction = "EVOLVE OUTPOST";
@@ -29,8 +31,11 @@ namespace DevTools.Humankind.GUITools.UI
         public static readonly string CreateCampAction = "CREATE OUTPOST";
         public static readonly string DetachTerritoryAction = "DETACH TERRITORY";
         public static readonly string RemoveMinorEmpireAction = "REMOVE MINOR EMPIRE";
-        public static readonly string CreateArmyAction = "REMOVE MINOR EMPIRE";
-        public static readonly string AddUnitToArmyAction = "REMOVE MINOR EMPIRE";
+        public static readonly string CreateArmyAction = "CREATE ARMY";
+        public static readonly string AddUnitToArmyAction = "ADD UNIT TO ARMY";
+        public static readonly string CreateLuxuryExtractorAction = "CREATE LUXURY EXTRACTOR";
+        public static readonly string CreateStrategicExtractorAction = "CREATE STRATEGIC EXTRACTOR";
+        public static readonly string CreateLuxuryManufactoryAction = "UPGRADE TO LUXURY MANUFACTORY";
 
         // DESTROY ACTIONS
         public static void DestroySettlementAt(int tileIndex) => SandboxManager
@@ -49,6 +54,7 @@ namespace DevTools.Humankind.GUITools.UI
                 TileIndex = tileIndex,
                 DistrictDefinitionName = districtDefinitionName
             });
+        
         public static void CreateCampAt(int tileIndex) => SandboxManager
             .PostOrder(new EditorOrderCreateCampAt()
             {
@@ -67,11 +73,30 @@ namespace DevTools.Humankind.GUITools.UI
             .PostOrder(new OrderAddUnitToArmy()
             {
                 ArmyGUID = (SimulationEntityGUID) Snapshots.World.Tiles[tileIndex].Army.EntityGUID,
-                UnitDefinition = unitDefinitionName
+                UnitDefinition = unitDefinitionName,
+                IgnoreArmyFull = true
             });
         
+        public static void CreateLuxuryResourceExtractorAt(int tileIndex) => SandboxManager
+            .PostOrder(new EditorOrderCreateExtensionDistrictAt
+            {
+                TileIndex = tileIndex,
+                DistrictDefinitionName = new StaticString("Extension_Base_Luxury")
+            });
         
+        public static void CreateStrategicResourceExtractorAt(int tileIndex, string resourceNum) => SandboxManager
+            .PostOrder(new EditorOrderCreateExtensionDistrictAt
+            {
+                TileIndex = tileIndex,
+                DistrictDefinitionName = new StaticString("Extension_Base_Strategic" + resourceNum)
+            });
         
+        public static void CreateLuxuryManufactoryAt(int tileIndex, string resourceNum) => SandboxManager
+            .PostOrder(new EditorOrderCreateExtensionDistrictAt
+            {
+                TileIndex = tileIndex,
+                DistrictDefinitionName = new StaticString("Extension_Wondrous_Resource" + resourceNum)
+            });
         
         
         // TRANSFORM ACTIONS
@@ -90,16 +115,13 @@ namespace DevTools.Humankind.GUITools.UI
             });
 
 
-        private bool Destroy(Action action, string actionName, bool isRepeatingSameActionAllowed = false)
+        private bool Destroy(Action action, string actionName)
         {
             
             ActionNameOnDestroy = actionName;
             
             OnDestroy = () =>
             {
-                if (LastTileIndex == TileIndex && LastHexTile == HexTile && !isRepeatingSameActionAllowed)
-                    return;
-
                 LastTileIndex = TileIndex;
                 LastHexTile = HexTile;
                 AudioPlayer.Play(AudioPlayer.CutForest);
@@ -109,15 +131,12 @@ namespace DevTools.Humankind.GUITools.UI
             return true;
         }
         
-        private bool Create(Action action, string actionName, bool isRepeatingSameActionAllowed = false)
+        private bool Create(Action action, string actionName)
         {
             ActionNameOnCreate = actionName;
             
             OnCreate = () =>
             {
-                if (LastTileIndex == TileIndex && LastHexTile == HexTile && !isRepeatingSameActionAllowed)
-                    return;
-
                 LastTileIndex = TileIndex;
                 LastHexTile = HexTile;
                 AudioPlayer.Play(AudioPlayer.DistrictPlacement);

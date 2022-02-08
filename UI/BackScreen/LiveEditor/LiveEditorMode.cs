@@ -46,11 +46,13 @@ namespace DevTools.Humankind.GUITools.UI
         private static KeyboardShortcut DebugKey { get; set; }
 
         private static PaintBrush BrushPainter { get; set; }
+        private static bool IsMouseOverUIControls { get; set; }
 
         public static void Initialize()
         {
             HexPainter = new HexOverlay(HandleOnTileChange);
             BrushPainter = new PaintBrush();
+            IsMouseOverUIControls = false;
             UpdateKeyMappings();
         }
 
@@ -58,7 +60,7 @@ namespace DevTools.Humankind.GUITools.UI
         {
             BrushPainter.UpdateTile();
         }
-        
+
         public static void UpdateKeyMappings()
         {
             ToolboxController.ToolboxPreviewKey =
@@ -79,6 +81,10 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 ActivePaintBrush = UIController.GameUtils.GetConstructibleDefinition(new StaticString(cell.UniqueName));
             }
+            else if (gridCell != null && gridCell.Cell is ClickableImageCell imageCell)
+            {
+                ActivePaintBrush = UIController.GameUtils.GetConstructibleDefinition(new StaticString(imageCell.UniqueName));
+            }
             else
             {
                 ActivePaintBrush = null;
@@ -86,16 +92,31 @@ namespace DevTools.Humankind.GUITools.UI
             UpdateBrushType();
         }
 
+        private static int _dirtyBrushCounter = 1;
+
         public static void Run()
         {
             if (!Enabled)
                 return;
 
-            if (EditorMode == EditorModeType.TilePainter)
+            if (EditorMode == EditorModeType.TilePainter && !InGameUIController.IsMouseCovered)
             {
-                if (DebugKey.IsPressed()) BrushPainter.Debug();
-                if (CreateKey.IsPressed()) BrushPainter.Paint();
-                if (DestroyKey.IsPressed()) BrushPainter.Erase();
+                if (BrushPainter.IsDirty)
+                {
+                    if (_dirtyBrushCounter-- == 0)
+                    {
+                        _dirtyBrushCounter = 1;
+                        BrushPainter.UpdateTile();
+                    }
+                }
+                
+                // if (DebugKey.IsPressed()) BrushPainter.Debug();
+                // if (CreateKey.IsPressed()) BrushPainter.Paint();
+                // if (DestroyKey.IsPressed()) BrushPainter.Erase();
+                
+                if (DebugKey.IsDown()) BrushPainter.Debug();
+                if (CreateKey.IsDown()) BrushPainter.Paint();
+                if (DestroyKey.IsDown()) BrushPainter.Erase();
             }
         }
 
@@ -128,7 +149,6 @@ namespace DevTools.Humankind.GUITools.UI
                 
                 // ...
             }
-
         }
     }
 }

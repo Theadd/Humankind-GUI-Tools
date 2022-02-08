@@ -47,15 +47,7 @@ namespace DevTools.Humankind.GUITools.UI
             new KeyMap("ToggleGameOverviewWindow")
             {
                 DisplayName = "GAME OVERVIEW FULLSCREEN OVERLAY",
-                Action = () =>
-                {
-                    if (ViewController.View == ViewType.InGame)
-                    {
-                        bool wasEnabled = MainTools.IsGameOverviewEnabled;
-                        MainTools.ToggleGameOverviewWindow();
-                        ViewController.ViewMode = wasEnabled ? ViewModeType.Auto : ViewModeType.Overview;
-                    }
-                },
+                Action = MappedActions.ToggleGameOverviewWindow,
                 Key = new KeyboardShortcut(KeyCode.Tab),
                 GroupName = GlobalKeysGroup,
                 IsEditable = false,
@@ -64,13 +56,7 @@ namespace DevTools.Humankind.GUITools.UI
             new KeyMap("BackToNormalModeInGameView")
             {
                 DisplayName = "DEFAULT VIEW MODE (IN GAME)",
-                Action = () =>
-                {
-                    if (ViewController.View == ViewType.InGame)
-                    {
-                        ViewController.ViewMode = ViewModeType.Normal;
-                    }
-                },
+                Action = MappedActions.BackToNormalModeInGameView,
                 Key = new KeyboardShortcut(KeyCode.F2),
                 GroupName = GlobalKeysGroup,
                 IsEditable = true,
@@ -79,13 +65,7 @@ namespace DevTools.Humankind.GUITools.UI
             new KeyMap("ToggleHideToolbarWindow")
             {
                 DisplayName = "HIDE TOOLBAR WINDOW",
-                Action = () =>
-                {
-                    if (ViewController.View == ViewType.InGame && ViewController.ViewMode == ViewModeType.Normal)
-                    {
-                        MainTools.ToggleHideToolbarWindow();
-                    }
-                },
+                Action = MappedActions.ToggleHideToolbarWindow,
                 Key = new KeyboardShortcut(KeyCode.Space),
                 GroupName = GlobalKeysGroup,
                 Mask = ViewModeType.Normal
@@ -93,32 +73,14 @@ namespace DevTools.Humankind.GUITools.UI
             new KeyMap("TogglePresentationFogOfWar")
             {
                 DisplayName = "PRESENTATION FOG OF WAR",
-                Action = () =>
-                {
-                    if (ViewController.View == ViewType.InGame 
-                        && (ViewModeType.Normal | ViewModeType.LiveEditor | ViewModeType.FreeCamera)
-                        .HasFlag(ViewController.ViewMode))
-                    {
-                        ActionController.TogglePresentationFogOfWar();
-                    }
-                },
+                Action = MappedActions.TogglePresentationFogOfWar,
                 Key = new KeyboardShortcut(KeyCode.LeftArrow, KeyCode.UpArrow, KeyCode.RightArrow, KeyCode.DownArrow),
                 GroupName = CameraKeysGroup
             },
             new KeyMap("ToggleFreeCameraMode")
             {
                 DisplayName = "FREE CAMERA MODE",
-                Action = () =>
-                {
-                    if (ViewController.View == ViewType.InGame)
-                    {
-                        bool wasEnabled = FreeCameraController.Enabled;
-                        ActionController.ToggleFreeCameraMode();
-                        ViewController.ViewMode = wasEnabled ? ViewModeType.Auto : ViewModeType.FreeCamera;
-                        if (FreeCameraController.Enabled)
-                            UIController.IsAmplitudeUIVisible = false;
-                    }
-                },
+                Action = MappedActions.ToggleFreeCameraMode,
                 Key = new KeyboardShortcut(KeyCode.F3),
                 GroupName = CameraKeysGroup
             },
@@ -132,15 +94,7 @@ namespace DevTools.Humankind.GUITools.UI
             new KeyMap("ToggleLiveEditor")
             {
                 DisplayName = "TOGGLE LIVE EDITOR MODE ON/OFF",
-                Action = () =>
-                {
-                    if (ViewController.View == ViewType.InGame)
-                    {
-                        bool wasEnabled = LiveEditorMode.Enabled;
-                        ActionController.ToggleLiveEditorMode();
-                        ViewController.ViewMode = wasEnabled ? ViewModeType.Auto : ViewModeType.LiveEditor;
-                    }
-                },
+                Action = MappedActions.ToggleLiveEditorMode,
                 Key = new KeyboardShortcut(KeyCode.F4),
                 GroupName = LiveEditorKeysGroup
             },
@@ -249,7 +203,7 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 DisplayName = "VISIBILITY OVERRIDE FOR ALL GUI TOOLS",
                 Action = MainTools.ToggleHideAllUIWindows,
-                Key = KeyboardShortcut.Empty, // new KeyboardShortcut(KeyCode.Insert),
+                Key = KeyboardShortcut.Empty,
                 GroupName = UserInterfacesKeysGroup,
                 IsEditable = false,
                 SaveAndRestore = false,
@@ -259,7 +213,6 @@ namespace DevTools.Humankind.GUITools.UI
 
         public static void Apply()
         {
-            // Loggr.Log("IN KeyMappings.Apply()", ConsoleColor.Green);
             KeyDisplayValues = new Dictionary<string, string>();
 
             foreach (var key in Keys)
@@ -284,8 +237,6 @@ namespace DevTools.Humankind.GUITools.UI
 
         public static void WritePlayerPreferences(FloatingToolWindow Window)
         {
-            // Loggr.Log("IN KeyMappings.WritePlayerPreferences()", ConsoleColor.Green);
-
             foreach (var key in Keys)
             {
                 if (key.SaveAndRestore)
@@ -295,8 +246,6 @@ namespace DevTools.Humankind.GUITools.UI
 
         public static void ReadPlayerPreferences(FloatingToolWindow Window)
         {
-            // Loggr.Log("IN KeyMappings.ReadPlayerPreferences()", ConsoleColor.Green);
-            
             foreach (var key in Keys)
             {
                 if (key.SaveAndRestore)

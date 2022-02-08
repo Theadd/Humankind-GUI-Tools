@@ -2,143 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using Amplitude;
-using Amplitude.Extensions;
 using Amplitude.Framework;
 using Amplitude.Mercury.Data.Simulation;
-using Amplitude.UI;
 using Modding.Humankind.DevTools;
-using Modding.Humankind.DevTools.Core;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
-using UnityEngine;
-using String = System.String;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public class DefinitionsGroup
+    public static partial class ConstructibleStore
     {
-        public string Title { get; set; }
-        public Constructible[] Values { get; set; }
-    }
-
-    public class Constructible
-    {
-        public StaticString DefinitionName { get; set; }
-        public string Name { get; set; }
-        public string Title { get; set; }
-        public string Category { get; set; }
-        public int Era { get; set; }
-        public Texture Image { get; set; }
-    }
-
-    public static class ConstructibleStore
-    {
-        public static DefinitionsGroup[] Districts { get; set; }
-        public static DefinitionsGroup[] Units { get; set; }
         
-        private static string LastName(string name) => name.Substring(name.LastIndexOf('_') + 1);
-        private static int EraLevel(string name) => int.TryParse(name.Substring(name.LastIndexOf('_') - 1, 1), out int level) ? level : 0;
-        private static string UnitLastName(string name) => name.Substring(name.LastIndexOf('_', name.LastIndexOf('_') - 1) + 1);
-        private static int UnitEraLevel(string name) => int.TryParse(name.Substring(name.LastIndexOf('_', name.LastIndexOf('_') - 1) - 1, 1), out int level) ? level : 0;
-
-        public static Constructible CreateDistrictConstructible(DistrictDefinition definition)
-        {
-            var name = LastName(definition.name);
-
-            return new Constructible()
-            {
-                DefinitionName = definition.Name,
-                Title = UIController.GetLocalizedTitle(definition.Name, name),
-                Name = name,
-                Category = definition.Category.ToString(),
-                Era = EraLevel(definition.name),
-                Image = Utils.LoadTexture(definition.name)
-            };
-        }
-        
-        public static Constructible CreateUnitConstructible(UnitDefinition definition)
-        {
-            var name = UnitLastName(definition.name);
-
-            return new Constructible()
-            {
-                DefinitionName = definition.Name,
-                Title = UIController.GetLocalizedTitle(definition.Name, name),
-                Name = name,
-                Category = UIController.GetLocalizedTitle(definition.UnitClassName),
-                Era = UnitEraLevel(definition.name),
-                Image = Utils.LoadTexture(definition.name)
-            };
-        }
-
-        public static void Rebuild()
+        public static void PrintAllDistricts()
         {
             var constructibles = Databases
                 .GetDatabase<ConstructibleDefinition>(false);
-
             var districts = constructibles
                 .OfType<DistrictDefinition>()
+                // .Take(6)
                 .ToArray();
             
-            var units = constructibles
-                .OfType<UnitDefinition>()
-                .ToArray();
-
-            Districts = new DefinitionsGroup[]
+            foreach (var district in districts)
             {
-                new DefinitionsGroup()
+                var tex = AssetHunter.LoadTexture(district);
+                if (tex == null)
                 {
-                    Title = "Common Districts",
-                    Values = districts
-                        .Where(d => d.Prototype == "Extension_Prototype_BaseEconomy")
-                        .Select(CreateDistrictConstructible)
-                        .ToArray()
-                },
-                new DefinitionsGroup()
-                {
-                    Title = "Extractors & Manufactories",
-                    Values = districts
-                        .Where(d => d.Prototype == "Extension_Base_Extractor" || d.Prototype == "Extension_Base_WondrousExtractor")
-                        .Select(CreateDistrictConstructible)
-                        .ToArray()
-                },
-                new DefinitionsGroup()
-                {
-                    Title = "Emblematic Districts",
-                    Values = districts
-                        .Where(d => d.Prototype == "Extension_Prototype_Emblematic")
-                        .Select(CreateDistrictConstructible)
-                        .ToArray()
+                    Loggr.Log("%RED% TEXTURE FOR " + district.name + " NOT FOUND.");
+                    continue;
                 }
-            };
-
-            Units = new DefinitionsGroup[]
-            {
-                
-                new DefinitionsGroup()
-                {
-                    Title = "Maritime Units",
-                    Values = units
-                        .Where(u => u.SpawnType == UnitSpawnType.Maritime)
-                        .Select(CreateUnitConstructible)
-                        .ToArray()
-                },
-                new DefinitionsGroup()
-                {
-                    Title = "Land Units",
-                    Values = units
-                        .Where(u => u.SpawnType == UnitSpawnType.Land)
-                        .Select(CreateUnitConstructible)
-                        .ToArray()
-                },
-                new DefinitionsGroup()
-                {
-                    Title = "Air & Missile Units",
-                    Values = units
-                        .Where(u => u.SpawnType == UnitSpawnType.Air || u.SpawnType == UnitSpawnType.Missile)
-                        .Select(CreateUnitConstructible)
-                        .ToArray()
-                }
-            };
+                Loggr.Log(tex.name + " %GREEN% " + tex.width + "x" + tex.height);
+                // Loggr.Log("" + district.Name.ToString() + " => " + district.Prototype, ConsoleColor.DarkYellow);
+            }
         }
 
         public static void PrintBatchProcess()
@@ -195,8 +88,71 @@ namespace DevTools.Humankind.GUITools.UI
             
             Loggr.Log("\n\n");
         }
+        
+        
+        public static void TempPrintAll()
+        {
+            var constructibles = Databases
+                .GetDatabase<ConstructibleDefinition>(false);
+
+            var key = new StaticString("Small");
+            var key2 = new StaticString("Default_Small");
+            List<ConstructibleDefinition> remaining = new List<ConstructibleDefinition>();
+            List<string> result = new List<string>();
+            int failCount = 0;
+            int count = 0;
+            string assetPath = "";
+            foreach (var definition in constructibles.GetValues())
+            {
+                count++;
+                try
+                {
+                    var uiTexture = UIController.DataUtils.GetImage(definition.Name, key);
+                    assetPath = "" + uiTexture.AssetPath;
+                    if (assetPath.Length == 0)
+                    {
+                        assetPath = "" + UIController.DataUtils.GetImage(definition.Name, key2).AssetPath;
+                    }
+                    if (assetPath.Length == 0)
+                    {
+                        remaining.Add(definition);
+                        failCount++;
+                        continue;
+                    }
+
+                    if (assetPath.Contains("Hawaiians"))
+                    {
+                        Loggr.Log(uiTexture);
+                        Loggr.Log(UIController.DataUtils.GetImage(definition.Name, key2));
+                    }
+
+                    // var filename = assetPath.Substring(assetPath.LastIndexOf('/') + 1);
+                    result.Add("%GREEN%" + definition.name + " %RED% " + assetPath);
+                }
+                catch (Exception)
+                {
+                    failCount++;
+                }
+            }
+            Loggr.Log(failCount.ToString() + " FAILED OUT OF " + count + ", REMAINING = " + remaining.Count, ConsoleColor.Green);
+            
+            foreach (var constructibleDefinition in remaining)
+            {
+                Loggr.Log("" + constructibleDefinition.name.ToString(), ConsoleColor.DarkCyan);
+            }
+            
+            Loggr.Log("\n\n");
+            
+            foreach (var s in result)
+            {
+                // Loggr.Log(s, ConsoleColor.Green);
+            }
+            
+            Loggr.Log("\n\n");
+        }
     }
 }
+
 
 /*
 using System.Collections.Generic;
@@ -393,4 +349,3 @@ Extension_ArtificialWonder_Era3_GreatZimbabwe
 UI_ConstructibleInfrastructure_Repeatable_Era3_GreatMosqueOfDjenne_Small.png
 UI_ConstructibleExtension_Era5_Siam_Small.png
  */
- 

@@ -72,11 +72,6 @@ namespace DevTools.Humankind.GUITools.UI
         {
             Rect uiRect = UITransform.Parent.Parent.GlobalRect;
             
-            //Loggr.Log(rect);
-            //Loggr.Log(uiRect);
-            // Loggr.Log("Screen: " + Screen.width + " , " + Screen.height);
-            //Loggr.Log(UITransform.Parent.Parent);
-
             return new Rect(
                 (uiRect.width * rect.x) / Screen.width,
                 (uiRect.height * rect.y) / Screen.height,
@@ -84,12 +79,6 @@ namespace DevTools.Humankind.GUITools.UI
                 (uiRect.height * rect.height) / Screen.height
             );
         }
-        // 0 0 2400 1500    = uiRect
-        // 300 300 300 300  = rect
-        // 1440 900         = Screen
-        
-        // 500 500 
-        
 
         public ScreenUIOverlay FullScreenSync()
         {

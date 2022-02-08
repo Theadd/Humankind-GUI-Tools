@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System;
+using DevTools.Humankind.GUITools.UI;
 using Modding.Humankind.DevTools;
 using UnityEngine;
 using StyledGUI.VirtualGridElements;
@@ -204,7 +205,7 @@ namespace StyledGUI
                 ? ColumnCellSpan ?? LooseCellSpan
                 : ColumnCellSpan ?? _grid.CellSpan4;
 
-            if (Columns.Length == 1 && ExpandWidthOnSingleColumnGrid)
+            if (Columns.Length == 1 && (ExpandWidthOnSingleColumnGrid || ToolboxController.IsDisplayModeGrid))
                 RowHeaderCellSpan = LooseCellSpan;
         }
         
