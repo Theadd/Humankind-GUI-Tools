@@ -78,10 +78,7 @@ namespace DevTools.Humankind.GUITools.UI
             IsDirty = false;
         }
 
-        private static GUIStyle CellImageStyle = new GUIStyle(Styles.ColorableCellStyle)
-        {
-            padding = new RectOffset(0, 0, 0, 0)
-        };
+        
         
         private Row[] GetRowsInListMode(Constructible[] values)
         {
@@ -112,6 +109,7 @@ namespace DevTools.Humankind.GUITools.UI
 
             return groups.Select(group => new Row()
             {
+                Style = Styles.StaticRowStyle,
                 Cells = new[]
                 {
                     new CellGroup()
@@ -124,7 +122,7 @@ namespace DevTools.Humankind.GUITools.UI
                             Category = c.Category == "" ? "" : "" + c.Category.ToUpper(),
                             Tags = c.Era > 0 ? "<size=10>ERA " + c.Era + "</size>" : "",
                             Image = c.Image,
-                            Style = CellImageStyle,
+                            // Style = Styles.CellImageStyle,
                             Span = Grid.CellSpan1
                         }).ToArray<ICell>()
                     }

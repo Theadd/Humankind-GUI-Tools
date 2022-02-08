@@ -219,14 +219,15 @@ namespace StyledGUI.VirtualGridElements
                 DoCellLookup(self, grid, self.Span ?? grid.DefaultCellSpan);
             
             var prevTint = GUI.backgroundColor;
+            var selected = grid.Cursor.IsCurrentCellSelected;
             
-            if (grid.Cursor.IsCurrentCellSelected)
-                GUI.backgroundColor = grid.Grid.SelectedCellTintColor;
+            if (selected)
+                GUI.backgroundColor = grid.Grid.CellButtonTintColor;
             else
                 AlternateBackgroundColor(grid);
 
             using (var cellScope = new GUILayout.HorizontalScope(
-                self.Style ?? Styles.ColorableCellStyle, 
+                selected ? Styles.ActiveCellImageStyle : (self.Style ?? Styles.CellImageStyle), 
                 self.Span ?? grid.DefaultCellSpan))
             {
                 var cellWidth = grid.Grid.GetCellWidth();

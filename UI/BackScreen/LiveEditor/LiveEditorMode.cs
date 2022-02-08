@@ -60,13 +60,7 @@ namespace DevTools.Humankind.GUITools.UI
         {
             BrushPainter.UpdateTile();
         }
-        
-        /*public static void SetMouseOverUIControls(bool isMouseOverUIControls)
-        {
-            IsMouseOverUIControls = isMouseOverUIControls;
-            HexPainter.IsVisible = !IsMouseOverUIControls;
-        }*/
-        
+
         public static void UpdateKeyMappings()
         {
             ToolboxController.ToolboxPreviewKey =

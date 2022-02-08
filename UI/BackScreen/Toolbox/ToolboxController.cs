@@ -59,6 +59,11 @@ namespace DevTools.Humankind.GUITools.UI
             IsDisplayModeGrid = true;
         }
 
+        private static Color CellTintColorOnListMode { get; set; } = new Color(0, 0, 0, 0.6f);
+        private static Color CellTintColorAltOnListMode { get; set; } = new Color(0, 0, 0, 0.2f);
+        private static Color CellTintColorOnGridMode { get; set; } = new Color(1f, 1f, 1f, 0.6f);
+        private static Color CellTintColorAltOnGridMode { get; set; } = new Color(1f, 1f, 1f, 0.2f);
+
         public static bool IsDisplayModeGrid
         {
             get => Toolbox.ConstructiblesGrid.VirtualGrid.Grid.DisplayMode == VirtualGridDisplayMode.Grid;
@@ -68,6 +73,18 @@ namespace DevTools.Humankind.GUITools.UI
                     value ? VirtualGridDisplayMode.Grid : VirtualGridDisplayMode.List;
                 Toolbox.ConstructiblesGrid.VirtualGrid.AlternateType =
                     value ? VirtualGridAlternateType.Columns : VirtualGridAlternateType.Rows;
+                
+                if (value)
+                {
+                    Toolbox.ConstructiblesGrid.VirtualGrid.Grid.CellTintColor = CellTintColorOnGridMode;
+                    Toolbox.ConstructiblesGrid.VirtualGrid.Grid.CellTintColorAlt = CellTintColorAltOnGridMode;
+                }
+                else
+                {
+                    Toolbox.ConstructiblesGrid.VirtualGrid.Grid.CellTintColor = CellTintColorOnListMode;
+                    Toolbox.ConstructiblesGrid.VirtualGrid.Grid.CellTintColorAlt = CellTintColorAltOnListMode;
+                }
+                
                 Toolbox.ConstructiblesGrid.VirtualGrid.ExpandWidthOnSingleColumnGrid = !value;
                 Toolbox.ConstructiblesGrid.GridModeChunkSize = Toolbox.ConstructiblesGrid.GridModeChunkSize * 1;
             }
