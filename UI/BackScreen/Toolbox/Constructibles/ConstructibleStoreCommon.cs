@@ -1,4 +1,5 @@
 ﻿using System;
+using Amplitude.Mercury.Data.Simulation;
 
 namespace DevTools.Humankind.GUITools.UI
 {
@@ -69,5 +70,26 @@ namespace DevTools.Humankind.GUITools.UI
             return result;
         }
 
+        private static bool CommonDistrictsClause(DistrictDefinition d)
+        {
+            return d.Prototype == "Extension_Prototype_BaseEconomy" ||
+                   d.Prototype == "Extension_Prototype_BaseMilitary" ||
+                   d.Prototype == "Extension_Prototype_Base" ||
+                   d.name == "Extension_Base_Harbour" ||
+                   d.name == "Extension_Base_Extractor" ||
+                   d.name == "Extension_Base_Luxury" ||
+                   d.name == "Exploitation" ||
+                   d.name == "Extension_Base_WondrousExtractor";
+        }
+        
+        private static bool ResourceDistrictsClause(DistrictDefinition d)
+        {
+            return d.Prototype == "Extension_Base_Extractor" || d.Prototype == "Extension_Base_WondrousExtractor";
+        }
+        
+        private static bool EmblematicDistrictsClause(DistrictDefinition d)
+        {
+            return d.Prototype == "Extension_Prototype_Emblematic";
+        }
     }
 }

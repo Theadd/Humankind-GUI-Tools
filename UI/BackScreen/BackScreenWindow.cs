@@ -1,4 +1,5 @@
 ﻿using System;
+using Modding.Humankind.DevTools;
 using UnityEngine;
 using StyledGUI;
 
@@ -128,6 +129,19 @@ namespace DevTools.Humankind.GUITools.UI
                     }
                 }
 
+
+
+                GUILayout.EndVertical();
+
+                GUILayout.EndHorizontal();
+                GUILayout.EndArea();
+            }
+            catch (Exception e)
+            {
+                // Ignored
+            }
+            finally
+            {
                 if (Event.current.type == EventType.Repaint)
                 {
                     _drawOnLiveEditorEnabled =
@@ -136,15 +150,6 @@ namespace DevTools.Humankind.GUITools.UI
                     _hexPainterVisible = _drawOnLiveEditorEnabled &&
                                          LiveEditorMode.EditorMode == EditorModeType.TilePainter;
                 }
-
-                GUILayout.EndVertical();
-
-                GUILayout.EndHorizontal();
-                GUILayout.EndArea();
-            }
-            catch (Exception)
-            {
-                // Ignored
             }
         }
 

@@ -138,7 +138,7 @@ namespace DevTools.Humankind.GUITools.UI
                 new Column() {Name = "Constructibles"}
             };
 
-            VirtualGrid.Sections = Snapshot.Units
+            VirtualGrid.Sections = Snapshot.Districts
                 .Select(group => new Section()
                 {
                     Title = "<size=13><b>" + group.Title.ToUpper() + "</b></size>",
@@ -148,7 +148,7 @@ namespace DevTools.Humankind.GUITools.UI
                         : GetRowsInListMode(group.Values)
                 })
                 .Concat(
-                Snapshot.Districts.Select(group => new Section()
+                Snapshot.Units.Select(group => new Section()
                 {
                     Title = "<size=13><b>" + group.Title.ToUpper() + "</b></size>",
                     View = 1,

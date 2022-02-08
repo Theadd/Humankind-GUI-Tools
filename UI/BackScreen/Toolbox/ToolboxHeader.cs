@@ -6,8 +6,8 @@ namespace DevTools.Humankind.GUITools.UI
     {
         private string[] tabNames =
         {
+            "<size=14><b> DISTRICTS </b></size>",
             "<size=14><b> UNITS </b></size>", 
-            "<size=14><b> DISTRICTS </b></size>"
         };
         
         private string[] displayModeNames =

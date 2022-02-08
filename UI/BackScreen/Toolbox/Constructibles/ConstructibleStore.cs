@@ -60,83 +60,133 @@ namespace DevTools.Humankind.GUITools.UI
             };
         }
 
-        public static void Rebuild()
+        public static void Rebuild(ConstructibleStoreBuildOptions options = null)
         {
+            options = options ?? new ConstructibleStoreBuildOptions();
+            
             var constructibles = Databases
                 .GetDatabase<ConstructibleDefinition>(false);
 
             var districts = constructibles
                 .OfType<DistrictDefinition>()
                 .ToArray();
+
+            Districts = RebuildDistricts(
+                options.ExcludeKnownInvalid
+                    ? districts.Where(d => !ExcludeNames.Contains(d.name)).ToArray()
+                    : districts, options);
             
             var units = constructibles
                 .OfType<UnitDefinition>()
                 .ToArray();
 
-            Districts = new DefinitionsGroup[]
+            Units = RebuildUnits(
+                options.ExcludeKnownInvalid 
+                    ? units.Where(u => !ExcludeNames.Contains(u.name)).ToArray()
+                    : units, options);
+        }
+
+        private static DefinitionsGroup[] RebuildDistricts(DistrictDefinition[] districts, ConstructibleStoreBuildOptions options)
+        {
+            var commonDistricts = districts.Where(CommonDistrictsClause);
+            var remaining = districts.Where(d => !CommonDistrictsClause(d)).ToArray();
+            var resourceDistricts = remaining.Where(ResourceDistrictsClause);
+            remaining = remaining.Where(d => !ResourceDistrictsClause(d)).ToArray();
+            var emblematicDistricts = remaining.Where(EmblematicDistrictsClause);
+            var otherDistricts = remaining.Where(d => !EmblematicDistrictsClause(d)).ToArray();
+
+            var result = new DefinitionsGroup[]
             {
                 new DefinitionsGroup()
                 {
                     Title = "Common Districts",
-                    Values = districts
-                        .Where(d => 
-                            d.Prototype == "Extension_Prototype_BaseEconomy" || 
-                            d.Prototype == "Extension_Prototype_BaseMilitary" || 
-                            d.Prototype == "Extension_Prototype_Base" || 
-                            d.name == "Extension_Base_Harbour" || 
-                            d.name == "Extension_Base_Extractor" || 
-                            d.name == "Extension_Base_Luxury" || 
-                            d.name == "Exploitation" || 
-                            d.name == "Extension_Base_WondrousExtractor")
+                    Values = commonDistricts
                         .Select(CreateDistrictConstructible)
                         .ToArray()
                 },
-                new DefinitionsGroup() 
-                {
-                    Title = "Extractors & Manufactories",
-                    Values = districts
-                        .Where(d => d.Prototype == "Extension_Base_Extractor" || d.Prototype == "Extension_Base_WondrousExtractor")
-                        .Select(CreateDistrictConstructible)
-                        .ToArray()
-                },
-                new DefinitionsGroup()
-                {
-                    Title = "Emblematic Districts",
-                    Values = districts
-                        .Where(d => d.Prototype == "Extension_Prototype_Emblematic")
-                        .Select(CreateDistrictConstructible)
-                        .ToArray()
-                }
-            };
-
-            Units = new DefinitionsGroup[]
-            {
                 
+            };
+            
+            if (!options.ExcludeExtractorsAndManufactories)
+                result = result.Append(new DefinitionsGroup() 
+                    {
+                        Title = "Extractors & Manufactories",
+                        Values = resourceDistricts
+                            .Select(CreateDistrictConstructible)
+                            .ToArray()
+                    });
+
+            result = result.Append(new DefinitionsGroup()
+            {
+                Title = "Emblematic Districts",
+                Values = emblematicDistricts
+                    .Select(CreateDistrictConstructible)
+                    .ToArray()
+            });
+            
+            if (!options.ExcludeOthersGroup && otherDistricts.Length > 0)
+                result = result.Append(new DefinitionsGroup()
+                {
+                    Title = "Other Districts",
+                    Values = otherDistricts
+                        .Select(CreateDistrictConstructible)
+                        .ToArray()
+                });
+            
+
+            return result;
+        }
+
+        private static DefinitionsGroup[] RebuildUnits(UnitDefinition[] units, ConstructibleStoreBuildOptions options)
+        {
+            var landUnits = units
+                .Where(u => u.SpawnType == UnitSpawnType.Land && !(u is NavalTransportDefinition))
+                .OrderBy(u => UnitEraLevel(u.name));
+            var remaining = units.Where(u => !(u.SpawnType == UnitSpawnType.Land && !(u is NavalTransportDefinition))).ToArray();
+            var maritimeUnits = remaining
+                .Where(u => u.SpawnType == UnitSpawnType.Maritime || u is NavalTransportDefinition)
+                .OrderBy(u => UnitEraLevel(u.name));
+            remaining = remaining.Where(u => !(u.SpawnType == UnitSpawnType.Maritime || u is NavalTransportDefinition)).ToArray();
+            var airUnits = remaining
+                .Where(u => u.SpawnType == UnitSpawnType.Air || u.SpawnType == UnitSpawnType.Missile)
+                .OrderBy(u => UnitEraLevel(u.name));
+            var otherUnits = remaining.Where(u => u.SpawnType != UnitSpawnType.Air && u.SpawnType != UnitSpawnType.Missile).ToArray();
+            
+            var result = new DefinitionsGroup[]
+            {
                 new DefinitionsGroup()
                 {
-                    Title = "Maritime Units",
-                    Values = units
-                        .Where(u => u.SpawnType == UnitSpawnType.Maritime)
+                    Title = "Land Units",
+                    Values = landUnits
                         .Select(CreateUnitConstructible)
                         .ToArray()
                 },
                 new DefinitionsGroup()
                 {
-                    Title = "Land Units",
-                    Values = units
-                        .Where(u => u.SpawnType == UnitSpawnType.Land)
+                    Title = "Maritime Units",
+                    Values = maritimeUnits
                         .Select(CreateUnitConstructible)
                         .ToArray()
                 },
                 new DefinitionsGroup()
                 {
                     Title = "Air & Missile Units",
-                    Values = units
-                        .Where(u => u.SpawnType == UnitSpawnType.Air || u.SpawnType == UnitSpawnType.Missile)
+                    Values = airUnits
                         .Select(CreateUnitConstructible)
                         .ToArray()
                 }
             };
+
+            if (!options.ExcludeOthersGroup && otherUnits.Length > 0)
+                result = result.Append(new DefinitionsGroup()
+                {
+                    Title = "Other Units",
+                    Values = otherUnits
+                        .Select(CreateUnitConstructible)
+                        .ToArray()
+                });
+
+            return result;
         }
 
     }
