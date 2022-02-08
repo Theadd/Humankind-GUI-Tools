@@ -38,38 +38,8 @@ namespace DevTools.Humankind.GUITools
             PopupToolWindow.Open<MainToolbar>(w => Toolbar = w);
             PopupToolWindow.Open<InGameMenuWindow>(w => InGameMenu = w);
             
-            /*PopupToolWindow.Open<TerrainPickingToolWindow>(w =>
-            {
-                TerrainWindow = w;
-                TerrainWindow.OverrideVisibility = true;
-            });*/
-
-            // Loggr.Log("ViewController.View = " + ViewController.View.ToString(), ConsoleColor.Magenta);
-
-            if (IsDebugModeEnabled)
-                TestingPlayground.Run();
-
-            // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.UpArrow, UnityEngine.KeyCode.LeftControl), "ToggleBasicToolWindow", ToggleBasicToolWindow);
-            // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Home), "ToggleHideToolbarWindow", ToggleHideToolbarWindow);
-            // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Tab), "ToggleGameOverviewWindow", ToggleGameOverviewWindow);
-
-            /*HumankindDevTools.RegisterAction(
-                new KeyboardShortcut(UnityEngine.KeyCode.Insert), 
-                "ToggleHideAllGUITools", 
-                ToggleHideAllUIWindows);*/
-
-            // Maps [ESC] key to: GodMode.Enabled = false 
-            // HumankindDevTools.RegisterAction(new KeyboardShortcut(UnityEngine.KeyCode.Escape), "CancelGodMode", CancelGodMode);
-
-            // ToggleGameOverviewWindow(); 
-            // ToggleBasicToolWindow(); 
-
-            /*HumankindDevTools.RegisterAction(
-                new KeyboardShortcut(UnityEngine.KeyCode.F4, UnityEngine.KeyCode.LeftShift), 
-                "RebuildConstructibles", 
-                ConstructibleStore.Rebuild);*/
-
-            //ConstructibleStore.PrintBatchProcess();
+            // if (IsDebugModeEnabled)
+            //     TestingPlayground.Run();
         }
         
         public static void ToggleHideToolbarWindow() => GlobalSettings.HideToolbarWindow.Value = !GlobalSettings.HideToolbarWindow.Value;
@@ -156,7 +126,7 @@ namespace DevTools.Humankind.GUITools
             // When true, draws a colored border for all UIOverlays backing a FloatingToolWindow derived class
             UIOverlay.DEBUG_DRAW_OVERLAY = false;
             // When not true, adds more verbosity to console output
-            Modding.Humankind.DevTools.DevTools.QuietMode = false;
+            Modding.Humankind.DevTools.DevTools.QuietMode = true;
         }
     }
 }
