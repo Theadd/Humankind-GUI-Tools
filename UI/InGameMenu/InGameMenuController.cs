@@ -71,7 +71,7 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
             ViewController.ViewMode = ViewModeType.GameMenu;
             // Do something here
             //SetBackgroundColor(new Color(0.7f, 0.65f, 0.1f, 0.45f));
-            
+
             BackgroundFader.StartAnimation();
         }
         

@@ -4,6 +4,7 @@ using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.Core;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace DevTools.Humankind.GUITools.UI.PauseMenu
 {
@@ -22,6 +23,9 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
         public static bool IsBigScreen => Screen.width >= 1920f;
 
         public override Rect WindowRect { get; set; } = new Rect(Screen.width - FixedWidth, 0, FixedWidth, Screen.height);
+
+        public static string LatestVersion { get; private set; }
+        public static bool VersionFound { get; private set; }
 
         private GUIStyle CenteredLink { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("Link")) {
             alignment = TextAnchor.MiddleCenter,
@@ -58,6 +62,24 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
                 InGameMenuController.Resync();
                 
                 yield return new WaitForSeconds(1.5f);
+            }
+            StartCoroutine(GetLatestVersion());
+        }
+        
+
+        IEnumerator GetLatestVersion() {
+            UnityWebRequest www = UnityWebRequest.Get("https://raw.githubusercontent.com/Theadd/Humankind-GUI-Tools/main/VERSION");
+            yield return www.SendWebRequest();
+ 
+            if (www.result != UnityWebRequest.Result.Success) {
+                Loggr.Log(www.error, ConsoleColor.Red);
+                VersionFound = false;
+            }
+            else
+            {
+                LatestVersion = www.downloadHandler.text;
+                VersionFound = true;
+                Loggr.Log(LatestVersion, ConsoleColor.Green);
             }
         }
 
