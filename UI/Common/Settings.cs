@@ -205,7 +205,7 @@ namespace DevTools.Humankind.GUITools.UI
             // HideToolsInGameMenu.Value = PlayerPrefs.GetInt(Window.GetPlayerPrefKey("HideToolsInGameMenu"), HideToolsInGameMenu.Value ? 1 : 0) != 0;
         }
 
-        private static readonly int _revisionId = 304;
+        private static int _revisionId => PluginInfo.REVISION;
 
         public static void ResetPlayerPreferencesIfNecessary(FloatingToolWindow window)
         {
