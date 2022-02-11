@@ -90,26 +90,26 @@ namespace DevTools.Humankind.GUITools.UI
             
             if (Event.current.type == EventType.Repaint)
             {
-                if ((ConstructiblesGrid.VirtualGrid.Cursor.IsSelectionActive && ToolboxController.IsDisplayModeGrid) != _drawSelectionPreview ||
-                    ((ConstructiblesGrid.VirtualGrid.Cursor.IsSelectionActive && ToolboxController.IsDisplayModeGrid) &&
-                     _selectedCell != ConstructiblesGrid.VirtualGrid.Cursor.SelectedCell.Cell))
+                if (((ConstructiblesGrid.VirtualGrid.Cursor.IsSelectionActive || IsMouseHoverCell) && ToolboxController.IsDisplayModeGrid) != _drawSelectionPreview ||
+                    (((ConstructiblesGrid.VirtualGrid.Cursor.IsSelectionActive || IsMouseHoverCell) && ToolboxController.IsDisplayModeGrid) &&
+                     _selectedCell != (IsMouseHoverCell ? CellWithMouseHover : ConstructiblesGrid.VirtualGrid.Cursor.SelectedCell.Cell)))
                 {
-                    _drawSelectionPreview = ConstructiblesGrid.VirtualGrid.Cursor.IsSelectionActive &&
+                    _drawSelectionPreview = (ConstructiblesGrid.VirtualGrid.Cursor.IsSelectionActive || IsMouseHoverCell) &&
                                             ToolboxController.IsDisplayModeGrid;
                     
                     if (_drawSelectionPreview)
                     {
-                        _selectedCell = ConstructiblesGrid.VirtualGrid.Cursor.SelectedCell.Cell;
-                        Loggr.Log(SelectionPreviewCell);
+                        _selectedCell = IsMouseHoverCell ? CellWithMouseHover : ConstructiblesGrid.VirtualGrid.Cursor.SelectedCell.Cell;
+                        // Loggr.Log(SelectionPreviewCell);
                         // Loggr.Log(UIController.DefaultSkin.FindStyle("Text"));
                         if (_selectedCell is IClickableImageCell cell)
                         {
-                            if (cell.Image != null)
-                                Loggr.Log("" + cell.Image.width + " x " + cell.Image.height);
+                            // if (cell.Image != null)
+                            //     Loggr.Log("" + cell.Image.width + " x " + cell.Image.height);
                             _selectedImage = cell.Image;
                             _selectedTitle = "<size=16><b>" + cell.Title + "</b></size>";
                             _selectedSubtitle = "<size=12>" + cell.UniqueName + "</size>";
-                            _selectedType = "<size=12>" + (LiveEditorMode.ActivePaintBrush?.GetType().Name ?? "") + "</size>";
+                            _selectedType = "<size=12>" + (IsMouseHoverCell ? "" : (LiveEditorMode.ActivePaintBrush?.GetType().Name ?? "")) + "</size>";
                             _selectedCategory = "<size=10>" + cell.Category + "</size>";
                             _selectedTags = cell.Tags;
                         }

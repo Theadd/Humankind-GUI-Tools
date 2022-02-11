@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Modding.Humankind.DevTools;
 using StyledGUI.VirtualGridElements;
 using UnityEngine;
 
@@ -9,11 +11,18 @@ namespace DevTools.Humankind.GUITools.UI
         public BackScreenWindow Window { get; set; }
         public ConstructiblesGrid ConstructiblesGrid { get; set; }
         public Vector2 ScrollViewPosition { get; set; } = Vector2.zero;
+        public Rect ScrollViewRect { get; private set; } = Rect.zero;
+        public Vector2 MousePosition { get; private set; } = Vector2.zero;
+        public bool IsMouseHover { get; private set; } = false;
+        public bool IsMouseHoverCell { get; private set; } = false;
+        public IClickableImageCell CellWithMouseHover { get; private set; } = null;
         public float VScrollbarWidth { get; set; } = 10f;
         public RectOffset ScrollViewPadding { get; set; } = new RectOffset(8, 8, 0, 0);
         public int ActiveTab { get; set; } = 0;
 
         private List<Vector2> _storedScrollViewPositions = new List<Vector2>() {Vector2.zero, Vector2.zero};
+
+        private bool _waitingForClick = false;
         
         public void Draw(Rect targetRect)
         {
@@ -49,17 +58,34 @@ namespace DevTools.Humankind.GUITools.UI
                 GUILayout.BeginVertical(GUILayout.Width(ConstructiblesGrid.FixedWidth));
                 {
                     if (Event.current.type == EventType.MouseDown)
-                        ConstructiblesGrid.VirtualGrid.FindCellAtPosition(Event.current.mousePosition, OnClickHandler);
-
+                    {
+                        _waitingForClick = true;
+                        ConstructiblesGrid.VirtualGrid.FindCellAtPosition(Event.current.mousePosition, OnClickHandler,
+                            OnClickFallbackHandler);
+                    }
+                    else
+                    {
+                        if (!_waitingForClick && IsMouseHover && Event.current.type == EventType.Repaint)
+                        {
+                            ConstructiblesGrid.VirtualGrid.FindCellAtPosition(Event.current.mousePosition,
+                                OnHoverHandler, OnHoverFallbackHandler);
+                        }
+                    }
+                    
                     ConstructiblesGrid.Render();
 
                     GUILayout.Space(8f);
                 }
                 GUILayout.EndVertical();
-                //GUILayout.Space(ScrollViewPadding.right);
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndScrollView();
+            if (Event.current.type == EventType.Repaint)
+            {
+                ScrollViewRect = GUILayoutUtility.GetLastRect();
+                MousePosition = new Vector2(Event.current.mousePosition.x, Event.current.mousePosition.y);
+                IsMouseHover = ScrollViewRect.Contains(MousePosition);
+            }
             DrawSelectionPreview();
             GUILayout.Space(1f);
             GUILayout.EndVertical();
@@ -69,6 +95,27 @@ namespace DevTools.Humankind.GUITools.UI
         public void OnClickHandler(ICell cell)
         {
             ConstructiblesGrid.VirtualGrid.Cursor.AddToSelection();
+            _waitingForClick = false;
+        }
+        
+        public void OnClickFallbackHandler()
+        {
+            _waitingForClick = false;
+        }
+        
+        public void OnHoverHandler(ICell cell)
+        {
+            IsMouseHoverCell = false;
+            if (cell is IClickableImageCell icell)
+            {
+                CellWithMouseHover = icell;
+                IsMouseHoverCell = true;
+            }
+        }
+        
+        public void OnHoverFallbackHandler()
+        {
+            IsMouseHoverCell = false;
         }
     }
 }

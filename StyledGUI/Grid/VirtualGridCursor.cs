@@ -88,14 +88,14 @@ namespace StyledGUI
                     currentCell = cellGroup.Cells.ElementAt(CellSubIndex);
                 }
 
-                if (currentCell is Clickable4xCell cell)
+                /*if (currentCell is Clickable4xCell cell)
                 {
                     Loggr.Log(cell.Title, ConsoleColor.Green);
                 }
                 else if (currentCell is ClickableImageCell imageCell)
                 {
                     Loggr.Log(imageCell.Title, ConsoleColor.Blue);
-                }
+                }*/
             }
             catch (Exception e)
             {

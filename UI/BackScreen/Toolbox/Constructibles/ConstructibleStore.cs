@@ -28,6 +28,7 @@ namespace DevTools.Humankind.GUITools.UI
             "Extension_Prototype_BaseMilitary",
             "Extension_Prototype_Emblematic",
             "Ruin",
+            "Exploitation",
         };
         
         public static Constructible CreateDistrictConstructible(DistrictDefinition definition)
