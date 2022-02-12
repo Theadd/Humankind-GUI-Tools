@@ -31,6 +31,9 @@ namespace StyledGUI.VirtualGridElements
                 }
 
                 ICell element = sequence.ElementAt(i);
+
+                if (grid.NeedsCursorSync && element is IEquatableCell equatableCell)
+                    grid.SyncCursorSelection(equatableCell);
                 
                 if (drawGap && grid.ColumnGap != 0)
                     GUILayout.Space(grid.ColumnGap);

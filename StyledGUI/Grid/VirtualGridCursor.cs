@@ -152,7 +152,7 @@ namespace StyledGUI
 
         public VirtualGridCell SelectedCell => SelectedGridCell;
 
-        public void AddToSelection()
+        public void AddToSelection(bool invokeOnSelectionChange = true)
         {
             switch (SelectionType)
             {
@@ -167,7 +167,8 @@ namespace StyledGUI
                         CellSubIndex = CellSubIndex,
                         Cell = GetCurrentCell()
                     };
-                    InvokeOnSelectionChange();
+                    if (invokeOnSelectionChange)
+                        InvokeOnSelectionChange();
                     
                     break;
                 case VirtualGridSelectionType.None:

@@ -104,6 +104,7 @@ namespace DevTools.Humankind.GUITools.UI
                 {
                     new Clickable4xCell()
                     {
+                        Id = c.DefinitionName.Handle,
                         Title = "<size=11><b>" + c.Title.ToUpper() + "</b></size>",
                         Subtitle = c.Name,
                         UniqueName = c.DefinitionName.ToString(),
@@ -132,6 +133,7 @@ namespace DevTools.Humankind.GUITools.UI
                     {
                         Cells = group.Select(c => new ClickableImageCell()
                         {
+                            Id = c.DefinitionName.Handle,
                             Title = c.Title.ToUpper(),
                             Subtitle = c.Name,
                             UniqueName = c.DefinitionName.ToString(),
