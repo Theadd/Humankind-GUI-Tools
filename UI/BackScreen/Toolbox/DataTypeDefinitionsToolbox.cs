@@ -18,9 +18,7 @@ namespace DevTools.Humankind.GUITools.UI
         public IClickableImageCell CellWithMouseHover { get; private set; } = null;
         public float VScrollbarWidth { get; set; } = 10f;
         public RectOffset ScrollViewPadding { get; set; } = new RectOffset(8, 8, 0, 0);
-        public int ActiveTab { get; set; } = 0;
-
-        private List<Vector2> _storedScrollViewPositions = new List<Vector2>() {Vector2.zero, Vector2.zero, Vector2.zero};
+        public int ActiveTab { get; private set; } = 0;
 
         private bool _waitingForClick = false;
         

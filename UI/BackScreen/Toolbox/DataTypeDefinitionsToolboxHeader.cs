@@ -1,40 +1,31 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Modding.Humankind.DevTools;
+using Modding.Humankind.DevTools.DeveloperTools;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
+using StyledGUI;
 using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI
 {
     public partial class DataTypeDefinitionsToolbox
     {
-        public string TextFilter { get; set; } = string.Empty;
 
-        /*private string[] tabNames =
-        {
-            "<size=14><b> DISTRICTS </b></size>",
-            "<size=15><b> UNITS </b></size>", 
-            "<size=16><b> COLLECTIBLES </b></size>", 
-            "<size=15><b> MARKER </b></size>", 
-            "<size=14><b> MARKER </b></size>", 
-            "<size=13><b> MARKER </b></size>", 
-            "<size=12><b> MARKER </b></size>", 
-            "<size=11><b> MARKER </b></size>", 
-        };*/
-        
-        private string[] tabNames =
+        private static string[] tabNames =
         {
             "DISTRICTS",
             "UNITS", 
             "COLLECTIBLES", 
-            "MARKER", 
-            "MARKER", 
-            "MARKER", 
-            "MARKER", 
-            "MARKER", 
+            "MAP MARKER", 
+            "UNITS", 
+            "COLLECTIBLES", 
+            "MAP MARKER", 
         };
         
+        private List<Vector2> _storedScrollViewPositions = tabNames.Select(n => Vector2.zero).ToList();
+
         private string[] displayModeNames =
         {
             "<size=10><b>LIST</b></size>", 
@@ -165,29 +156,181 @@ namespace DevTools.Humankind.GUITools.UI
             _justFocused = !selectAll;
         }
         
+        private Rect _scrollViewTabsRect = Rect.zero;
+        private bool _scrollToActiveTabRequested = false;
+
+        private GUIStyle HScrollbarTabs { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("noscrollbar"))
+        {
+            name = "noscrollbar",
+            overflow = new RectOffset(0, 0, 0, 0),
+            margin = new RectOffset(0, 0, -1, 0),
+        };
+        
+        private GUIStyle ImageLinkStyle { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("Link")) {
+            alignment = TextAnchor.MiddleCenter,
+            font = Utils.SourceCodeProRegularFont,
+            fontSize = 23,
+            margin = new RectOffset(0, 0, 4, 0),
+            padding = new RectOffset(8, 8, 0, 0),
+            fixedHeight = 26f,
+            normal = new GUIStyleState()
+            {
+                background = UIController.DefaultSkin.FindStyle("Link").normal.background,
+                // background = Utils.BlackTexture,
+                textColor = Color.white
+            }
+        };
+
+        private static Color TabNormalTextColor { get; set; } = new Color32(220, 220, 220, 240);
+        private static Color TabOnNormalTextColor { get; set; } = new Color32(16, 123, 235, 245);
+        private static Color DisabledLinkColor { get; set; } = new Color32(250, 250, 250, 100);
+        private static GUIStyle CustomTabButtonStyle { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("TabButton"))
+        {
+            fontStyle = FontStyle.Normal,
+            alignment = TextAnchor.MiddleCenter,
+            overflow = new RectOffset(0, 0, 0, 0),
+            margin = new RectOffset(0, 1, 5, 0),
+            padding = new RectOffset(8, 8, 0, -2),
+            fixedHeight = 26f,
+            normal = new GUIStyleState()
+            {
+                background  = UIController.DefaultSkin.FindStyle("TabButton").hover.background,
+                textColor = TabNormalTextColor
+            },
+            onNormal = new GUIStyleState()
+            {
+                background  = StyledGUI.Graphics.White215Texture,
+                textColor = TabOnNormalTextColor
+            },
+            onHover = new GUIStyleState()
+            {
+                background  = StyledGUI.Graphics.White215Texture,
+                textColor = TabOnNormalTextColor
+            }
+        };
+        
+        
+            
+        
+        // private GUIContent ScrollLeftLinkContent { get; set; } = new GUIContent("<size=27>⇦⇦ ◁ ◀ ← ◀ « ← </size>");
+        private GUIContent ScrollLeftLinkContent { get; set; } = new GUIContent("⇦");
+        private GUIContent ScrollRightLinkContent { get; set; } = new GUIContent("⇨");
+
+
+        private CustomToolbar Toolbar { get; set; } = new CustomToolbar()
+        {
+            ButtonSize = GUI.ToolbarButtonSize.FitToContents,
+            Style = CustomTabButtonStyle
+        };
+
+        private SmoothScroller TabsScroller { get; set; }
+
+        private GUIContent[] TabContents { get; set; } = tabNames
+            .Select(t => new GUIContent("<size=13><b>" + t + "</b></size>"))
+            .ToArray();
+
         private void DrawTabs()
         {
+            if (TabsScroller == null)
+                TabsScroller = new SmoothScroller();
+
+            TabsScroller.Run();
+
             GUILayout.Space(6f);
+            
             GUILayout.BeginHorizontal();
-            GUILayout.Space(12f);
+            GUILayout.Space(4f);
 
-            var activeTab = GUILayout.Toolbar(ActiveTab,
-                tabNames.Select((t, i) => i == ActiveTab 
-                    ? "<b>" + t + "</b>" 
-                    : t).ToArray(), 
-                "TabButton", GUI.ToolbarButtonSize.FitToContents);
+            GUI.enabled = ActiveTab > 0;
+            GUI.color = ActiveTab > 0 ? Color.white : DisabledLinkColor;
+            if (GUILayout.Button(ScrollLeftLinkContent, ImageLinkStyle, GUILayout.ExpandWidth(false)))
+            {
+                if (ActiveTab > 0)
+                    SetActiveTab(ActiveTab - 1);
+            }
 
+            GUI.enabled = true;
+            GUI.color = Color.white;
+
+            int activeTab;
+            
+            GUILayout.BeginScrollView(
+                TabsScroller.Value, 
+                true, 
+                false, 
+                HScrollbarTabs,
+                "noscrollbar",
+                "scrollview",
+                GUILayout.ExpandWidth(true));
+            {
+                activeTab = Toolbar.Draw(ActiveTab, TabContents);
+            }
+            GUILayout.EndScrollView();
+
+            if (Event.current.type == EventType.Repaint)
+            {
+                _scrollViewTabsRect = GUILayoutUtility.GetLastRect();
+                
+                if (_scrollToActiveTabRequested)
+                {
+                    ScrollToActiveTab();
+                    _scrollToActiveTabRequested = false;
+                }
+            }
+            
             if (activeTab != ActiveTab)
             {
-                Loggr.Log("ACTIVE TAB = " + activeTab, ConsoleColor.Magenta);
-                // Loggr.Log(UIController.DefaultSkin.textField);
-                _storedScrollViewPositions[ActiveTab] = ScrollViewPosition;
-                ScrollViewPosition = _storedScrollViewPositions[activeTab];
-                ActiveTab = activeTab;
-                TypeDefinitionsGrid.VirtualGrid.VisibleViews = new[] { ActiveTab };
+                SetActiveTab(activeTab);
             }
+            
+            GUI.enabled = ActiveTab + 1 < tabNames.Length;
+            GUI.color = ActiveTab + 1 < tabNames.Length ? Color.white : DisabledLinkColor;
+            if (GUILayout.Button(ScrollRightLinkContent, ImageLinkStyle, GUILayout.ExpandWidth(false)))
+            {
+                if (ActiveTab + 1 < tabNames.Length)
+                    SetActiveTab(ActiveTab + 1);
+            }
+            GUI.enabled = true;
+            GUI.color = Color.white;
+            GUILayout.Space(4f);
+            
             GUILayout.EndHorizontal();
             Utils.DrawHorizontalLine();
+        }
+
+        public void SetActiveTab(int index)
+        {
+            if (!(index >= 0 && index < tabNames.Length))
+                return;
+            
+            _storedScrollViewPositions[ActiveTab] = ScrollViewPosition;
+            ScrollViewPosition = _storedScrollViewPositions[index];
+            ActiveTab = index;
+            TypeDefinitionsGrid.VirtualGrid.VisibleViews = new[] { ActiveTab };
+            _scrollToActiveTabRequested = true;
+        }
+
+        private void ScrollToActiveTab()
+        {
+            // _scrollViewTabsPos = (80.0, 0.0)
+            // _scrollViewTabsRect = (x:36.00, y:55.00, width:445.00, height:31.00)
+            // ActiveTabSize [xMin, xMax] = [159, 266], Length: 107
+            // ToolbarSize = (616.0, 26.0) 
+                
+            var tabSize = Toolbar.Sizes[ActiveTab];
+
+            int r = ((int)_scrollViewTabsRect.width - tabSize.length) / 2;
+            int xMaxScrollRange = (int) (Toolbar.ToolbarSize.x - _scrollViewTabsRect.width);
+            int scrollViewNextX = Mathf.Min(Mathf.Max(0, tabSize.start - r), xMaxScrollRange);
+
+            // _scrollViewTabsPos.x = scrollViewNextX;
+            TabsScroller?.ScrollTo(scrollViewNextX);
+            
+            // Loggr.Log("_scrollViewTabsPos = " + _scrollViewTabsPos.ToString(), ConsoleColor.DarkCyan);
+            Loggr.Log("_scrollViewTabsRect = " + _scrollViewTabsRect.ToString(), ConsoleColor.DarkCyan);
+            Loggr.Log("ActiveTabSize [xMin, xMax] = [" + tabSize.start + ", " + tabSize.end + "], Length: " + tabSize.length  
+                      , ConsoleColor.DarkCyan);
+            Loggr.Log("ToolbarSize = " + Toolbar.ToolbarSize.ToString(), ConsoleColor.DarkCyan);
         }
     }
 }

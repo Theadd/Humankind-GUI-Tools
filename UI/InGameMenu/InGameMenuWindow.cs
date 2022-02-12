@@ -491,10 +491,11 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
             if (repeat && t >= 1)
                 t = 0;
             
-            InGameMenuController.SetBackgroundColor(Color.Lerp(InitialColor, TargetColor, t));
-  
             if (t < 1)
+            {
                 t += Time.deltaTime / Duration;
+                InGameMenuController.SetBackgroundColor(Color.Lerp(InitialColor, TargetColor, t));
+            }
         }
     }
 }

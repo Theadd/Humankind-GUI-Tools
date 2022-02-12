@@ -5,6 +5,7 @@ namespace StyledGUI
     public static class Graphics
     {
         public static Texture2D WhiteTexture = CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 1f));
+        public static Texture2D White215Texture = CreateSinglePixelTexture2D(new Color32(255, 255, 255, 215));
         public static Texture2D BlackTexture = CreateSinglePixelTexture2D(new Color(0, 0, 0, 1f));
         public static Texture2D TransparentTexture = CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0f));
         

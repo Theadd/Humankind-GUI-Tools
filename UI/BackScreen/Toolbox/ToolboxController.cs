@@ -10,16 +10,14 @@ namespace DevTools.Humankind.GUITools.UI
     public static class ToolboxController
     {
         public static Rect ToolboxRect { get; private set; } = Rect.zero;
-        public static Rect InputFilterRect { get; private set; } = Rect.zero;
         public static DataTypeDefinitionsToolbox Toolbox { get; set; }
         public static KeyboardShortcut ToolboxPreviewKey { get; set; } = new KeyboardShortcut(KeyCode.LeftControl);
         public static KeyboardShortcut StickedToolboxKey { get; set; } = new KeyboardShortcut(KeyCode.Space, KeyCode.LeftControl);
         public static bool IsVisible { get; private set; } = false;
         public static bool IsSticked { get; set; } = true;
         public static bool IsDocked { get; private set; } = true;
-        public static string InputFilter { get; set; } = string.Empty;
         public static RectOffset DockedMargin { get; set; } = new RectOffset(-2, 0, -2, -2);
-        public static float PanelWidth { get; set; } = 410f;
+        public static float PanelWidth { get; set; } = 400f;
         private static BackScreenWindow _backScreenWindow;
 
         public static void Initialize(BackScreenWindow window)
@@ -94,7 +92,6 @@ namespace DevTools.Humankind.GUITools.UI
         public static void SetToolboxRect(Rect newRect)
         {
             ToolboxRect = newRect;
-            InputFilterRect = new Rect(newRect.x + 12f, newRect.y - 24f, newRect.width, 24f);
         }
 
         public static bool Draw()
@@ -112,37 +109,15 @@ namespace DevTools.Humankind.GUITools.UI
                 if (!IsVisible)
                     OnShow();
                 
-                if (InputFilter.Length > 0)
-                    DrawInputFilter();
-                
                 Toolbox.Draw(ToolboxRect);
-                
-                if (Event.current.type == EventType.Repaint && Input.inputString.Length > 0)
-                    InputFilter = (InputFilter + Input.inputString).TrimStart(' ');
                 
                 return true;
             }
 
-            InputFilter = string.Empty;
             if (IsVisible)
                 OnHide();
             
             return false;
-        }
-
-        private static void DrawInputFilter()
-        {
-            GUILayout.BeginArea(InputFilterRect);
-            {
-                GUILayout.BeginHorizontal();
-                {
-                    GUILayout.Label("<color=#000000FF><b><size=10>🔍 FILTER: </size></b></color>");
-                    GUILayout.Label("<color=#000000FF><b>" + InputFilter.ToUpper() + "</b></color>");
-                    GUILayout.FlexibleSpace();
-                }
-                GUILayout.EndHorizontal();
-            }
-            GUILayout.EndArea();
         }
 
         private static bool AreKeysHeldDown(KeyboardShortcut shortcut) => 
