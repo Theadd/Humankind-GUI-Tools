@@ -36,7 +36,7 @@ namespace DevTools.Humankind.GUITools.UI
                 {
                     Snapshot = new ConstructibleStoreSnapshot()
                     {
-                        Districts = ConstructibleStore.Districts,
+                        Districts = ConstructibleStore.Curiosities.Concat(ConstructibleStore.Districts).ToArray(),
                         Units = ConstructibleStore.Units
                     },
                     VirtualGrid = new VirtualGrid()

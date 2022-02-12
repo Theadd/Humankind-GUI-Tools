@@ -38,8 +38,8 @@ namespace DevTools.Humankind.GUITools
             PopupToolWindow.Open<MainToolbar>(w => Toolbar = w);
             PopupToolWindow.Open<InGameMenuWindow>(w => InGameMenu = w);
             
-            // if (IsDebugModeEnabled)
-            //     TestingPlayground.Run();
+            if (IsDebugModeEnabled)
+                TestingPlayground.Run();
         }
         
         public static void ToggleHideToolbarWindow() => GlobalSettings.HideToolbarWindow.Value = !GlobalSettings.HideToolbarWindow.Value;

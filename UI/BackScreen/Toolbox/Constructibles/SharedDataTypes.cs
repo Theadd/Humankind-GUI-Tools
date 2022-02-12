@@ -19,10 +19,11 @@ namespace DevTools.Humankind.GUITools.UI
         public Texture Image { get; set; }
     }
 
-    public class ConstructibleStoreBuildOptions
+    public class DataTypeStoreBuildOptions
     {
         public bool ExcludeKnownInvalid { get; set; } = true;
         public bool ExcludeExtractorsAndManufactories { get; set; } = true;
         public bool ExcludeOthersGroup { get; set; } = false;
+        public bool ExcludeObsolete { get; set; } = true;
     }
 }

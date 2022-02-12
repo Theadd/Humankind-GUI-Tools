@@ -17,6 +17,7 @@ namespace DevTools.Humankind.GUITools.UI
     {
         public static DefinitionsGroup[] Districts { get; set; }
         public static DefinitionsGroup[] Units { get; set; }
+        public static DefinitionsGroup[] Curiosities { get; set; }
 
         public static string[] ExcludeNames { get; set; } = new[]
         {
@@ -60,10 +61,27 @@ namespace DevTools.Humankind.GUITools.UI
                 Image = AssetHunter.LoadTexture(definition)     // Utils.LoadTexture(definition.name)
             };
         }
-
-        public static void Rebuild(ConstructibleStoreBuildOptions options = null)
+        
+        public static Constructible CreateCuriosityConstructible(CuriosityDefinition definition)
         {
-            options = options ?? new ConstructibleStoreBuildOptions();
+            var name = definition.name; // UnitLastName(definition.name);
+
+            return new Constructible()
+            {
+                DefinitionName = definition.Name,
+                Title = UIController.GetLocalizedTitle(definition.Name, name),
+                Name = name,
+                Category = definition.Category.ToString(),
+                Era = definition.EraIndex,
+                Image = AssetHunter.LoadTexture(definition)
+            };
+        }
+
+        public static void Rebuild(DataTypeStoreBuildOptions options = null)
+        {
+            options = options ?? new DataTypeStoreBuildOptions();
+            
+            // CONSTRUCTIBLES
             
             var constructibles = Databases
                 .GetDatabase<ConstructibleDefinition>(false);
@@ -85,9 +103,78 @@ namespace DevTools.Humankind.GUITools.UI
                 options.ExcludeKnownInvalid 
                     ? units.Where(u => !ExcludeNames.Contains(u.name)).ToArray()
                     : units, options);
+            
+            // COLLECTIBLES
+
+            var collectibles = Databases.GetDatabase<CollectibleDefinition>(false);
+            
+            var curiosities = collectibles
+                .OfType<CuriosityDefinition>()
+                .ToArray();
+
+            Curiosities = RebuildCuriosities(curiosities, options);
+
+            /*foreach (CollectibleDefinition collectibleDefinition in (IEnumerable<CollectibleDefinition>) Databases.GetDatabase<CollectibleDefinition>())
+            {
+                CuriosityDefinition curiosityDefinition = collectibleDefinition as CuriosityDefinition;
+                if ((Object) curiosityDefinition != (Object) null)
+                    this.workingCuriosityNames.Add(curiosityDefinition.name);
+            }
+            this.curiosityDefinition = this.workingCuriosityNames.ToArray();*/
+
+            // CreateCuriosityConstructible
+
+            var match = curiosities.First(c => c.name == "Curiosity_Era2_World_Money01");
+
+            Loggr.Log(match);
+            Loggr.Log(UIController.GetLocalizedTitle(match.Category.ElementName, "NOT FOUND"));
+            Loggr.Log(UIController.GetLocalizedTitle(match.LootTableReference.ElementName, "NOT FOUND"));
+            Loggr.Log(match.LootTableReference);
+            IDatabase<LootTableDefinition> lootTables = Databases.GetDatabase<LootTableDefinition>();
+            LootTableDefinition lootTable = lootTables.GetValue(match.LootTableReference.ElementName);
+            Loggr.Log(lootTable);
+            Loggr.Log(lootTable.Loots[0].SimulationEventEffects[0].GainValues[0]);
+            
+            CheckCuriosity(match.Name);
+            
+        }
+        
+        public static void CheckCuriosity(StaticString uiMapperName)
+        {
+            UIMapper uiMapper;
+            if (!UIController.DataUtils.TryGetUIMapper(uiMapperName, out uiMapper))
+            {
+                Loggr.Log("CANT FIND UIMAPPER FOR " + uiMapperName.ToString());
+                return;
+            }
+            
+            Loggr.Log(uiMapper.Images[1]);
+            
+            /*if (uiMapper.Images != null && uiMapper.Images.Length != 0)
+                return uiMapper.GetImage(key);
+            Amplitude.Diagnostics.LogWarning("No Images for the UIMapper '{0}'", (object) uiMapperName);
+            return UITexture.None;*/
         }
 
-        private static DefinitionsGroup[] RebuildDistricts(DistrictDefinition[] districts, ConstructibleStoreBuildOptions options)
+        private static DefinitionsGroup[] RebuildCuriosities(CuriosityDefinition[] curiosities,
+            DataTypeStoreBuildOptions options)
+        {
+            var result = new DefinitionsGroup[]
+            {
+                new DefinitionsGroup()
+                {
+                    Title = "Curiosities",
+                    Values = curiosities
+                        .Select(CreateCuriosityConstructible)
+                        .ToArray()
+                },
+                
+            };
+            
+            return result;
+        }
+
+        private static DefinitionsGroup[] RebuildDistricts(DistrictDefinition[] districts, DataTypeStoreBuildOptions options)
         {
             var commonDistricts = districts.Where(CommonDistrictsClause);
             var remaining = districts.Where(d => !CommonDistrictsClause(d)).ToArray();
@@ -138,7 +225,7 @@ namespace DevTools.Humankind.GUITools.UI
             return result;
         }
 
-        private static DefinitionsGroup[] RebuildUnits(UnitDefinition[] units, ConstructibleStoreBuildOptions options)
+        private static DefinitionsGroup[] RebuildUnits(UnitDefinition[] units, DataTypeStoreBuildOptions options)
         {
             var landUnits = units
                 .Where(u => u.SpawnType == UnitSpawnType.Land && !(u is NavalTransportDefinition))

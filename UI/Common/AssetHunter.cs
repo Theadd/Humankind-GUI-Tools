@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Amplitude;
+using Amplitude.Framework;
 using Amplitude.Mercury.Data.Simulation;
 using Amplitude.UI;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
@@ -15,8 +16,10 @@ namespace DevTools.Humankind.GUITools.UI
         private static string[] _dbNamesInUse = new string[] {};
         private static StaticString _smallKey = new StaticString("Small");
         private static StaticString _defaultSmallKey = new StaticString("Default_Small");
+        private static StaticString _pictoKey = new StaticString("Picto");
+        private static StaticString _mediumKey = new StaticString("Medium");
 
-        public static string GetSmallTextureAssetPath(ConstructibleDefinition definition)
+        public static string GetSmallTextureAssetPath(IDatatableElement definition)
         {
             try
             {
@@ -24,7 +27,10 @@ namespace DevTools.Humankind.GUITools.UI
                 if (("" + uiTexture.AssetPath).Length != 0)
                     return "" + uiTexture.AssetPath;
 
-                return UIController.DataUtils.GetImage(definition.Name, _defaultSmallKey).AssetPath;
+                string path = "" + UIController.DataUtils.GetImage(definition.Name, _defaultSmallKey).AssetPath;
+                path = path.Length > 0 ? path : UIController.DataUtils.GetImage(definition.Name, _mediumKey).AssetPath;
+
+                return path;
             }
             catch (Exception)
             {
@@ -32,7 +38,7 @@ namespace DevTools.Humankind.GUITools.UI
             }
         }
 
-        public static Texture2D LoadTexture(ConstructibleDefinition definition) => 
+        public static Texture2D LoadTexture(IDatatableElement definition) => 
             LoadTextureAt(GetSmallTextureAssetPath(definition));
 
         public static Texture2D LoadTextureAt(string assetPath)
