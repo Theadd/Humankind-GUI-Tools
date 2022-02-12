@@ -13,7 +13,7 @@ using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public static partial class ConstructibleStore
+    public static partial class DataTypeStore
     {
         public static DefinitionsGroup[] Districts { get; set; }
         public static DefinitionsGroup[] Units { get; set; }
@@ -32,11 +32,11 @@ namespace DevTools.Humankind.GUITools.UI
             "Exploitation",
         };
         
-        public static Constructible CreateDistrictConstructible(DistrictDefinition definition)
+        public static DataTypeDefinition CreateDistrictDataType(DistrictDefinition definition)
         {
             var name = LastName(definition.name);
 
-            return new Constructible()
+            return new DataTypeDefinition()
             {
                 DefinitionName = definition.Name,
                 Title = UIController.GetLocalizedTitle(definition.Name, name),
@@ -47,11 +47,11 @@ namespace DevTools.Humankind.GUITools.UI
             };
         }
         
-        public static Constructible CreateUnitConstructible(UnitDefinition definition)
+        public static DataTypeDefinition CreateUnitDataType(UnitDefinition definition)
         {
             var name = UnitLastName(definition.name);
 
-            return new Constructible()
+            return new DataTypeDefinition()
             {
                 DefinitionName = definition.Name,
                 Title = UIController.GetLocalizedTitle(definition.Name, name),
@@ -62,11 +62,11 @@ namespace DevTools.Humankind.GUITools.UI
             };
         }
         
-        public static Constructible CreateCuriosityConstructible(CuriosityDefinition definition)
+        public static DataTypeDefinition CreateCuriosityDataType(CuriosityDefinition definition)
         {
             var name = definition.name; // UnitLastName(definition.name);
 
-            return new Constructible()
+            return new DataTypeDefinition()
             {
                 DefinitionName = definition.Name,
                 Title = UIController.GetLocalizedTitle(definition.Name, name),
@@ -93,7 +93,8 @@ namespace DevTools.Humankind.GUITools.UI
             Districts = RebuildDistricts(
                 options.ExcludeKnownInvalid
                     ? districts.Where(d => !ExcludeNames.Contains(d.name)).ToArray()
-                    : districts, options);
+                    : districts, 
+                options);
             
             var units = constructibles
                 .OfType<UnitDefinition>()
@@ -102,7 +103,8 @@ namespace DevTools.Humankind.GUITools.UI
             Units = RebuildUnits(
                 options.ExcludeKnownInvalid 
                     ? units.Where(u => !ExcludeNames.Contains(u.name)).ToArray()
-                    : units, options);
+                    : units, 
+                options);
             
             // COLLECTIBLES
 
@@ -112,17 +114,12 @@ namespace DevTools.Humankind.GUITools.UI
                 .OfType<CuriosityDefinition>()
                 .ToArray();
 
-            Curiosities = RebuildCuriosities(curiosities, options);
-
-            /*foreach (CollectibleDefinition collectibleDefinition in (IEnumerable<CollectibleDefinition>) Databases.GetDatabase<CollectibleDefinition>())
-            {
-                CuriosityDefinition curiosityDefinition = collectibleDefinition as CuriosityDefinition;
-                if ((Object) curiosityDefinition != (Object) null)
-                    this.workingCuriosityNames.Add(curiosityDefinition.name);
-            }
-            this.curiosityDefinition = this.workingCuriosityNames.ToArray();*/
-
-            // CreateCuriosityConstructible
+            Curiosities = RebuildCuriosities(
+                options.ExcludeObsolete 
+                    ? curiosities.Where(c => !c.IsObsolete) 
+                    : curiosities,
+                options);
+            
 
             var match = curiosities.First(c => c.name == "Curiosity_Era2_World_Money01");
 
@@ -156,7 +153,7 @@ namespace DevTools.Humankind.GUITools.UI
             return UITexture.None;*/
         }
 
-        private static DefinitionsGroup[] RebuildCuriosities(CuriosityDefinition[] curiosities,
+        private static DefinitionsGroup[] RebuildCuriosities(IEnumerable<CuriosityDefinition> curiosities,
             DataTypeStoreBuildOptions options)
         {
             var result = new DefinitionsGroup[]
@@ -165,7 +162,7 @@ namespace DevTools.Humankind.GUITools.UI
                 {
                     Title = "Curiosities",
                     Values = curiosities
-                        .Select(CreateCuriosityConstructible)
+                        .Select(CreateCuriosityDataType)
                         .ToArray()
                 },
                 
@@ -189,7 +186,7 @@ namespace DevTools.Humankind.GUITools.UI
                 {
                     Title = "Common Districts",
                     Values = commonDistricts
-                        .Select(CreateDistrictConstructible)
+                        .Select(CreateDistrictDataType)
                         .ToArray()
                 },
                 
@@ -200,7 +197,7 @@ namespace DevTools.Humankind.GUITools.UI
                     {
                         Title = "Extractors & Manufactories",
                         Values = resourceDistricts
-                            .Select(CreateDistrictConstructible)
+                            .Select(CreateDistrictDataType)
                             .ToArray()
                     });
 
@@ -208,7 +205,7 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 Title = "Emblematic Districts",
                 Values = emblematicDistricts
-                    .Select(CreateDistrictConstructible)
+                    .Select(CreateDistrictDataType)
                     .ToArray()
             });
             
@@ -217,7 +214,7 @@ namespace DevTools.Humankind.GUITools.UI
                 {
                     Title = "Other Districts",
                     Values = otherDistricts
-                        .Select(CreateDistrictConstructible)
+                        .Select(CreateDistrictDataType)
                         .ToArray()
                 });
             
@@ -246,21 +243,21 @@ namespace DevTools.Humankind.GUITools.UI
                 {
                     Title = "Land Units",
                     Values = landUnits
-                        .Select(CreateUnitConstructible)
+                        .Select(CreateUnitDataType)
                         .ToArray()
                 },
                 new DefinitionsGroup()
                 {
                     Title = "Maritime Units",
                     Values = maritimeUnits
-                        .Select(CreateUnitConstructible)
+                        .Select(CreateUnitDataType)
                         .ToArray()
                 },
                 new DefinitionsGroup()
                 {
                     Title = "Air & Missile Units",
                     Values = airUnits
-                        .Select(CreateUnitConstructible)
+                        .Select(CreateUnitDataType)
                         .ToArray()
                 }
             };
@@ -270,7 +267,7 @@ namespace DevTools.Humankind.GUITools.UI
                 {
                     Title = "Other Units",
                     Values = otherUnits
-                        .Select(CreateUnitConstructible)
+                        .Select(CreateUnitDataType)
                         .ToArray()
                 });
 

@@ -6,10 +6,10 @@ namespace DevTools.Humankind.GUITools.UI
     public class DefinitionsGroup
     {
         public string Title { get; set; }
-        public Constructible[] Values { get; set; }
+        public DataTypeDefinition[] Values { get; set; }
     }
 
-    public class Constructible
+    public class DataTypeDefinition
     {
         public StaticString DefinitionName { get; set; }
         public string Name { get; set; }

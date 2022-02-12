@@ -6,10 +6,10 @@ using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public partial class ConstructiblesToolbox
+    public partial class DataTypeDefinitionsToolbox
     {
         public BackScreenWindow Window { get; set; }
-        public ConstructiblesGrid ConstructiblesGrid { get; set; }
+        public DataTypeDefinitionsGrid TypeDefinitionsGrid { get; set; }
         public Vector2 ScrollViewPosition { get; set; } = Vector2.zero;
         public Rect ScrollViewRect { get; private set; } = Rect.zero;
         public Vector2 MousePosition { get; private set; } = Vector2.zero;
@@ -28,8 +28,8 @@ namespace DevTools.Humankind.GUITools.UI
         {
             GUILayout.BeginArea(targetRect);
             {
-                if ((int)ConstructiblesGrid.FixedWidth != (int)(targetRect.width - VScrollbarWidth - ScrollViewPadding.left - ScrollViewPadding.right))
-                    ConstructiblesGrid.FixedWidth = (int)(targetRect.width - VScrollbarWidth - ScrollViewPadding.left - ScrollViewPadding.right);
+                if ((int)TypeDefinitionsGrid.FixedWidth != (int)(targetRect.width - VScrollbarWidth - ScrollViewPadding.left - ScrollViewPadding.right))
+                    TypeDefinitionsGrid.FixedWidth = (int)(targetRect.width - VScrollbarWidth - ScrollViewPadding.left - ScrollViewPadding.right);
                 
                 Draw();
             }
@@ -55,24 +55,24 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(ScrollViewPadding.left);
-                GUILayout.BeginVertical(GUILayout.Width(ConstructiblesGrid.FixedWidth));
+                GUILayout.BeginVertical(GUILayout.Width(TypeDefinitionsGrid.FixedWidth));
                 {
                     if (Event.current.type == EventType.MouseDown)
                     {
                         _waitingForClick = true;
-                        ConstructiblesGrid.VirtualGrid.FindCellAtPosition(Event.current.mousePosition, OnClickHandler,
+                        TypeDefinitionsGrid.VirtualGrid.FindCellAtPosition(Event.current.mousePosition, OnClickHandler,
                             OnClickFallbackHandler);
                     }
                     else
                     {
                         if (!_waitingForClick && IsMouseHover && Event.current.type == EventType.Repaint)
                         {
-                            ConstructiblesGrid.VirtualGrid.FindCellAtPosition(Event.current.mousePosition,
+                            TypeDefinitionsGrid.VirtualGrid.FindCellAtPosition(Event.current.mousePosition,
                                 OnHoverHandler, OnHoverFallbackHandler);
                         }
                     }
                     
-                    ConstructiblesGrid.Render();
+                    TypeDefinitionsGrid.Render();
 
                     GUILayout.Space(8f);
                 }
@@ -95,7 +95,7 @@ namespace DevTools.Humankind.GUITools.UI
         
         public void OnClickHandler(ICell cell)
         {
-            ConstructiblesGrid.VirtualGrid.Cursor.AddToSelection();
+            TypeDefinitionsGrid.VirtualGrid.Cursor.AddToSelection();
             _waitingForClick = false;
         }
         

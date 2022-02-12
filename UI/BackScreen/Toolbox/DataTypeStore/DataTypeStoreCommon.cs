@@ -3,7 +3,7 @@ using Amplitude.Mercury.Data.Simulation;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public static partial class ConstructibleStore
+    public static partial class DataTypeStore
     {
         
         private static string LastName(string name)

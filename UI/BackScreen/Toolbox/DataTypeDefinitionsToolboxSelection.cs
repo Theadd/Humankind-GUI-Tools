@@ -6,7 +6,7 @@ using StyledGUI.VirtualGridElements;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public partial class ConstructiblesToolbox
+    public partial class DataTypeDefinitionsToolbox
     {
         private bool _drawSelectionPreview = false;
         private ICell _selectedCell = null;
@@ -90,16 +90,16 @@ namespace DevTools.Humankind.GUITools.UI
             
             if (Event.current.type == EventType.Repaint)
             {
-                if (((ConstructiblesGrid.VirtualGrid.Cursor.IsSelectionActive || IsMouseHoverCell) && ToolboxController.IsDisplayModeGrid) != _drawSelectionPreview ||
-                    (((ConstructiblesGrid.VirtualGrid.Cursor.IsSelectionActive || IsMouseHoverCell) && ToolboxController.IsDisplayModeGrid) &&
-                     _selectedCell != (IsMouseHoverCell ? CellWithMouseHover : ConstructiblesGrid.VirtualGrid.Cursor.SelectedCell.Cell)))
+                if (((TypeDefinitionsGrid.VirtualGrid.Cursor.IsSelectionActive || IsMouseHoverCell) && ToolboxController.IsDisplayModeGrid) != _drawSelectionPreview ||
+                    (((TypeDefinitionsGrid.VirtualGrid.Cursor.IsSelectionActive || IsMouseHoverCell) && ToolboxController.IsDisplayModeGrid) &&
+                     _selectedCell != (IsMouseHoverCell ? CellWithMouseHover : TypeDefinitionsGrid.VirtualGrid.Cursor.SelectedCell.Cell)))
                 {
-                    _drawSelectionPreview = (ConstructiblesGrid.VirtualGrid.Cursor.IsSelectionActive || IsMouseHoverCell) &&
+                    _drawSelectionPreview = (TypeDefinitionsGrid.VirtualGrid.Cursor.IsSelectionActive || IsMouseHoverCell) &&
                                             ToolboxController.IsDisplayModeGrid;
                     
                     if (_drawSelectionPreview)
                     {
-                        _selectedCell = IsMouseHoverCell ? CellWithMouseHover : ConstructiblesGrid.VirtualGrid.Cursor.SelectedCell.Cell;
+                        _selectedCell = IsMouseHoverCell ? CellWithMouseHover : TypeDefinitionsGrid.VirtualGrid.Cursor.SelectedCell.Cell;
                         // Loggr.Log(SelectionPreviewCell);
                         // Loggr.Log(UIController.DefaultSkin.FindStyle("Text"));
                         if (_selectedCell is IClickableImageCell cell)

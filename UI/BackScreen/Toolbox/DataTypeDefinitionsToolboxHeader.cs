@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public partial class ConstructiblesToolbox
+    public partial class DataTypeDefinitionsToolbox
     {
         public string TextFilter { get; set; } = string.Empty;
 
@@ -33,19 +33,19 @@ namespace DevTools.Humankind.GUITools.UI
                 GUILayout.Space(10f);
                 
                 if (GUILayout.Button("<size=10><b>DESELECT</b></size>", GUILayout.ExpandWidth(false)))
-                    ToolboxController.Toolbox.ConstructiblesGrid.VirtualGrid.Cursor.ClearSelection();
+                    ToolboxController.Toolbox.TypeDefinitionsGrid.VirtualGrid.Cursor.ClearSelection();
                 
                 // GUILayout.FlexibleSpace();
                 
                 if (GUILayout.Button("<size=10><b>RELOAD</b></size>", GUILayout.ExpandWidth(false)))
                 {
-                    ConstructibleStore.Rebuild();
-                    ConstructiblesGrid.Snapshot = new ConstructibleStoreSnapshot()
+                    DataTypeStore.Rebuild();
+                    TypeDefinitionsGrid.Snapshot = new DataTypeStoreSnapshot()
                     {
-                        Districts = ConstructibleStore.Districts,
-                        Units = ConstructibleStore.Units,
+                        Districts = DataTypeStore.Districts,
+                        Units = DataTypeStore.Units,
                     };
-                    ConstructiblesGrid.IsDirty = true;
+                    TypeDefinitionsGrid.IsDirty = true;
                     Loggr.Log(TextFilterStyle);
                 }
                 
@@ -55,13 +55,13 @@ namespace DevTools.Humankind.GUITools.UI
                 
                 GUILayout.Space(6f);
 
-                GUI.enabled = ToolboxController.Toolbox.ConstructiblesGrid.GridModeChunkSize > 1 && ToolboxController.IsDisplayModeGrid;
+                GUI.enabled = ToolboxController.Toolbox.TypeDefinitionsGrid.GridModeChunkSize > 1 && ToolboxController.IsDisplayModeGrid;
                 if (GUILayout.Button("<size=15><b> ＋</b></size>", GUILayout.Width(22f), GUILayout.Height(21f), GUILayout.ExpandWidth(false)))
-                    ToolboxController.Toolbox.ConstructiblesGrid.GridModeChunkSize -= 1;
+                    ToolboxController.Toolbox.TypeDefinitionsGrid.GridModeChunkSize -= 1;
                 
-                GUI.enabled = ToolboxController.Toolbox.ConstructiblesGrid.GridModeChunkSize < 12 && ToolboxController.IsDisplayModeGrid;
+                GUI.enabled = ToolboxController.Toolbox.TypeDefinitionsGrid.GridModeChunkSize < 12 && ToolboxController.IsDisplayModeGrid;
                 if (GUILayout.Button("<size=13><b>—</b></size>", GUILayout.Width(22f), GUILayout.Height(21f), GUILayout.ExpandWidth(false)))
-                    ToolboxController.Toolbox.ConstructiblesGrid.GridModeChunkSize += 1;
+                    ToolboxController.Toolbox.TypeDefinitionsGrid.GridModeChunkSize += 1;
 
                 GUI.enabled = true;
                 GUILayout.Space(6f);
@@ -102,7 +102,7 @@ namespace DevTools.Humankind.GUITools.UI
         {
             GUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
             {
-                var textFilter = ConstructiblesGrid.FilterBy;
+                var textFilter = TypeDefinitionsGrid.FilterBy;
 
                 GUI.SetNextControlName(InputFilterControlName);
                 var text = GUILayout.TextField(textFilter, TextFilterStyle, GUILayout.Height(21f),
@@ -121,7 +121,7 @@ namespace DevTools.Humankind.GUITools.UI
                 if (text != textFilter || (!_didInputFilterGetFocus && Event.current.keyCode == KeyCode.Backspace))
                 {
                     textFilter = text.ToUpper();
-                    ConstructiblesGrid.FilterBy = textFilter;
+                    TypeDefinitionsGrid.FilterBy = textFilter;
 
                     if (!_didInputFilterGetFocus)
                     {
@@ -159,7 +159,7 @@ namespace DevTools.Humankind.GUITools.UI
                 _storedScrollViewPositions[ActiveTab] = ScrollViewPosition;
                 ScrollViewPosition = _storedScrollViewPositions[activeTab];
                 ActiveTab = activeTab;
-                ConstructiblesGrid.VirtualGrid.VisibleViews = new[] { ActiveTab };
+                TypeDefinitionsGrid.VirtualGrid.VisibleViews = new[] { ActiveTab };
             }
             GUILayout.EndHorizontal();
             Utils.DrawHorizontalLine();

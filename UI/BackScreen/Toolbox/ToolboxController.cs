@@ -11,7 +11,7 @@ namespace DevTools.Humankind.GUITools.UI
     {
         public static Rect ToolboxRect { get; private set; } = Rect.zero;
         public static Rect InputFilterRect { get; private set; } = Rect.zero;
-        public static ConstructiblesToolbox Toolbox { get; set; }
+        public static DataTypeDefinitionsToolbox Toolbox { get; set; }
         public static KeyboardShortcut ToolboxPreviewKey { get; set; } = new KeyboardShortcut(KeyCode.LeftControl);
         public static KeyboardShortcut StickedToolboxKey { get; set; } = new KeyboardShortcut(KeyCode.Space, KeyCode.LeftControl);
         public static bool IsVisible { get; private set; } = false;
@@ -27,21 +27,21 @@ namespace DevTools.Humankind.GUITools.UI
             _backScreenWindow = window;
             AutoResize();
             
-            ConstructibleStore.Rebuild();
+            DataTypeStore.Rebuild();
             
-            Toolbox = new ConstructiblesToolbox()
+            Toolbox = new DataTypeDefinitionsToolbox()
             {
                 Window = window,
-                ConstructiblesGrid = new ConstructiblesGrid()
+                TypeDefinitionsGrid = new DataTypeDefinitionsGrid()
                 {
-                    Snapshot = new ConstructibleStoreSnapshot()
+                    Snapshot = new DataTypeStoreSnapshot()
                     {
-                        Districts = ConstructibleStore.Curiosities.Concat(ConstructibleStore.Districts).ToArray(),
-                        Units = ConstructibleStore.Units
+                        Districts = DataTypeStore.Curiosities.Concat(DataTypeStore.Districts).ToArray(),
+                        Units = DataTypeStore.Units
                     },
                     VirtualGrid = new VirtualGrid()
                     {
-                        Grid = new ConstructiblesStyledGrid(),
+                        Grid = new DataTypeDefinitionsStyledGrid(),
                         DrawRowHeaders = false,
                         DrawSectionHeaders = true,
                         VisibleViews = new[] { 0 },
@@ -54,8 +54,8 @@ namespace DevTools.Humankind.GUITools.UI
                 }
             };
 
-            Toolbox.ConstructiblesGrid.VirtualGrid.Cursor.OnSelectionChange += LiveEditorMode.UpdatePaintBrush;
-            Toolbox.ConstructiblesGrid.GridModeChunkSize = 5;
+            Toolbox.TypeDefinitionsGrid.VirtualGrid.Cursor.OnSelectionChange += LiveEditorMode.UpdatePaintBrush;
+            Toolbox.TypeDefinitionsGrid.GridModeChunkSize = 5;
             IsDisplayModeGrid = true;
         }
 
@@ -66,27 +66,27 @@ namespace DevTools.Humankind.GUITools.UI
 
         public static bool IsDisplayModeGrid
         {
-            get => Toolbox.ConstructiblesGrid.VirtualGrid.Grid.DisplayMode == VirtualGridDisplayMode.Grid;
+            get => Toolbox.TypeDefinitionsGrid.VirtualGrid.Grid.DisplayMode == VirtualGridDisplayMode.Grid;
             set
             {
-                Toolbox.ConstructiblesGrid.VirtualGrid.Grid.DisplayMode =
+                Toolbox.TypeDefinitionsGrid.VirtualGrid.Grid.DisplayMode =
                     value ? VirtualGridDisplayMode.Grid : VirtualGridDisplayMode.List;
-                Toolbox.ConstructiblesGrid.VirtualGrid.AlternateType =
+                Toolbox.TypeDefinitionsGrid.VirtualGrid.AlternateType =
                     value ? VirtualGridAlternateType.Columns : VirtualGridAlternateType.Rows;
                 
                 if (value)
                 {
-                    Toolbox.ConstructiblesGrid.VirtualGrid.Grid.CellTintColor = CellTintColorOnGridMode;
-                    Toolbox.ConstructiblesGrid.VirtualGrid.Grid.CellTintColorAlt = CellTintColorAltOnGridMode;
+                    Toolbox.TypeDefinitionsGrid.VirtualGrid.Grid.CellTintColor = CellTintColorOnGridMode;
+                    Toolbox.TypeDefinitionsGrid.VirtualGrid.Grid.CellTintColorAlt = CellTintColorAltOnGridMode;
                 }
                 else
                 {
-                    Toolbox.ConstructiblesGrid.VirtualGrid.Grid.CellTintColor = CellTintColorOnListMode;
-                    Toolbox.ConstructiblesGrid.VirtualGrid.Grid.CellTintColorAlt = CellTintColorAltOnListMode;
+                    Toolbox.TypeDefinitionsGrid.VirtualGrid.Grid.CellTintColor = CellTintColorOnListMode;
+                    Toolbox.TypeDefinitionsGrid.VirtualGrid.Grid.CellTintColorAlt = CellTintColorAltOnListMode;
                 }
                 
-                Toolbox.ConstructiblesGrid.VirtualGrid.ExpandWidthOnSingleColumnGrid = !value;
-                Toolbox.ConstructiblesGrid.GridModeChunkSize = Toolbox.ConstructiblesGrid.GridModeChunkSize * 1;
+                Toolbox.TypeDefinitionsGrid.VirtualGrid.ExpandWidthOnSingleColumnGrid = !value;
+                Toolbox.TypeDefinitionsGrid.GridModeChunkSize = Toolbox.TypeDefinitionsGrid.GridModeChunkSize * 1;
             }
         }
 
@@ -194,7 +194,7 @@ namespace DevTools.Humankind.GUITools.UI
         public static void Unload()
         {
             if (Toolbox != null)
-                Toolbox.ConstructiblesGrid.VirtualGrid.Cursor.OnSelectionChange -= LiveEditorMode.UpdatePaintBrush;
+                Toolbox.TypeDefinitionsGrid.VirtualGrid.Cursor.OnSelectionChange -= LiveEditorMode.UpdatePaintBrush;
         }
     }
 }

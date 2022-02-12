@@ -75,7 +75,7 @@ namespace DevTools.Humankind.GUITools.UI
 
         public static void UpdatePaintBrush()
         {
-            var gridCell = ToolboxController.Toolbox.ConstructiblesGrid.VirtualGrid.Cursor.SelectedCell;
+            var gridCell = ToolboxController.Toolbox.TypeDefinitionsGrid.VirtualGrid.Cursor.SelectedCell;
 
             if (gridCell != null && gridCell.Cell is Clickable4xCell cell)
             {
