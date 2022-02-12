@@ -86,6 +86,7 @@ namespace DevTools.Humankind.GUITools.UI
                 MousePosition = new Vector2(Event.current.mousePosition.x, Event.current.mousePosition.y);
                 IsMouseHover = ScrollViewRect.Contains(MousePosition);
             }
+            GUILayout.FlexibleSpace();
             DrawSelectionPreview();
             GUILayout.Space(1f);
             GUILayout.EndVertical();

@@ -135,7 +135,7 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 GUILayout.BeginHorizontal();
                 {
-                    GUILayout.Label("<color=#000000FF><b><size=10>FILTER: </size></b></color>");
+                    GUILayout.Label("<color=#000000FF><b><size=10>🔍 FILTER: </size></b></color>");
                     GUILayout.Label("<color=#000000FF><b>" + InputFilter.ToUpper() + "</b></color>");
                     GUILayout.FlexibleSpace();
                 }

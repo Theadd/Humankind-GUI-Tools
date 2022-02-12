@@ -48,7 +48,7 @@ namespace DevTools.Humankind.GUITools.UI
                 // Utils.DrawHorizontalLine();
                 var prevTint = GUI.backgroundColor;
                 GUI.backgroundColor = SelectionPreviewTintColor;
-                using (var cellScope = new GUILayout.HorizontalScope(SelectionPreviewCell))
+                using (var cellScope = new GUILayout.HorizontalScope(SelectionPreviewCell, GUILayout.Height(128f)))
                 {
                     GUILayout.BeginVertical(GUILayout.Width(128f), GUILayout.Height(128f));
                     {

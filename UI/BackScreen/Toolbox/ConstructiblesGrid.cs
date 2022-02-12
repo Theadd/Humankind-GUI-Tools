@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Modding.Humankind.DevTools;
 using StyledGUI;
 using StyledGUI.VirtualGridElements;
 using UnityEngine;
@@ -24,6 +26,20 @@ namespace DevTools.Humankind.GUITools.UI
         public VirtualGrid VirtualGrid { get; set; }
         public ConstructibleStoreSnapshot Snapshot { get; set; }
         public bool IsDirty { get; set; } = true;
+        public string FilterBy
+        {
+            get => _filterBy;
+            set
+            {
+                if (_filterBy != value)
+                {
+                    _filterBy = value;
+                    IsDirty = true;
+                }
+            }
+        }
+
+        private string _filterBy = string.Empty;
         public int GridModeChunkSize
         {
             get => Grid.GridModeChunkSize;
@@ -135,10 +151,12 @@ namespace DevTools.Humankind.GUITools.UI
         {
             VirtualGrid.Columns = new Column[]
             {
-                new Column() {Name = "Constructibles"}
+                new Column() { Name = "Constructibles" }
             };
 
             VirtualGrid.Sections = Snapshot.Districts
+                .Select(ApplyFilterBy)
+                .Where(group => group.Values.Length > 0)
                 .Select(group => new Section()
                 {
                     Title = "<size=13><b>" + group.Title.ToUpper() + "</b></size>",
@@ -148,15 +166,35 @@ namespace DevTools.Humankind.GUITools.UI
                         : GetRowsInListMode(group.Values)
                 })
                 .Concat(
-                Snapshot.Units.Select(group => new Section()
-                {
-                    Title = "<size=13><b>" + group.Title.ToUpper() + "</b></size>",
-                    View = 1,
-                    Rows = Grid.DisplayMode == VirtualGridDisplayMode.Grid 
-                        ? GetRowsInGridMode(group.Values) 
-                        : GetRowsInListMode(group.Values)
-                }))
+                    Snapshot.Units
+                        .Select(ApplyFilterBy)
+                        .Where(group => group.Values.Length > 0)
+                        .Select(group => new Section() 
+                        {
+                            Title = "<size=13><b>" + group.Title.ToUpper() + "</b></size>", 
+                            View = 1, 
+                            Rows = Grid.DisplayMode == VirtualGridDisplayMode.Grid 
+                                ? GetRowsInGridMode(group.Values) 
+                                : GetRowsInListMode(group.Values)
+                        }))
                 .ToArray();
+        }
+
+        private DefinitionsGroup ApplyFilterBy(DefinitionsGroup group)
+        {
+            if (_filterBy.Length == 0)
+                return group;
+
+            return new DefinitionsGroup()
+            {
+                Title = group.Title,
+                Values = group.Values
+                    .Where(c => 
+                        c.Category.IndexOf(_filterBy, StringComparison.OrdinalIgnoreCase) >= 0 
+                        || c.Title.IndexOf(_filterBy, StringComparison.OrdinalIgnoreCase) >= 0 
+                        || c.DefinitionName.ToString().IndexOf(_filterBy, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToArray()
+            };
         }
     }
 }
