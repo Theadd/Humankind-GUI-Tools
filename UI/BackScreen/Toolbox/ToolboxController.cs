@@ -36,8 +36,9 @@ namespace DevTools.Humankind.GUITools.UI
                 {
                     Snapshot = new DataTypeStoreSnapshot()
                     {
-                        Districts = DataTypeStore.Curiosities.Concat(DataTypeStore.Districts).ToArray(),
-                        Units = DataTypeStore.Units
+                        Districts = DataTypeStore.Districts,
+                        Units = DataTypeStore.Units,
+                        Curiosities = DataTypeStore.Curiosities,
                     },
                     VirtualGrid = new VirtualGrid()
                     {

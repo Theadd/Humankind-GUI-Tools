@@ -138,7 +138,7 @@ namespace DevTools.Humankind.GUITools.UI
             }
             catch (Exception e)
             {
-                // Ignored
+                Loggr.Log(e);
             }
             finally
             {

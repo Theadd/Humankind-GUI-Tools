@@ -179,6 +179,18 @@ namespace DevTools.Humankind.GUITools.UI
                                 ? GetRowsInGridMode(group.Values) 
                                 : GetRowsInListMode(group.Values)
                         }))
+                .Concat(
+                    Snapshot.Curiosities
+                        .Select(ApplyFilterBy)
+                        .Where(group => group.Values.Length > 0)
+                        .Select(group => new Section() 
+                        {
+                            Title = "<size=13><b>" + group.Title.ToUpper() + "</b></size>", 
+                            View = 2, 
+                            Rows = Grid.DisplayMode == VirtualGridDisplayMode.Grid 
+                                ? GetRowsInGridMode(group.Values) 
+                                : GetRowsInListMode(group.Values)
+                        }))
                 .ToArray();
         }
 

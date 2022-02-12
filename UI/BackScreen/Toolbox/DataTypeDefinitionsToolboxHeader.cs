@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
@@ -10,10 +11,28 @@ namespace DevTools.Humankind.GUITools.UI
     {
         public string TextFilter { get; set; } = string.Empty;
 
+        /*private string[] tabNames =
+        {
+            "<size=14><b> DISTRICTS </b></size>",
+            "<size=15><b> UNITS </b></size>", 
+            "<size=16><b> COLLECTIBLES </b></size>", 
+            "<size=15><b> MARKER </b></size>", 
+            "<size=14><b> MARKER </b></size>", 
+            "<size=13><b> MARKER </b></size>", 
+            "<size=12><b> MARKER </b></size>", 
+            "<size=11><b> MARKER </b></size>", 
+        };*/
+        
         private string[] tabNames =
         {
-            "<size=18><b> DISTRICTS </b></size>",
-            "<size=18><b> UNITS </b></size>", 
+            "DISTRICTS",
+            "UNITS", 
+            "COLLECTIBLES", 
+            "MARKER", 
+            "MARKER", 
+            "MARKER", 
+            "MARKER", 
+            "MARKER", 
         };
         
         private string[] displayModeNames =
@@ -44,6 +63,7 @@ namespace DevTools.Humankind.GUITools.UI
                     {
                         Districts = DataTypeStore.Districts,
                         Units = DataTypeStore.Units,
+                        Curiosities = DataTypeStore.Curiosities
                     };
                     TypeDefinitionsGrid.IsDirty = true;
                     Loggr.Log(TextFilterStyle);
@@ -150,12 +170,17 @@ namespace DevTools.Humankind.GUITools.UI
             GUILayout.Space(6f);
             GUILayout.BeginHorizontal();
             GUILayout.Space(12f);
-            
-            var activeTab = GUILayout.Toolbar(ActiveTab, tabNames, "TabButton", GUI.ToolbarButtonSize.FitToContents);
+
+            var activeTab = GUILayout.Toolbar(ActiveTab,
+                tabNames.Select((t, i) => i == ActiveTab 
+                    ? "<b>" + t + "</b>" 
+                    : t).ToArray(), 
+                "TabButton", GUI.ToolbarButtonSize.FitToContents);
 
             if (activeTab != ActiveTab)
             {
-                Loggr.Log(UIController.DefaultSkin.textField);
+                Loggr.Log("ACTIVE TAB = " + activeTab, ConsoleColor.Magenta);
+                // Loggr.Log(UIController.DefaultSkin.textField);
                 _storedScrollViewPositions[ActiveTab] = ScrollViewPosition;
                 ScrollViewPosition = _storedScrollViewPositions[activeTab];
                 ActiveTab = activeTab;

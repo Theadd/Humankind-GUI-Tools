@@ -31,7 +31,9 @@ namespace DevTools.Humankind.GUITools.UI
             "Ruin",
             "Exploitation",
         };
-        
+
+        private static IDatabase<LootTableDefinition> LootTables { get; set; }
+
         public static DataTypeDefinition CreateDistrictDataType(DistrictDefinition definition)
         {
             var name = LastName(definition.name);
@@ -64,14 +66,29 @@ namespace DevTools.Humankind.GUITools.UI
         
         public static DataTypeDefinition CreateCuriosityDataType(CuriosityDefinition definition)
         {
-            var name = definition.name; // UnitLastName(definition.name);
+            var name = definition.name;
+            string[] lootTypes;
+            LootTableDefinition lootTable;
+
+            try
+            {
+                lootTable = LootTables.GetValue(definition.LootTableReference.ElementName);
+                lootTypes = lootTable.Loots.SelectMany(
+                    loot => loot.SimulationEventEffects.SelectMany(
+                        e => e.GainValues?.Select(
+                            g => g.Type.ToString()) ?? new string[] { })).Distinct().ToArray();
+            }
+            catch (Exception)
+            {
+                lootTypes = new[] { "" };
+            }
 
             return new DataTypeDefinition()
             {
                 DefinitionName = definition.Name,
                 Title = UIController.GetLocalizedTitle(definition.Name, name),
                 Name = name,
-                Category = definition.Category.ToString(),
+                Category = "" + string.Join(", ", lootTypes),
                 Era = definition.EraIndex,
                 Image = AssetHunter.LoadTexture(definition)
             };
@@ -113,62 +130,30 @@ namespace DevTools.Humankind.GUITools.UI
             var curiosities = collectibles
                 .OfType<CuriosityDefinition>()
                 .ToArray();
+                
+            LootTables = Databases.GetDatabase<LootTableDefinition>(false);
 
             Curiosities = RebuildCuriosities(
                 options.ExcludeObsolete 
                     ? curiosities.Where(c => !c.IsObsolete) 
                     : curiosities,
                 options);
-            
-
-            var match = curiosities.First(c => c.name == "Curiosity_Era2_World_Money01");
-
-            Loggr.Log(match);
-            Loggr.Log(UIController.GetLocalizedTitle(match.Category.ElementName, "NOT FOUND"));
-            Loggr.Log(UIController.GetLocalizedTitle(match.LootTableReference.ElementName, "NOT FOUND"));
-            Loggr.Log(match.LootTableReference);
-            IDatabase<LootTableDefinition> lootTables = Databases.GetDatabase<LootTableDefinition>();
-            LootTableDefinition lootTable = lootTables.GetValue(match.LootTableReference.ElementName);
-            Loggr.Log(lootTable);
-            Loggr.Log(lootTable.Loots[0].SimulationEventEffects[0].GainValues[0]);
-            
-            CheckCuriosity(match.Name);
-            
-        }
-        
-        public static void CheckCuriosity(StaticString uiMapperName)
-        {
-            UIMapper uiMapper;
-            if (!UIController.DataUtils.TryGetUIMapper(uiMapperName, out uiMapper))
-            {
-                Loggr.Log("CANT FIND UIMAPPER FOR " + uiMapperName.ToString());
-                return;
-            }
-            
-            Loggr.Log(uiMapper.Images[1]);
-            
-            /*if (uiMapper.Images != null && uiMapper.Images.Length != 0)
-                return uiMapper.GetImage(key);
-            Amplitude.Diagnostics.LogWarning("No Images for the UIMapper '{0}'", (object) uiMapperName);
-            return UITexture.None;*/
         }
 
         private static DefinitionsGroup[] RebuildCuriosities(IEnumerable<CuriosityDefinition> curiosities,
             DataTypeStoreBuildOptions options)
         {
-            var result = new DefinitionsGroup[]
-            {
-                new DefinitionsGroup()
+            return curiosities
+                .Select(c => new { group = c.GetType().Name, definition = c }).ToList()
+                .GroupBy(c => c.group).ToList()
+                .Select(g => new DefinitionsGroup
                 {
-                    Title = "Curiosities",
-                    Values = curiosities
-                        .Select(CreateCuriosityDataType)
+                    Title = R.Text.SplitCamelCase(g.First().group).Replace("Definition", "Definitions"),
+                    Values = g.OrderBy(i => i.definition.EraIndex)
+                        .Select(d => CreateCuriosityDataType(d.definition))
                         .ToArray()
-                },
-                
-            };
-            
-            return result;
+                })
+                .OrderBy(gs => gs.Title).ToArray();
         }
 
         private static DefinitionsGroup[] RebuildDistricts(DistrictDefinition[] districts, DataTypeStoreBuildOptions options)

@@ -245,7 +245,7 @@ namespace StyledGUI.VirtualGridElements
                     self.Image ? self.Image : grid.Grid.MissingTexture,
                     ScaleMode.ScaleToFit, 
                     true, 
-                    1f,
+                    0,
                     Color.white, 
                     0, 
                     0

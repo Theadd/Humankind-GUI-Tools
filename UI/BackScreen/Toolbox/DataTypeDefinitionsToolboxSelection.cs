@@ -57,9 +57,9 @@ namespace DevTools.Humankind.GUITools.UI
                             new Rect(r.x + 16f, r.y + 16f, 96f, 96f), 
                             // StyledGUI.Graphics.BlackTexture,
                             _selectedImage ? _selectedImage : StyledGUI.Graphics.TransparentTexture, 
-                            ScaleMode.StretchToFill, 
+                            ScaleMode.ScaleToFit, 
                             true, 
-                            1f,
+                            0,
                             Color.white, 
                             0, 
                             0
