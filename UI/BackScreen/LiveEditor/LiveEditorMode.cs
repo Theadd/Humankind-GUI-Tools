@@ -3,6 +3,7 @@ using System.Linq;
 using Amplitude;
 using Amplitude.Mercury.Data.Simulation;
 using BepInEx.Configuration;
+using DevTools.Humankind.GUITools.UI.SceneInspector;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
 using StyledGUI.VirtualGridElements;
@@ -25,7 +26,8 @@ namespace DevTools.Humankind.GUITools.UI
     public enum EditorModeType
     {
         TilePainter,
-        Settlement
+        Settlement,
+        Inspector
     }
     
     public static class LiveEditorMode
@@ -117,6 +119,11 @@ namespace DevTools.Humankind.GUITools.UI
                 if (DebugKey.IsDown()) BrushPainter.Debug();
                 if (CreateKey.IsDown()) BrushPainter.Paint();
                 if (DestroyKey.IsDown()) BrushPainter.Erase();
+            }
+
+            if (EditorMode == EditorModeType.Inspector && !InGameUIController.IsMouseCovered)
+            {
+                SceneInspectorController.Run();
             }
         }
 

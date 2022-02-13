@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DevTools.Humankind.GUITools.UI.SceneInspector;
 using Modding.Humankind.DevTools;
 using StyledGUI.VirtualGridElements;
 using UnityEngine;
@@ -34,6 +35,8 @@ namespace DevTools.Humankind.GUITools.UI
             GUILayout.EndArea();
         }
 
+        private bool _drawInspectorAdditionalContent = false;
+
         public void Draw()
         {
             GUILayout.BeginHorizontal();
@@ -55,6 +58,13 @@ namespace DevTools.Humankind.GUITools.UI
                 GUILayout.Space(ScrollViewPadding.left);
                 GUILayout.BeginVertical(GUILayout.Width(TypeDefinitionsGrid.FixedWidth));
                 {
+                    // ADDITIONAL CONTENT PER ACTIVE TAB, IF ANY
+                    if (_drawInspectorAdditionalContent)
+                    {
+                        SceneInspectorController.Screen.Draw();
+                    }
+                    //
+                    
                     if (Event.current.type == EventType.MouseDown)
                     {
                         _waitingForClick = true;
@@ -83,6 +93,7 @@ namespace DevTools.Humankind.GUITools.UI
                 ScrollViewRect = GUILayoutUtility.GetLastRect();
                 MousePosition = new Vector2(Event.current.mousePosition.x, Event.current.mousePosition.y);
                 IsMouseHover = ScrollViewRect.Contains(MousePosition);
+                _drawInspectorAdditionalContent = tabNames[ActiveTab] == InspectorTab;
             }
             GUILayout.FlexibleSpace();
             DrawSelectionPreview();

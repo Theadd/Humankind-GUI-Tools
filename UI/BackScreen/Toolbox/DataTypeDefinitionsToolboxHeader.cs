@@ -12,16 +12,19 @@ namespace DevTools.Humankind.GUITools.UI
 {
     public partial class DataTypeDefinitionsToolbox
     {
+        public static readonly string DistrictsTab = "DISTRICTS";
+        public static readonly string UnitsTab = "UNITS";
+        public static readonly string CollectiblesTab = "COLLECTIBLES";
+        public static readonly string MapMarkerTab = "MAP MARKER";
+        public static readonly string InspectorTab = "INSPECTOR";
 
         private static string[] tabNames =
         {
-            "DISTRICTS",
-            "UNITS", 
-            "COLLECTIBLES", 
-            "MAP MARKER", 
-            "UNITS", 
-            "COLLECTIBLES", 
-            "MAP MARKER", 
+            DistrictsTab,
+            UnitsTab, 
+            CollectiblesTab, 
+            MapMarkerTab, 
+            InspectorTab,
         };
         
         private List<Vector2> _storedScrollViewPositions = tabNames.Select(n => Vector2.zero).ToList();
@@ -312,25 +315,13 @@ namespace DevTools.Humankind.GUITools.UI
 
         private void ScrollToActiveTab()
         {
-            // _scrollViewTabsPos = (80.0, 0.0)
-            // _scrollViewTabsRect = (x:36.00, y:55.00, width:445.00, height:31.00)
-            // ActiveTabSize [xMin, xMax] = [159, 266], Length: 107
-            // ToolbarSize = (616.0, 26.0) 
-                
             var tabSize = Toolbar.Sizes[ActiveTab];
 
             int r = ((int)_scrollViewTabsRect.width - tabSize.length) / 2;
             int xMaxScrollRange = (int) (Toolbar.ToolbarSize.x - _scrollViewTabsRect.width);
             int scrollViewNextX = Mathf.Min(Mathf.Max(0, tabSize.start - r), xMaxScrollRange);
 
-            // _scrollViewTabsPos.x = scrollViewNextX;
             TabsScroller?.ScrollTo(scrollViewNextX);
-            
-            // Loggr.Log("_scrollViewTabsPos = " + _scrollViewTabsPos.ToString(), ConsoleColor.DarkCyan);
-            Loggr.Log("_scrollViewTabsRect = " + _scrollViewTabsRect.ToString(), ConsoleColor.DarkCyan);
-            Loggr.Log("ActiveTabSize [xMin, xMax] = [" + tabSize.start + ", " + tabSize.end + "], Length: " + tabSize.length  
-                      , ConsoleColor.DarkCyan);
-            Loggr.Log("ToolbarSize = " + Toolbar.ToolbarSize.ToString(), ConsoleColor.DarkCyan);
         }
     }
 }
