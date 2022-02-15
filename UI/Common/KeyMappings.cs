@@ -67,8 +67,7 @@ namespace DevTools.Humankind.GUITools.UI
                 DisplayName = "HIDE TOOLBAR WINDOW",
                 Action = MappedActions.ToggleHideToolbarWindow,
                 Key = new KeyboardShortcut(KeyCode.Space),
-                GroupName = GlobalKeysGroup,
-                Mask = ViewModeType.Normal
+                GroupName = GlobalKeysGroup
             },
             new KeyMap("TogglePresentationFogOfWar")
             {
@@ -266,8 +265,6 @@ namespace DevTools.Humankind.GUITools.UI
         public bool IsRemovable { get; set; } = true;
         public bool IsEditable { get; set; } = true;
         public bool SaveAndRestore { get; set; } = true;
-        // TODO: Apply Mask
-        public ViewModeType Mask { get; set; } = ViewModeType.All;
 
         private Action OnKeyChange { get; set; }
         private KeyboardShortcut _key = KeyboardShortcut.Empty;

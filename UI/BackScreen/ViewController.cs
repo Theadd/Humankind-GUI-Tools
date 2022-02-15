@@ -66,7 +66,7 @@ namespace DevTools.Humankind.GUITools.UI
                 ViewService = Services.GetService<IViewService>();
 
             if (ViewService == null && !onErrorIgnore)
-                Loggr.Log(new NotImplementedException(
+                Loggr.Log(new NullReferenceException(
                     "VIEWSERVICE INVALID AFTER CALL TO INITIALIZE IN RUNTIMEGAMESTATE."));
             
             if (ViewService != null && !_registeredToViewChanges)
@@ -80,7 +80,7 @@ namespace DevTools.Humankind.GUITools.UI
                 UIService = Services.GetService<IUIService>();
                 
                 if (UIService == null && !onErrorIgnore)
-                    Loggr.Log(new NotImplementedException(
+                    Loggr.Log(new NullReferenceException(
                         "UIService not expected to be null after requesting it."));
 
                 if (UIService != null)
@@ -96,7 +96,7 @@ namespace DevTools.Humankind.GUITools.UI
         {
             if (!_registeredToViewChanges)
             {
-                Loggr.Log(new NotImplementedException(
+                Loggr.Log(new NullReferenceException(
                     "Unable to register for view change events, ViewController has not been initialized yet."));
                 return;
             }

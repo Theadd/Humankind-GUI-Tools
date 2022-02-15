@@ -264,7 +264,6 @@ namespace DevTools.Humankind.GUITools.UI
 
         public void SyncArmyCursor()
         {
-            // TODO: Use TryGetArmyCursor
             if (Snapshots.ArmyCursorSnapshot == null)
                 return;
         
