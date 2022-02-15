@@ -12,6 +12,11 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
 {
     public static class SceneInspectorController
     {
+        public static GameObject PresentationGO => _presentationGO ? _presentationGO : _presentationGO = 
+            GameObject.Find("[Presentation]/[View]/Views/\"InGame\"/Presentation(Clone)");
+        
+        private static GameObject _presentationGO;
+        
         public static SceneInspectorScreen Screen =>
             _inspectorScreen ?? (_inspectorScreen = new SceneInspectorScreen());
         
@@ -27,15 +32,25 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
 
         private static IInputService _inputService;
         
-        private static KeyboardShortcut InspectKey { get; set; } = new KeyboardShortcut(KeyCode.Space);
-        private static KeyboardShortcut RaycasttKey { get; set; } = new KeyboardShortcut(KeyCode.Space, KeyCode.LeftAlt);
+        private static KeyboardShortcut InspectKey { get; set; } = 
+            new KeyboardShortcut(KeyCode.Space);
+        private static KeyboardShortcut RaycastKey { get; set; } = 
+            new KeyboardShortcut(KeyCode.Space, KeyCode.LeftAlt);
+
+        public static void Reset()
+        {
+            _presentationGO = null;
+            _inspectorScreen = null;
+            _inspectorRaycaster = null;
+            _inputService = null;
+        }
         
         public static void Run()
         {
             if (InspectKey.IsDown())
                 PrintToConsole();
             
-            if (RaycasttKey.IsDown())
+            if (RaycastKey.IsDown())
                 PrintRaycastResultsToConsole();
             
         }
@@ -79,6 +94,7 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
                 Loggr.Log("GO @PAT_H = ");
                 Loggr.Log(go);
                 Loggr.Log(entity.gameObject);
+                Loggr.Log("GetGameObjectPath = " + GetGameObjectPath(entity.gameObject), ConsoleColor.Red);
             }
 
             var cursorsByType = SceneInspectorRaycaster.GetCursorByType;
@@ -89,6 +105,8 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
             var unitGO = GameObject.Find(unitPath);
             Loggr.Log("\nunitGO:");
             Loggr.Log(unitGO);
+            
+            
         }
 
         public static string GetGameObjectPath(GameObject gameObject) => string.Join("/",

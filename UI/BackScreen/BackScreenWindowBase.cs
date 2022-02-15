@@ -22,7 +22,7 @@ namespace DevTools.Humankind.GUITools.UI
         public abstract void OnZeroGUI();
 
         protected int loop = 0;
-        protected int maxLoop = 40;
+        protected int maxLoop = 10; // TODO: Changed from 40 to 10 for quicker development on live reload env
         
         protected override void Awake()
         {

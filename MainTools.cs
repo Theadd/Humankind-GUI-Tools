@@ -10,6 +10,7 @@ namespace DevTools.Humankind.GUITools
     public static class MainTools
     {
         public static bool IsDebugModeEnabled { get; set; } = true;
+        public static bool IsTestingPlaygroundEnabled { get; set; } = true;
 
         public static MainToolbar Toolbar { get; set; }
 
@@ -38,7 +39,7 @@ namespace DevTools.Humankind.GUITools
             PopupToolWindow.Open<MainToolbar>(w => Toolbar = w);
             PopupToolWindow.Open<InGameMenuWindow>(w => InGameMenu = w);
             
-            if (IsDebugModeEnabled)
+            if (IsDebugModeEnabled && IsTestingPlaygroundEnabled)
                 TestingPlayground.Run();
         }
         
