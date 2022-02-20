@@ -37,6 +37,10 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
         private static KeyboardShortcut RaycastKey { get; set; } = 
             new KeyboardShortcut(KeyCode.Space, KeyCode.LeftAlt);
 
+        public static Vector2 GetMousePosition() => new Vector2(
+            InputService.MousePosition.x, 
+            UnityEngine.Screen.height - InputService.MousePosition.y);
+
         public static void Reset()
         {
             _presentationGO = null;
@@ -54,7 +58,7 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
                 PrintRaycastResultsToConsole();
             
         }
-        
+
         public static PresentationEntity[] GetValidEntitiesUnderCursor()
         {
             
@@ -70,15 +74,25 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
 
         public static void PrintToConsole()
         {
+            var entities = GetValidEntitiesUnderCursor();
             Loggr.LogAll(Presentation.PresentationCursorController);
-            Loggr.Log(GetValidEntitiesUnderCursor());
+            Loggr.Log(entities);
             Loggr.Log("CurrentCursorType = " + Presentation.PresentationCursorController.CurrentCursor?.GetType().Name, ConsoleColor.Green);
+
+            if (entities.Length > 0)
+            {
+                Loggr.Log("\n\t\t\t--- Transform[] ---", ConsoleColor.DarkYellow);
+                Raycaster.GetAllTransformsAt(entities[0].transform.position);
+                
+            }
+            Loggr.Log("\n\t\t\t--- UITransform[] ---", ConsoleColor.DarkYellow);
+            Raycaster.GetAllUITransformsAt(GetMousePosition());
         }
 
         public static void PrintRaycastResultsToConsole()
         {
             List<PresentationEntity> entities = new List<PresentationEntity>();
-            var mousePosition = (Vector3)InputService.MousePosition;
+            var mousePosition = (Vector3)GetMousePosition();
             Loggr.Log("RAYCASTING TO " + mousePosition, ConsoleColor.Magenta);
             Raycaster.FillWithRaycastedCursorTargets(mousePosition, entities);
 
@@ -111,6 +125,43 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
 
         public static string GetGameObjectPath(GameObject gameObject) => string.Join("/",
             gameObject.GetComponentsInParent<Transform>().Select(t => t.name).Reverse().ToArray());
+
+        internal static void OnVisibilityChange(bool willBeVisible)
+        {
+            if (Presentation.PresentationCursorController != null)
+            {
+                Presentation.PresentationCursorController.HoveredPresentationEntitiesChange -=
+                    OnHoveredPresentationEntitiesChanged;
+                
+                if (willBeVisible)
+                    Presentation.PresentationCursorController.HoveredPresentationEntitiesChange +=
+                        OnHoveredPresentationEntitiesChanged;
+            }
+        }
+        
+        public static void OnHoveredPresentationEntitiesChanged(List<PresentationEntity> entities)
+        {
+            var hoveredEntities = "\n" + string.Join("\n",
+                entities.Select(e => "" 
+                                     + e.transform.parent.gameObject.name 
+                                     + " => " 
+                                     + e.GetType().Name 
+                                     + " %GREEN%"
+                                     + e.transform.position.ToString() + "%DEFAULT%   "
+                                     + e.transform.position.x
+                                     + ", "
+                                     + e.transform.position.y
+                                     + ", "
+                                     + e.transform.position.z)); 
+            Loggr.Log(hoveredEntities, ConsoleColor.DarkRed);
+        }
+        
+        public static void Unload()
+        {
+            if (Presentation.PresentationCursorController != null)
+                Presentation.PresentationCursorController.HoveredPresentationEntitiesChange -=
+                    OnHoveredPresentationEntitiesChanged;
+        }
 
 
     }

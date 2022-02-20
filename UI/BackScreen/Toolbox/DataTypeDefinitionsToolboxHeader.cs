@@ -29,10 +29,10 @@ namespace DevTools.Humankind.GUITools.UI
         
         private List<Vector2> _storedScrollViewPositions = tabNames.Select(n => Vector2.zero).ToList();
 
-        private string[] displayModeNames =
+        private string[] displayModeIconNames =
         {
-            "<size=10><b>LIST</b></size>", 
-            "<size=10><b>GRID</b></size>"
+            "", 
+            "<size=16></size>"
         };
         
         private void DrawToolboxHeader()
@@ -44,13 +44,15 @@ namespace DevTools.Humankind.GUITools.UI
             GUILayout.BeginHorizontal();
             {
                 GUILayout.Space(10f);
-                
+                GUI.enabled = ToolboxController.Toolbox.TypeDefinitionsGrid.VirtualGrid.Cursor.IsSelectionActive;
                 if (GUILayout.Button("<size=10><b>DESELECT</b></size>", GUILayout.ExpandWidth(false)))
+                {
                     ToolboxController.Toolbox.TypeDefinitionsGrid.VirtualGrid.Cursor.ClearSelection();
+                }
+
+                GUI.enabled = true;
                 
-                // GUILayout.FlexibleSpace();
-                
-                if (GUILayout.Button("<size=10><b>RELOAD</b></size>", GUILayout.ExpandWidth(false)))
+                if (GUILayout.Button(" <size=12> </size>", Styles.UnicodeSymbolButtonStyle, GUILayout.Width(22f), GUILayout.Height(21f), GUILayout.ExpandWidth(false)))
                 {
                     DataTypeStore.Rebuild();
                     TypeDefinitionsGrid.Snapshot = new DataTypeStoreSnapshot()
@@ -70,18 +72,18 @@ namespace DevTools.Humankind.GUITools.UI
                 GUILayout.Space(6f);
 
                 GUI.enabled = ToolboxController.Toolbox.TypeDefinitionsGrid.GridModeChunkSize > 1 && ToolboxController.IsDisplayModeGrid;
-                if (GUILayout.Button("<size=15><b> ＋</b></size>", GUILayout.Width(22f), GUILayout.Height(21f), GUILayout.ExpandWidth(false)))
+                if (GUILayout.Button("", Styles.UnicodeSymbolButtonStyle, GUILayout.Width(22f), GUILayout.Height(21f), GUILayout.ExpandWidth(false)))
                     ToolboxController.Toolbox.TypeDefinitionsGrid.GridModeChunkSize -= 1;
                 
                 GUI.enabled = ToolboxController.Toolbox.TypeDefinitionsGrid.GridModeChunkSize < 12 && ToolboxController.IsDisplayModeGrid;
-                if (GUILayout.Button("<size=13><b>—</b></size>", GUILayout.Width(22f), GUILayout.Height(21f), GUILayout.ExpandWidth(false)))
+                if (GUILayout.Button("<size=12> </size>", Styles.UnicodeSymbolButtonStyle, GUILayout.Width(22f), GUILayout.Height(21f), GUILayout.ExpandWidth(false)))
                     ToolboxController.Toolbox.TypeDefinitionsGrid.GridModeChunkSize += 1;
 
                 GUI.enabled = true;
                 GUILayout.Space(6f);
 
-                var shouldDisplayAsGrid =
-                    (GUILayout.Toolbar(ToolboxController.IsDisplayModeGrid ? 1 : 0, displayModeNames, GUILayout.ExpandWidth(false)) == 1);
+                // var shouldDisplayAsGrid = (GUILayout.Toolbar(ToolboxController.IsDisplayModeGrid ? 1 : 0, displayModeNames, GUILayout.ExpandWidth(false)) == 1);
+                var shouldDisplayAsGrid = (GUILayout.Toolbar(ToolboxController.IsDisplayModeGrid ? 1 : 0, displayModeIconNames, Styles.UnicodeSymbolToolbarStyle, GUILayout.Height(21f), GUILayout.ExpandWidth(false)) == 1);
 
                 if (shouldDisplayAsGrid != ToolboxController.IsDisplayModeGrid)
                 {
@@ -100,9 +102,9 @@ namespace DevTools.Humankind.GUITools.UI
             fontSize = 10,
             fontStyle = FontStyle.Bold,
             stretchWidth = true,
-            padding = new RectOffset(8, 8, 0, 0),
+            padding = new RectOffset(20, 8, 0, 0),
             margin = UIController.DefaultSkin.button.margin,
-            overflow = new RectOffset(0, /*-3*/ 0, 0, 0),
+            overflow = new RectOffset(0, 0, 0, 0),
         };
         
         private bool _isInputFilterDirty = false;
@@ -111,6 +113,8 @@ namespace DevTools.Humankind.GUITools.UI
         private string _focusedControlName = string.Empty;
         private const string InputFilterControlName = "ToolboxInputFilter";
         private TextEditor _textEditor;
+        private bool _drawInputPlaceholder = false;
+        private Rect _inputPlaceholderRect = Rect.zero;
         
         private void DrawToolboxSearchBar()
         {
@@ -151,6 +155,24 @@ namespace DevTools.Humankind.GUITools.UI
                 }
             }
             GUILayout.EndHorizontal();
+
+            if (_drawInputPlaceholder)
+            {
+                GUI.Label(_inputPlaceholderRect, "", Styles.UnicodeIconStyle);
+            }
+
+            if (Event.current.type == EventType.Repaint)
+            {
+                var r = GUILayoutUtility.GetLastRect();
+                _inputPlaceholderRect = new Rect(
+                    r.x + 1f,
+                    r.y,
+                    r.height,
+                    r.height);
+                
+                if (!_drawInputPlaceholder)
+                    _drawInputPlaceholder = true;
+            }
         }
 
         public void FocusFilterTextField(bool selectAll = true)
@@ -167,21 +189,6 @@ namespace DevTools.Humankind.GUITools.UI
             name = "noscrollbar",
             overflow = new RectOffset(0, 0, 0, 0),
             margin = new RectOffset(0, 0, -1, 0),
-        };
-        
-        private GUIStyle ImageLinkStyle { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("Link")) {
-            alignment = TextAnchor.MiddleCenter,
-            font = Utils.SourceCodeProRegularFont,
-            fontSize = 23,
-            margin = new RectOffset(0, 0, 4, 0),
-            padding = new RectOffset(8, 8, 0, 0),
-            fixedHeight = 26f,
-            normal = new GUIStyleState()
-            {
-                background = UIController.DefaultSkin.FindStyle("Link").normal.background,
-                // background = Utils.BlackTexture,
-                textColor = Color.white
-            }
         };
 
         private static Color TabNormalTextColor { get; set; } = new Color32(220, 220, 220, 240);
@@ -215,9 +222,10 @@ namespace DevTools.Humankind.GUITools.UI
         
             
         
-        // private GUIContent ScrollLeftLinkContent { get; set; } = new GUIContent("<size=27>⇦⇦ ◁ ◀ ← ◀ « ← </size>");
-        private GUIContent ScrollLeftLinkContent { get; set; } = new GUIContent("⇦");
-        private GUIContent ScrollRightLinkContent { get; set; } = new GUIContent("⇨");
+        // private GUIContent ScrollLeftLinkContent { get; set; } = new GUIContent("⇦");
+        private GUIContent ScrollLeftLinkContent { get; set; } = new GUIContent("⮘");
+        // private GUIContent ScrollRightLinkContent { get; set; } = new GUIContent("⇨");
+        private GUIContent ScrollRightLinkContent { get; set; } = new GUIContent("⮚");
 
 
         private CustomToolbar Toolbar { get; set; } = new CustomToolbar()
@@ -246,7 +254,7 @@ namespace DevTools.Humankind.GUITools.UI
 
             GUI.enabled = ActiveTab > 0;
             GUI.color = ActiveTab > 0 ? Color.white : DisabledLinkColor;
-            if (GUILayout.Button(ScrollLeftLinkContent, ImageLinkStyle, GUILayout.ExpandWidth(false)))
+            if (GUILayout.Button(ScrollLeftLinkContent, Styles.UnicodeLinkStyle, GUILayout.ExpandWidth(false)))
             {
                 if (ActiveTab > 0)
                     SetActiveTab(ActiveTab - 1);
@@ -288,7 +296,7 @@ namespace DevTools.Humankind.GUITools.UI
             
             GUI.enabled = ActiveTab + 1 < tabNames.Length;
             GUI.color = ActiveTab + 1 < tabNames.Length ? Color.white : DisabledLinkColor;
-            if (GUILayout.Button(ScrollRightLinkContent, ImageLinkStyle, GUILayout.ExpandWidth(false)))
+            if (GUILayout.Button(ScrollRightLinkContent, Styles.UnicodeLinkStyle, GUILayout.ExpandWidth(false)))
             {
                 if (ActiveTab + 1 < tabNames.Length)
                     SetActiveTab(ActiveTab + 1);

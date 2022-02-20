@@ -2,14 +2,16 @@
 
 namespace StyledGUI
 {
-    public static class Styles
+    public static partial class Styles
     {
         public static Texture2D Alpha65WhitePixel { get; set; } =
             Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.65f));
         public static Texture2D Alpha35WhitePixel { get; set; } =
             Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.35f));
-        public static Texture2D Alpha25BlackPixel { get; set; } =
+        public static Texture2D Alpha35BlackPixel { get; set; } =
             Graphics.CreateSinglePixelTexture2D(new Color(0, 0, 0, 0.35f));
+        public static Texture2D Alpha50BlackPixel { get; set; } =
+            Graphics.CreateSinglePixelTexture2D(new Color(0, 0, 0, 0.5f));
         public static Texture2D WhitePixel { get; set; } =
             Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 1f));
         public static Texture2D ButtonNormalPixel { get; set; } =
@@ -27,6 +29,20 @@ namespace StyledGUI
         public static Color BlueTextColor { get; set; } = (Color) new Color32(40, 86, 240, 255);
         public static Color GoldTextColor { get; set; } = new Color(0.85f, 0.75f, 0f, 0.85f);
 
+        public static GUIStyle Alpha50BlackBackgroundStyle { get; set; } = new GUIStyle()
+        {
+            normal = new GUIStyleState()
+            {
+                background = Alpha50BlackPixel,
+                textColor = Color.white
+            }
+        };
+        
+        public static GUIStyle SmallPaddingStyle { get; set; } = new GUIStyle()
+        {
+            padding = new RectOffset(8, 8, 8, 8),
+        };
+        
         public static GUIStyle RowStyle { get; set; } =
             new GUIStyle(StyledGUIUtility.DefaultSkin.FindStyle("PopupWindow.Row"))
             {
@@ -142,7 +158,7 @@ namespace StyledGUI
             padding = RectOffsetZero,
             normal = new GUIStyleState()
             {
-                background = Alpha25BlackPixel,
+                background = Alpha35BlackPixel,
                 textColor = Color.white
             },
             hover = new GUIStyleState()

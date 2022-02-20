@@ -36,6 +36,7 @@ namespace DevTools.Humankind.GUITools.UI
         }
 
         private bool _drawInspectorAdditionalContent = false;
+        private bool _drawMapMarkerAdditionalContent = false;
 
         public void Draw()
         {
@@ -58,12 +59,7 @@ namespace DevTools.Humankind.GUITools.UI
                 GUILayout.Space(ScrollViewPadding.left);
                 GUILayout.BeginVertical(GUILayout.Width(TypeDefinitionsGrid.FixedWidth));
                 {
-                    // ADDITIONAL CONTENT PER ACTIVE TAB, IF ANY
-                    if (_drawInspectorAdditionalContent)
-                    {
-                        SceneInspectorController.Screen.Draw();
-                    }
-                    //
+                    
                     
                     if (Event.current.type == EventType.MouseDown)
                     {
@@ -86,6 +82,16 @@ namespace DevTools.Humankind.GUITools.UI
                 }
                 GUILayout.EndVertical();
                 GUILayout.EndHorizontal();
+                // ADDITIONAL CONTENT PER ACTIVE TAB, IF ANY
+                if (_drawInspectorAdditionalContent)
+                {
+                    SceneInspectorController.Screen.Draw();
+                }
+                else if (_drawMapMarkerAdditionalContent)
+                {
+                    TestingPlayground.DrawUnicodeCharacters();
+                }
+                //
             }
             GUILayout.EndScrollView();
             if (Event.current.type == EventType.Repaint)
@@ -93,7 +99,12 @@ namespace DevTools.Humankind.GUITools.UI
                 ScrollViewRect = GUILayoutUtility.GetLastRect();
                 MousePosition = new Vector2(Event.current.mousePosition.x, Event.current.mousePosition.y);
                 IsMouseHover = ScrollViewRect.Contains(MousePosition);
+                _drawMapMarkerAdditionalContent = tabNames[ActiveTab] == MapMarkerTab;
+                
+                var lastInspectorState = _drawInspectorAdditionalContent;
                 _drawInspectorAdditionalContent = tabNames[ActiveTab] == InspectorTab;
+                if (lastInspectorState != _drawInspectorAdditionalContent)
+                    SceneInspectorController.OnVisibilityChange(_drawInspectorAdditionalContent);
             }
             GUILayout.FlexibleSpace();
             DrawSelectionPreview();

@@ -3,6 +3,7 @@ using Amplitude.Framework.Overlay;
 using Amplitude.Framework.Runtime;
 using Amplitude.Mercury.Overlay;
 using Amplitude.UI;
+using DevTools.Humankind.GUITools.UI.SceneInspector;
 using Modding.Humankind.DevTools;
 using UnityEngine;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
@@ -78,6 +79,7 @@ namespace DevTools.Humankind.GUITools.UI
         {
             ToolboxController.Unload();
             ScreenUIOverlay.Unload();
+            SceneInspectorController.Unload();
             base.Close(false);
         }
     }

@@ -34,7 +34,11 @@ namespace DevTools.Humankind.GUITools
             
             ViewController.Initialize(true);
             
-            UIController.OnceGUIHasLoaded(() => StyledGUIUtility.DefaultSkin = UIController.DefaultSkin);
+            UIController.OnceGUIHasLoaded(() =>
+            {
+                StyledGUIUtility.DefaultSkin = UIController.DefaultSkin;
+                StyledGUIUtility.UnicodeSymbolsFont = Utils.SegoeUISymbolFont;
+            });
             PopupToolWindow.Open<BackScreenWindow>(w => BackScreen = w);
             PopupToolWindow.Open<MainToolbar>(w => Toolbar = w);
             PopupToolWindow.Open<InGameMenuWindow>(w => InGameMenu = w);

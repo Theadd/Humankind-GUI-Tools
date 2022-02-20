@@ -92,5 +92,20 @@ namespace DevTools.Humankind.GUITools.UI
             }
 
         }
+
+        public static Rect GetWindowsRootGlobalRect()
+        {
+            Rect result = Rect.zero;
+            
+            var windowsRoot = GameObject.Find("/WindowsRoot")
+                ?.GetComponent<UITransform>();
+
+            if (windowsRoot != null)
+            {
+                result = windowsRoot.GlobalRect;
+            }
+
+            return result;
+        }
     }
 }

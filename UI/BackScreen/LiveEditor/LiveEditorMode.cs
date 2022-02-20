@@ -121,7 +121,7 @@ namespace DevTools.Humankind.GUITools.UI
                 if (DestroyKey.IsDown()) BrushPainter.Erase();
             }
 
-            if (EditorMode == EditorModeType.Inspector && !InGameUIController.IsMouseCovered)
+            if (EditorMode == EditorModeType.Inspector /* TODO: && !InGameUIController.IsMouseCovered*/)
             {
                 SceneInspectorController.Run();
             }

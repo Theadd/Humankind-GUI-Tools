@@ -316,7 +316,6 @@ namespace DevTools.Humankind.GUITools.UI
 
         public override void OnZeroGUI()
         {
-            // ViewController.Initialize();
             if (MainTools.IsDebugModeEnabled && MainTools.IsTestingPlaygroundEnabled)
                 TestingPlayground.OnZeroUpdate();
             

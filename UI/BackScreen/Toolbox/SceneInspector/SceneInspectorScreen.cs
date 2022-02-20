@@ -1,7 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Amplitude.Extensions;
 using Amplitude.Mercury.Presentation;
 using Modding.Humankind.DevTools;
+using Modding.Humankind.DevTools.DeveloperTools.UI;
+using StyledGUI;
 using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI.SceneInspector
@@ -10,9 +13,11 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
     {
 
         private bool _drawOnInspectorGUI = false;
-        public static readonly string RootGameObjectName = "Presentation(Clone)";
+        public VirtualScene VirtualHierarchy => _virtualHierarchy ?? (_virtualHierarchy = new VirtualScene());
+        private VirtualScene _virtualHierarchy;
 
-        private VirtualSceneEntity[] Hierarchy { get; set; } = new VirtualSceneEntity[] { };
+        // private Dictionary<string, EntityGroup> Groups { get; set; } = new Dictionary<string, EntityGroup>();
+        public EntityGroup Root { get; private set; } = new EntityGroup() {Collapsed = false};
 
         public void Draw()
         {
@@ -32,9 +37,17 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
                 if (LiveEditorMode.EditorMode == EditorModeType.Inspector && _drawOnInspectorGUI)
                     Presentation.PresentationCursorController.OnInspectorGUI();
                 
-                if (GUILayout.Button("UPDATE HIERARCHY"))
+                if (GUILayout.Button("UPDATE PresentationEntity HIERARCHY"))
                 {
-                    UpdateHierarchy();
+                    UpdateHierarchy<PresentationEntity>();
+                }
+                if (GUILayout.Button("UPDATE PresentationCursorTarget HIERARCHY"))
+                {
+                    UpdateHierarchy<PresentationCursorTarget>();
+                }
+                if (GUILayout.Button("UPDATE PresentationEntityFeedback HIERARCHY"))
+                {
+                    UpdateHierarchy<PresentationEntityFeedback>();
                 }
                 GUILayout.Space(12f);
                 DrawHierarchy();
@@ -45,52 +58,66 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
 
         private void DrawHierarchy()
         {
-            GUILayout.BeginVertical();
+            GUILayout.BeginVertical(Styles.Alpha50BlackBackgroundStyle);
             {
-                foreach (var entity in Hierarchy)
-                {
-                    GUILayout.BeginVertical();
-                    {
-                        GUILayout.Label(entity.Path);
-                        GUILayout.Label(entity.TypeName + " " + entity.Name);
-                    }
-                    GUILayout.EndVertical();
-                    GUILayout.Space(8f);
-                }
+                Root.RenderContent();
             }
             GUILayout.EndVertical();
         }
 
-        private void UpdateHierarchy()
+        private void UpdateHierarchy<T>() where T : MonoBehaviour
         {
-            var root = SceneInspectorController.PresentationGO;
-
-            if (root != null)
+            VirtualHierarchy.RootGameObject = SceneInspectorController.PresentationGO;
+            VirtualHierarchy.Rebuild((MonoBehaviour[])
+                VirtualHierarchy
+                    .RootGameObject
+                    .GetComponentsInChildren<T>(true));
+            
+            Root = new EntityGroup() {Collapsed = false};
+            
+            foreach (var entity in VirtualHierarchy.Entities)
             {
-                var entities = root.GetComponentsInChildren<PresentationEntity>(true);
-                Loggr.Log("Entities FOUND = " + entities.Length);
-                Hierarchy = entities.Select(VirtualSceneEntity.From).ToArray();
+                EntityGroup group = GetOrCreateGroup(entity.Path, true);
+                group.Entities.Add(entity);
             }
         }
-    }
 
-    public class VirtualSceneEntity
-    {
-        public string Name { get; set; }
-        public string TypeName { get; set; }
-        public string Path { get; set; }
-
-        public static VirtualSceneEntity From(PresentationEntity entity)
+        private EntityGroup GetOrCreateGroup(string path, bool createCollapsed = false)
         {
-            if (entity == null)
-                return (VirtualSceneEntity) null;
+            if (path == "" || path == "/")
+                return Root;
 
-            return new VirtualSceneEntity()
+            EntityGroup parent;
+            string groupName;
+            
+            int lastSlashPos = path.LastIndexOf('/');
+            
+            if (lastSlashPos > 0)
             {
-                Name = entity.name,
-                TypeName = entity.GetType().Name,
-                Path = entity.gameObject.GetPath(SceneInspectorScreen.RootGameObjectName)
-            };
+                groupName = path.Substring(lastSlashPos + 1);
+                parent = GetOrCreateGroup(path.Substring(0, lastSlashPos));
+            }
+            else
+            {
+                groupName = path.Substring(lastSlashPos == 0 ? 1 : 0);
+                parent = Root;
+            }
+
+            var match = parent.Groups.FirstOrDefault(g => g.Path == path);
+            if (match == default)
+            {
+                match = new EntityGroup()
+                {
+                    Name = groupName,
+                    Path = path,
+                    Collapsed = createCollapsed
+                };
+                
+                parent.Groups.Add(match);
+            }
+
+            return match;
         }
     }
+
 }
