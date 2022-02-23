@@ -42,14 +42,9 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
             GUILayout.BeginVertical();
             {
                 GUILayout.Space(12f);
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("ENABLE INSPECTOR UNDER MOUSE"))
-                {
-                    LiveEditorMode.EditorMode = EditorModeType.Inspector;
-                }
-
+                GUILayout.BeginVertical();
                 _drawOnInspectorGUI = GUILayout.Toggle(_drawOnInspectorGUI, "DRAW ORIGINAL INSPECTOR GUI");
-                GUILayout.EndHorizontal();
+                GUILayout.EndVertical();
                 GUILayout.Space(30f);
                 
                 if (LiveEditorMode.EditorMode == EditorModeType.Inspector && _drawOnInspectorGUI)
@@ -84,19 +79,50 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
             }
             GUILayout.EndVertical();
         }
+
+        private void DrawGUISectionHeader(string title, string additionalInfo)
+        {
+            GUILayout.BeginHorizontal(Styles.Alpha65WhiteBackgroundStyle);
+            {
+                GUILayout.BeginHorizontal(Styles.SmallPaddingStyle);
+                {
+                    GUILayout.Label(title, Styles.Fixed20pxHeightTextStyle);
+                    GUILayout.FlexibleSpace();
+                    GUILayout.Label(additionalInfo, Styles.Fixed20pxHeightTextStyle);
+
+                }
+                GUILayout.EndHorizontal();
+            }
+            GUILayout.EndHorizontal();
+        }
         
         private void DrawUIHierarchy()
         {
-            GUILayout.BeginVertical(/*Styles.Alpha50BlackBackgroundStyle*/);
+            if (GUILayout.Button("DEBUG STYLE"))
             {
-                UIVirtualGameObjectRoot.RenderContent();
+                Loggr.Log((GUIStyle)"PopupWindow.SectionHeader");
             }
-            GUILayout.EndVertical();
+
+            DrawGUISectionHeader("GAME UI", "NO HITS (EMPTY)");
+            // GUILayout.Label("GAME UI", "PopupWindow.SectionHeader");
+            if (UIVirtualGameObjectRoot.Children.Count > 0 || UIVirtualGameObjectRoot.Components.Count > 0)
+            {
+                GUILayout.BeginVertical(Styles.Alpha50BlackBackgroundStyle);
+                {
+                    UIVirtualGameObjectRoot.RenderContent();
+                }
+                GUILayout.EndVertical();
+            }
         }
 
         public void RebuildUIHierarchyUsing(UITransform[] entities)
         {
-            UIVirtualGameObjectRoot = UIHierarchyBuilder.Build(entities);
+            var withSiblings = entities
+                .SelectMany(ut => ut.gameObject.GetComponents<MonoBehaviour>())
+                .ToArray();
+            
+            // UIVirtualGameObjectRoot = UIHierarchyBuilder.Build(entities);
+            UIVirtualGameObjectRoot = UIHierarchyBuilder.Build(withSiblings);
         }
 
         private void UpdateHierarchy<T>() where T : MonoBehaviour

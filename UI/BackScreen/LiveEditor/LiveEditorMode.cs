@@ -27,7 +27,8 @@ namespace DevTools.Humankind.GUITools.UI
     {
         TilePainter,
         Settlement,
-        Inspector
+        Inspector,
+        MapMarker
     }
     
     public static class LiveEditorMode

@@ -38,6 +38,15 @@ namespace StyledGUI
             }
         };
         
+        public static GUIStyle Alpha65WhiteBackgroundStyle { get; set; } = new GUIStyle()
+        {
+            normal = new GUIStyleState()
+            {
+                background = Alpha65WhitePixel,
+                textColor = Color.white
+            }
+        };
+        
         public static GUIStyle SmallPaddingStyle { get; set; } = new GUIStyle()
         {
             padding = new RectOffset(8, 8, 8, 8),

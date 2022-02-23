@@ -14,21 +14,24 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
         {
             GUILayout.BeginVertical();
             {
-                if (self.Children.Count > 0)
-                    foreach (var group in self.Children)
-                        group.Render();
-                            
                 if (self.Components.Count > 0)
                     foreach (var entity in self.Components)
                         entity.Render();
+                
+                if (self.Children.Count > 0)
+                    foreach (var group in self.Children)
+                        group.Render();
             }
             GUILayout.EndVertical();
         }
         
         public static void Render(this VirtualGameObject self)
         {
-            // var title = "" + (self.Collapsed ? "[+] " : "[-] ") + self.Name;
-            var title = "" + (self.Collapsed ? " ⮚  " : " ⮟  ") + "" + self.Name + "";
+            var title = ""
+                        + (self.Collapsed ? "   " : "   ") 
+                        + " " 
+                        + self.Name 
+                        + "";
             
             GUILayout.BeginVertical();
             {
@@ -48,14 +51,13 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
 
         public static void Render(this VirtualComponent self)
         {
-            if (GUILayout.Button("<color=#FFFFFF00> ⮚  </color>" 
-                                 + self.Name 
-                                 + " <color=#5588FEF0>" 
+            if (GUILayout.Button("<color=#FFFFFF00> ⮚  </color>"
+                                 + "❖ <color=#5588FEF0>" 
                                  + self.TypeName 
                                  + "</color>", 
                 Styles.CollapsibleSectionToggleStyle))
             {
-                Loggr.LogAll(self.Instance);
+                Loggr.Log(self.Instance);
 
                 if (self.Instance is PresentationEntity entity)
                 {

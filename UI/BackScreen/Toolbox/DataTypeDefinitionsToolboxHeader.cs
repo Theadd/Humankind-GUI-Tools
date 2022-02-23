@@ -38,9 +38,6 @@ namespace DevTools.Humankind.GUITools.UI
         private void DrawToolboxHeader()
         {
             GUILayout.Space(12f);
-            
-                
-
             GUILayout.BeginHorizontal();
             {
                 GUILayout.Space(10f);
@@ -90,7 +87,7 @@ namespace DevTools.Humankind.GUITools.UI
                     ToolboxController.IsDisplayModeGrid = shouldDisplayAsGrid;
                 }
 
-                GUILayout.Space(8f);
+                GUILayout.Space(12f);
             }
             GUILayout.EndHorizontal();
             
@@ -330,6 +327,23 @@ namespace DevTools.Humankind.GUITools.UI
             int scrollViewNextX = Mathf.Min(Mathf.Max(0, tabSize.start - r), xMaxScrollRange);
 
             TabsScroller?.ScrollTo(scrollViewNextX);
+            SyncEditorModeWithActiveTab(); 
+        }
+
+        public void SyncEditorModeWithActiveTab()
+        {
+            if (tabNames[ActiveTab] == InspectorTab)
+            {
+                LiveEditorMode.EditorMode = EditorModeType.Inspector;
+            }
+            else if (tabNames[ActiveTab] == MapMarkerTab)
+            {
+                LiveEditorMode.EditorMode = EditorModeType.MapMarker;
+            }
+            else
+            {
+                LiveEditorMode.EditorMode = EditorModeType.TilePainter;
+            }
         }
     }
 }

@@ -114,7 +114,12 @@ namespace DevTools.Humankind.GUITools.UI
                             IsToolboxVisible = !IsToolboxVisible;
 
                             ScreenOverlay
-                                .SetInnerRect(ToolboxController.ToolboxRect)
+                                .SetInnerRect(
+                                    new Rect(
+                                        ToolboxController.ToolboxRect.x, 
+                                        ToolboxController.ToolboxRect.y, 
+                                        ToolboxController.ToolboxRect.width - 1f, 
+                                        ToolboxController.ToolboxRect.height))
                                 .SetInnerRectAsVisible(IsToolboxVisible);
 
                             if (IsToolboxVisible)
