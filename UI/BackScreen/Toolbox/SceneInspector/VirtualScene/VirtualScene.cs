@@ -23,7 +23,7 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
         private bool _isDirty = true;
         private int _count = 0;
 
-        public VirtualSceneEntity[] Entities { get; private set; } = new VirtualSceneEntity[] { };
+        public VirtualComponent[] Entities { get; private set; } = new VirtualComponent[] { };
 
         public void Rebuild(MonoBehaviour[] entities)
         {
@@ -31,13 +31,14 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
             Entities = entities.Select(CreateEntity).ToArray();
         }
 
-        private VirtualSceneEntity CreateEntity(MonoBehaviour entity)
+        private VirtualComponent CreateEntity(MonoBehaviour entity)
         {
-            return new VirtualSceneEntity()
+            return new VirtualComponent()
             {
                 Name = entity.name,
                 TypeName = entity.GetType().Name,
-                Path = entity.gameObject.transform.parent.gameObject.GetPath(RootGameObjectName),
+                // Path = entity.gameObject.transform.parent.gameObject.GetPath(RootGameObjectName),
+                Path = entity.gameObject.GetPath(RootGameObjectName),
                 Instance = entity,
                 Index = ++_count
             };

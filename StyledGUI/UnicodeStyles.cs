@@ -39,7 +39,7 @@ namespace StyledGUI
             onNormal = new GUIStyleState()
             {
                 background = DefaultLinkStyle.normal.background,
-                textColor = Color.white
+                textColor = WhitePearlTextColor
             },
             onHover = new GUIStyleState()
             {

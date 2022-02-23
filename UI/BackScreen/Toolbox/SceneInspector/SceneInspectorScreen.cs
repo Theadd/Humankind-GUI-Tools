@@ -2,6 +2,7 @@
 using System.Linq;
 using Amplitude.Extensions;
 using Amplitude.Mercury.Presentation;
+using Amplitude.UI;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
 using StyledGUI;
@@ -13,14 +14,31 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
     {
 
         private bool _drawOnInspectorGUI = false;
-        public VirtualScene VirtualHierarchy => _virtualHierarchy ?? (_virtualHierarchy = new VirtualScene());
-        private VirtualScene _virtualHierarchy;
+        private bool _initialized = false;
 
-        // private Dictionary<string, EntityGroup> Groups { get; set; } = new Dictionary<string, EntityGroup>();
-        public EntityGroup Root { get; private set; } = new EntityGroup() {Collapsed = false};
+        private VirtualGameObject UIVirtualGameObjectRoot { get; set; } = new VirtualGameObject() {Collapsed = false};
+        private VirtualGameObject PresentationVirtualGameObjectRoot { get; set; } = new VirtualGameObject() {Collapsed = false};
+        private HierarchyBuilder UIHierarchyBuilder { get; set; }
+        private HierarchyBuilder PresentationHierarchyBuilder { get; set; }
 
+        private void Initialize()
+        {
+            UIHierarchyBuilder = new HierarchyBuilder()
+            {
+                RootGameObject = GameObject.Find("/WindowsRoot")
+            };
+            PresentationHierarchyBuilder = new HierarchyBuilder()
+            {
+                RootGameObject = SceneInspectorController.PresentationGO
+            };
+            _initialized = true;
+        }
+        
         public void Draw()
         {
+            if (!_initialized)
+                Initialize();
+            
             GUILayout.BeginVertical();
             {
                 GUILayout.Space(12f);
@@ -36,6 +54,8 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
                 
                 if (LiveEditorMode.EditorMode == EditorModeType.Inspector && _drawOnInspectorGUI)
                     Presentation.PresentationCursorController.OnInspectorGUI();
+
+                DrawUIHierarchy();
                 
                 if (GUILayout.Button("UPDATE PresentationEntity HIERARCHY"))
                 {
@@ -50,74 +70,43 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
                     UpdateHierarchy<PresentationEntityFeedback>();
                 }
                 GUILayout.Space(12f);
-                DrawHierarchy();
+                DrawPresentationHierarchy();
 
             }
             GUILayout.EndVertical();
         }
 
-        private void DrawHierarchy()
+        private void DrawPresentationHierarchy()
         {
             GUILayout.BeginVertical(Styles.Alpha50BlackBackgroundStyle);
             {
-                Root.RenderContent();
+                PresentationVirtualGameObjectRoot.RenderContent();
             }
             GUILayout.EndVertical();
+        }
+        
+        private void DrawUIHierarchy()
+        {
+            GUILayout.BeginVertical(/*Styles.Alpha50BlackBackgroundStyle*/);
+            {
+                UIVirtualGameObjectRoot.RenderContent();
+            }
+            GUILayout.EndVertical();
+        }
+
+        public void RebuildUIHierarchyUsing(UITransform[] entities)
+        {
+            UIVirtualGameObjectRoot = UIHierarchyBuilder.Build(entities);
         }
 
         private void UpdateHierarchy<T>() where T : MonoBehaviour
         {
-            VirtualHierarchy.RootGameObject = SceneInspectorController.PresentationGO;
-            VirtualHierarchy.Rebuild((MonoBehaviour[])
-                VirtualHierarchy
+            PresentationVirtualGameObjectRoot = PresentationHierarchyBuilder.Build(
+                PresentationHierarchyBuilder
                     .RootGameObject
                     .GetComponentsInChildren<T>(true));
-            
-            Root = new EntityGroup() {Collapsed = false};
-            
-            foreach (var entity in VirtualHierarchy.Entities)
-            {
-                EntityGroup group = GetOrCreateGroup(entity.Path, true);
-                group.Entities.Add(entity);
-            }
         }
 
-        private EntityGroup GetOrCreateGroup(string path, bool createCollapsed = false)
-        {
-            if (path == "" || path == "/")
-                return Root;
-
-            EntityGroup parent;
-            string groupName;
-            
-            int lastSlashPos = path.LastIndexOf('/');
-            
-            if (lastSlashPos > 0)
-            {
-                groupName = path.Substring(lastSlashPos + 1);
-                parent = GetOrCreateGroup(path.Substring(0, lastSlashPos));
-            }
-            else
-            {
-                groupName = path.Substring(lastSlashPos == 0 ? 1 : 0);
-                parent = Root;
-            }
-
-            var match = parent.Groups.FirstOrDefault(g => g.Path == path);
-            if (match == default)
-            {
-                match = new EntityGroup()
-                {
-                    Name = groupName,
-                    Path = path,
-                    Collapsed = createCollapsed
-                };
-                
-                parent.Groups.Add(match);
-            }
-
-            return match;
-        }
     }
 
 }

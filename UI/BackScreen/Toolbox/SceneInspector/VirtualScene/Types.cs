@@ -3,17 +3,17 @@ using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI.SceneInspector
 {
-    public class EntityGroup
+    public class VirtualGameObject
     {
         public string Name { get; set; } = string.Empty;
         public string Path { get; set; } = string.Empty;
         public bool Collapsed { get; set; } = true;
 
-        public List<EntityGroup> Groups { get; set; } = new List<EntityGroup>();
-        public List<VirtualSceneEntity> Entities { get; set; } = new List<VirtualSceneEntity>();
+        public List<VirtualGameObject> Children { get; set; } = new List<VirtualGameObject>();
+        public List<VirtualComponent> Components { get; set; } = new List<VirtualComponent>();
     }
     
-    public class VirtualSceneEntity
+    public class VirtualComponent
     {
         public string Name { get; set; }
         public string TypeName { get; set; }

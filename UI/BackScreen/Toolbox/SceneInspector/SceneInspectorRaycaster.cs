@@ -179,6 +179,8 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
                     
                     Loggr.Log(string.Join("\n", displayValues.Select(s => "\t" + s)));
                 }
+                
+                SceneInspectorController.Screen.RebuildUIHierarchyUsing(visibleUITransforms);
             }
         }
     }

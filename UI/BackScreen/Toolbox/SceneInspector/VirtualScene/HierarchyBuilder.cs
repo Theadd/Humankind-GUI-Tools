@@ -7,33 +7,33 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
     {
         public GameObject RootGameObject { get; set; }
 
-        private EntityGroup Root { get; set; } = new EntityGroup() {Collapsed = false};
+        private VirtualGameObject Root { get; set; } = new VirtualGameObject() {Collapsed = false};
         
         public VirtualScene VirtualHierarchy => _virtualHierarchy ?? (_virtualHierarchy = new VirtualScene());
         private VirtualScene _virtualHierarchy;
 
-        public EntityGroup Build(MonoBehaviour[] entities)
+        public VirtualGameObject Build(MonoBehaviour[] entities)
         {
             VirtualHierarchy.RootGameObject = RootGameObject;
             VirtualHierarchy.Rebuild(entities);
             
-            Root = new EntityGroup() {Collapsed = false};
+            Root = new VirtualGameObject() {Collapsed = false};
             
             foreach (var entity in VirtualHierarchy.Entities)
             {
-                EntityGroup group = GetOrCreateGroup(entity.Path, true);
-                group.Entities.Add(entity);
+                VirtualGameObject group = GetOrCreateGroup(entity.Path, true);
+                group.Components.Add(entity);
             }
 
             return Root;
         }
         
-        private EntityGroup GetOrCreateGroup(string path, bool createCollapsed = false)
+        private VirtualGameObject GetOrCreateGroup(string path, bool createCollapsed = false)
         {
             if (path == "" || path == "/")
                 return Root;
 
-            EntityGroup parent;
+            VirtualGameObject parent;
             string groupName;
             
             int lastSlashPos = path.LastIndexOf('/');
@@ -49,17 +49,17 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
                 parent = Root;
             }
 
-            var match = parent.Groups.FirstOrDefault(g => g.Path == path);
+            var match = parent.Children.FirstOrDefault(g => g.Path == path);
             if (match == default)
             {
-                match = new EntityGroup()
+                match = new VirtualGameObject()
                 {
                     Name = groupName,
                     Path = path,
                     Collapsed = createCollapsed
                 };
                 
-                parent.Groups.Add(match);
+                parent.Children.Add(match);
             }
 
             return match;
