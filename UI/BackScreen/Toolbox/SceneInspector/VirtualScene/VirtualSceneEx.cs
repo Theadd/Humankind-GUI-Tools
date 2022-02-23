@@ -8,7 +8,7 @@ using UnityEngine;
 namespace DevTools.Humankind.GUITools.UI.SceneInspector
 {
 
-    public static class EntityGroupEx
+    public static class VirtualSceneEx
     {
         public static void RenderContent(this EntityGroup self)
         {
