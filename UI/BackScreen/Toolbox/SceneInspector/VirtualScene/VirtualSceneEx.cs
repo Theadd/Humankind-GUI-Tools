@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Amplitude.Mercury.Presentation;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
@@ -10,22 +11,30 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
 
     public static class VirtualSceneEx
     {
-        public static void RenderContent(this VirtualGameObject self)
+        public static void RenderContent(this VirtualGameObject self, IVirtualSceneRenderer renderer)
         {
             GUILayout.BeginVertical();
             {
                 if (self.Components.Count > 0)
                     foreach (var entity in self.Components)
+                    {
                         entity.Render();
+                        if (renderer.CaptureOnMouseHover)
+                        {
+                            var r = GUILayoutUtility.GetLastRect();
+                            if (Event.current.mousePosition.y < r.y + r.height && r.Contains(Event.current.mousePosition))
+                                renderer.OnMouseHoverComponent(entity);
+                        }
+                    }
                 
                 if (self.Children.Count > 0)
                     foreach (var group in self.Children)
-                        group.Render();
+                        group.Render(renderer);
             }
             GUILayout.EndVertical();
         }
         
-        public static void Render(this VirtualGameObject self)
+        public static void Render(this VirtualGameObject self, IVirtualSceneRenderer renderer)
         {
             var title = ""
                         + (self.Collapsed ? "   " : "   ") 
@@ -41,7 +50,7 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
                     GUILayout.BeginHorizontal();
                     {
                         GUILayout.Space(15f);
-                        self.RenderContent();
+                        self.RenderContent(renderer);
                     }
                     GUILayout.EndHorizontal();
                 }

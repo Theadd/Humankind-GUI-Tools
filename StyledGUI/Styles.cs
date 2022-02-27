@@ -4,6 +4,8 @@ namespace StyledGUI
 {
     public static partial class Styles
     {
+        public static Texture2D Alpha80WhitePixel { get; set; } =
+            Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.80f));
         public static Texture2D Alpha65WhitePixel { get; set; } =
             Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.65f));
         public static Texture2D Alpha35WhitePixel { get; set; } =

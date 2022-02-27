@@ -3,7 +3,13 @@ using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI.SceneInspector
 {
-    public class HierarchyBuilder
+
+    public interface IRenderableScene
+    {
+        GameObject RootGameObject { get; set; }
+    }
+    
+    public class HierarchyBuilder : IRenderableScene
     {
         public GameObject RootGameObject { get; set; }
 

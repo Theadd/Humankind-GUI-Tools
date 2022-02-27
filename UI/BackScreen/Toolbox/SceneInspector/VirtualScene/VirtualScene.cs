@@ -37,7 +37,6 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
             {
                 Name = entity.name,
                 TypeName = entity.GetType().Name,
-                // Path = entity.gameObject.transform.parent.gameObject.GetPath(RootGameObjectName),
                 Path = entity.gameObject.GetPath(RootGameObjectName),
                 Instance = entity,
                 Index = ++_count

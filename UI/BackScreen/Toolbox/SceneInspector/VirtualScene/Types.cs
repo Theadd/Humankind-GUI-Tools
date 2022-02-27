@@ -3,7 +3,12 @@ using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI.SceneInspector
 {
-    public class VirtualGameObject
+    public interface IVirtualEntity
+    {
+        string Name { get; set; }
+    }
+    
+    public class VirtualGameObject : IVirtualEntity
     {
         public string Name { get; set; } = string.Empty;
         public string Path { get; set; } = string.Empty;
@@ -13,7 +18,7 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
         public List<VirtualComponent> Components { get; set; } = new List<VirtualComponent>();
     }
     
-    public class VirtualComponent
+    public class VirtualComponent : IVirtualEntity
     {
         public string Name { get; set; }
         public string TypeName { get; set; }

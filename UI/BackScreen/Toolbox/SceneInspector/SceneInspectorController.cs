@@ -32,6 +32,11 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
 
         private static IInputService _inputService;
         
+        public static HexPointer HexPainter =>
+            _hexPainter ?? (_hexPainter = new HexPointer(() => { Loggr.Log("HexPointer .OnTileChange"); }));
+
+        private static HexPointer _hexPainter;
+        
         private static KeyboardShortcut InspectKey { get; set; } = 
             new KeyboardShortcut(KeyCode.Space);
         private static KeyboardShortcut RaycastKey { get; set; } = 

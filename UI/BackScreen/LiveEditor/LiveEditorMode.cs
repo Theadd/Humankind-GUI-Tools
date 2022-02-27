@@ -40,7 +40,7 @@ namespace DevTools.Humankind.GUITools.UI
         public static readonly string DebugUnderCursorActionName = "DebugTileUnderCursor";
         public static bool Enabled { get; set; } = false;
         public static EditorModeType EditorMode { get; set; } = EditorModeType.TilePainter;
-        public static HexOverlay HexPainter { get; set; }
+        public static HoveredHexPainter HexPainter { get; set; }
         public static ConstructibleDefinition ActivePaintBrush { get; private set; } = null;
         public static LiveBrushType BrushType { get; private set; } = LiveBrushType.None;
 
@@ -53,7 +53,7 @@ namespace DevTools.Humankind.GUITools.UI
 
         public static void Initialize()
         {
-            HexPainter = new HexOverlay(HandleOnTileChange);
+            HexPainter = new HoveredHexPainter(HandleOnTileChange);
             BrushPainter = new PaintBrush();
             IsMouseOverUIControls = false;
             UpdateKeyMappings();
