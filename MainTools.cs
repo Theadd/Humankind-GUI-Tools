@@ -105,6 +105,7 @@ namespace DevTools.Humankind.GUITools
         public static void Unload() => Unload(true);
 
         public static void Unload(bool saveState = false) {
+            WireRenderer.Detach();
             Toolbar?.Close(saveState);
             InGameMenu?.Close();
             BasicWindow?.Close();

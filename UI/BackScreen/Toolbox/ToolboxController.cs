@@ -94,6 +94,9 @@ namespace DevTools.Humankind.GUITools.UI
             ToolboxRect = newRect;
         }
 
+        public static ScreenUIOverlay GetBackScreenUIOverlay() =>
+            _backScreenWindow != null ? _backScreenWindow.ScreenOverlay : null;
+
         public static bool Draw()
         {
             if (Event.current.type == EventType.Repaint)

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using Amplitude.Mercury.Presentation;
+﻿using Amplitude.Mercury.Presentation;
+using Amplitude.UI.Renderers;
 using Modding.Humankind.DevTools;
-using Modding.Humankind.DevTools.DeveloperTools.UI;
 using StyledGUI;
 using UnityEngine;
 

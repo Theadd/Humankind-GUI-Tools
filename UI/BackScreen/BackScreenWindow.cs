@@ -32,7 +32,9 @@ namespace DevTools.Humankind.GUITools.UI
         {
             ViewController.Initialize();
             
-            ScreenOverlay.SetInnerRectAsVisible(false);
+            ScreenOverlay
+                .SetInnerRectAsVisible(false)
+                .SetUIMarkerVisibility(false);
             OnCollapse();
 
             Initialized = true;
@@ -42,7 +44,9 @@ namespace DevTools.Humankind.GUITools.UI
         {
             SyncToScreenSize();
             LiveEditorMode.Initialize();
-            ScreenOverlay.SetInnerRectAsVisible(false);
+            ScreenOverlay
+                .SetInnerRectAsVisible(false)
+                .SetUIMarkerVisibility(false);
             ToolboxController.Initialize(this);
 
             InitializedInGame = true;

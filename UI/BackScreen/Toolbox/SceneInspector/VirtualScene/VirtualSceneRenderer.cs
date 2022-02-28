@@ -1,4 +1,5 @@
 ﻿using Amplitude.Mercury.Presentation;
+using Amplitude.UI;
 using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI.SceneInspector
@@ -38,6 +39,9 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
             if (_clearOnRepaint && Event.current.type == EventType.Repaint)
             {
                 SceneInspectorController.HexPainter.IsVisible = false;
+                ToolboxController
+                    .GetBackScreenUIOverlay()?
+                    .SetUIMarkerVisibility(false);
                 _clearOnRepaint = false;
             }
 
@@ -53,6 +57,19 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
                 SceneInspectorController.HexPainter.IsVisible = true;
                 SceneInspectorController.HexPainter.SetNextTileIndex(entity.WorldPosition.ToTileIndex());
                 CaptureOnMouseHover = false;
+            }
+            else
+            {
+                var uiTransform = virtualComponent.Instance.gameObject.GetComponent<UITransform>();
+
+                if (uiTransform != null)
+                {
+                    ToolboxController
+                        .GetBackScreenUIOverlay()?
+                        .SetUIMarkerRect(uiTransform.GlobalRect, false)
+                        .SetUIMarkerVisibility(true);
+                    CaptureOnMouseHover = false;
+                }
             }
         }
 

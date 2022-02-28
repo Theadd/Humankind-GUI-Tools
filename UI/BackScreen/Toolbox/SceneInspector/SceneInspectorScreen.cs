@@ -25,6 +25,7 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
 
         private void Initialize()
         {
+            /* TODO: REMOVE */ WireRenderer.Attach();
             Renderer = new VirtualSceneRenderer();
             UIHierarchyBuilder = new HierarchyBuilder()
             {
