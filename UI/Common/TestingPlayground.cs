@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using Amplitude.Extensions;
 using Amplitude.Framework;
 using BepInEx.Configuration;
+using DevTools.Humankind.GUITools.UI.SceneInspector;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.Core;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
@@ -17,6 +19,7 @@ namespace DevTools.Humankind.GUITools.UI
     public static class TestingPlayground
     {
         private static bool _switchedToolboxTab = false;
+        private static bool _didRunOnce = false;
         
         public static void Run()
         {
@@ -40,6 +43,19 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 ToolboxController.Toolbox.SetActiveTab(4);
                 _switchedToolboxTab = true;
+            }
+
+            if (!_didRunOnce)
+            {
+                var graphicsService = SceneInspectorRaycaster.GetCameraGraphicService;
+                var cam = graphicsService.Camera;
+                
+                Loggr.Log(graphicsService);
+                Loggr.Log(cam);
+                Loggr.Log("CameraGraphicService PATH = " + graphicsService.gameObject.GetPath(), ConsoleColor.Red);
+                Loggr.Log("Camera PATH = " + cam.gameObject.GetPath(), ConsoleColor.Red);
+                
+                _didRunOnce = true;
             }
         }
 

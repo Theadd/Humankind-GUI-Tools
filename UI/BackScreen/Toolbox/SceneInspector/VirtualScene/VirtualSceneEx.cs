@@ -1,4 +1,7 @@
 ﻿using Amplitude.Mercury.Presentation;
+using Amplitude.Mercury.UI;
+using Amplitude.UI;
+using Amplitude.UI.Interactables;
 using Amplitude.UI.Renderers;
 using Modding.Humankind.DevTools;
 using StyledGUI;
@@ -57,6 +60,35 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
         }
 
         public static void Render(this VirtualComponent self)
+        {
+            GUILayout.BeginHorizontal();
+            {
+                self.RenderMainButton();
+
+                if (self.Instance is UITransform uiTransform)
+                {
+                    var shouldBeVisible = GUILayout.Toggle(uiTransform.VisibleSelf, "☀",
+                        Styles.InlineUnicodeButtonStyle, GUILayout.Width(22f), GUILayout.Height(21f),
+                        GUILayout.ExpandWidth(false));
+
+                    if (shouldBeVisible != uiTransform.VisibleSelf)
+                        uiTransform.VisibleSelf = shouldBeVisible;
+                }
+                
+                //  (Toggle value of (MonoBehaviour).enabled)
+                var shouldBeEnabled = GUILayout.Toggle(self.Instance.enabled, "",
+                    Styles.InlineUnicodeButtonStyle, GUILayout.Width(22f), GUILayout.Height(21f),
+                    GUILayout.ExpandWidth(false));
+
+                if (shouldBeEnabled != self.Instance.enabled)
+                    self.Instance.enabled = shouldBeEnabled;
+                
+                GUILayout.Space(12f);
+            }
+            GUILayout.EndHorizontal();
+        }
+        
+        private static void RenderMainButton(this VirtualComponent self)
         {
             if (GUILayout.Button("<color=#FFFFFF00> ⮚  </color>"
                                  + "❖ <color=#5588FEF0>" 

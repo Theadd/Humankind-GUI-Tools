@@ -60,7 +60,8 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
                 PrintToConsole();
             
             if (RaycastKey.IsDown())
-                PrintRaycastResultsToConsole();
+                Raycaster.TestRaycastFromCameraToScreenPoint();
+                // PrintRaycastResultsToConsole();
             
         }
 

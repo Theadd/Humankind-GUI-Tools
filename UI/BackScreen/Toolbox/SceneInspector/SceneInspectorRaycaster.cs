@@ -35,6 +35,40 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
             (Dictionary<Type, Cursor>) CursorByTypeField.GetValue(Presentation.PresentationCursorController);
 
         private static readonly int AllLayers = ~0;
+        private static bool _wireRendererAttached = false;
+
+        public void TestRaycastFromCameraToScreenPoint()
+        {
+            var cam = GetCameraGraphicService.Camera;
+            var mousePos = Input.mousePosition;
+            RaycastHit hit;
+            
+            
+            
+            Ray ray = cam.ScreenPointToRay(mousePos);
+            
+            Loggr.Log("\nInput.mousePosition = " + mousePos.ToString(), ConsoleColor.Yellow);
+            Loggr.Log("Ray = " + ray.ToString(), ConsoleColor.Yellow);
+        
+            if (Physics.Raycast(ray, out hit)) {
+                Transform objectHit = hit.transform;
+            
+                // Do something with the object that was hit by the raycast.
+                Loggr.Log("\tThe object that was hit by the raycast is at position " + objectHit.position.ToString());
+                Loggr.Log($"\tGameObject \"{objectHit.gameObject.name}\"'s PATH = " + objectHit.gameObject.GetPath());
+            }
+
+            /*if (!_wireRendererAttached)
+            {
+                WireRenderer.Attach(cam);
+                _wireRendererAttached = true;
+            }
+            else
+            {
+                WireRenderer.Detach();
+                _wireRendererAttached = false;
+            }*/
+        }
         
         public void FillWithRaycastedCursorTargets(
             Vector2 mousePosition,
