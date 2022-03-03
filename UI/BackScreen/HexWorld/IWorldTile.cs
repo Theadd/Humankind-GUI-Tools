@@ -6,7 +6,6 @@ namespace DevTools.Humankind.GUITools.UI
     public interface ITileEx
     {
         int TileIndex { get; set; }
-        Tile Tile { get; set; }
     }
     
     [Flags]
