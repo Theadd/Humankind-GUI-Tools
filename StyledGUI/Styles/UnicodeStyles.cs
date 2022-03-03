@@ -1,5 +1,4 @@
-﻿using DevTools.Humankind.GUITools.UI;
-using Modding.Humankind.DevTools.DeveloperTools.UI;
+﻿using Modding.Humankind.DevTools.DeveloperTools.UI;
 using UnityEngine;
 
 namespace StyledGUI
@@ -14,6 +13,7 @@ namespace StyledGUI
         private static GUIStyle _unicodeLinkStyle;
         private static GUIStyle _unicodeLabelStyle;
         private static GUIStyle _bgSectionHeaderStyle;
+        private static GUIStyle _inlineUnicodeButtonStyle;
 
         public static GUIStyle DefaultLinkStyle => StyledGUIUtility.DefaultSkin.FindStyle("Link");
 
@@ -138,6 +138,45 @@ namespace StyledGUI
                     background = Alpha80WhitePixel,
                     textColor = BlueTextColor
                 }
+            });
+        
+        public static GUIStyle InlineUnicodeButtonStyle => _inlineUnicodeButtonStyle ?? (
+            _inlineUnicodeButtonStyle = new GUIStyle(DefaultLinkStyle)
+            {
+                font = StyledGUIUtility.UnicodeSymbolsFont,
+                name = "InlineUnicodeButton",
+                fontSize = 16,
+                fontStyle = FontStyle.Normal,
+                margin = new RectOffset(0, 0, 0, 0),
+                padding = new RectOffset(0, 0, 0, 0),
+                stretchWidth = false,
+                stretchHeight = false,
+                alignment = TextAnchor.MiddleCenter,
+                normal = new GUIStyleState()
+                {
+                    background = DefaultLinkStyle.normal.background,
+                    textColor = Color.white
+                },
+                onNormal = new GUIStyleState()
+                {
+                    background = DefaultLinkStyle.normal.background,
+                    textColor = BlueTextColor
+                },
+                onHover = new GUIStyleState()
+                {
+                    background = Alpha35WhitePixel,
+                    textColor = Color.white
+                },
+                hover = new GUIStyleState()
+                {
+                    background = Alpha35WhitePixel,
+                    textColor = BlueTextColor
+                },
+                active = new GUIStyleState()
+                {
+                    background = DefaultLinkStyle.normal.background,
+                    textColor = BlueTextColor
+                },
             });
     }
 }
