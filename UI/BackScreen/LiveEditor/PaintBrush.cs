@@ -1,20 +1,16 @@
 ﻿using System;
-using Amplitude;
 using Amplitude.Mercury;
 using Amplitude.Mercury.Data.Simulation;
 using Amplitude.Mercury.Interop;
 using Amplitude.Mercury.Interop.AI.Data;
-using Amplitude.Mercury.Interop.AI.Entities;
 using Amplitude.Mercury.Presentation;
-using Amplitude.Mercury.Sandbox;
 using Amplitude.Serialization;
 using Modding.Humankind.DevTools;
 using Snapshots = Amplitude.Mercury.Interop.AI.Snapshots;
-using String = System.String;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public partial class PaintBrush : ITileEx
+    public partial class PaintBrush : IWorldTile
     {
         public Tile Tile { get; set; }
         public int TileIndex { get; set; }

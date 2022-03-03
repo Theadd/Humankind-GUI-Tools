@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Amplitude.Extensions;
 using Amplitude.Mercury.Presentation;
+using Amplitude.Mercury.Sandbox;
 using Amplitude.UI;
 using Modding.Humankind.DevTools;
+using Modding.Humankind.DevTools.Core;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
 using StyledGUI;
+using UniverseLib;
 using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI.SceneInspector
@@ -38,6 +42,9 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
             _initialized = true;
         }
         
+        private static readonly MethodInfo DestroyTerrainAtMethod =
+            typeof(Amplitude.Mercury.Simulation.World).GetMethod("DestroyTerrainAt", R.NonPublicInstance);
+        
         public void Draw()
         {
             if (!_initialized)
@@ -49,6 +56,12 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
                 GUILayout.Space(12f);
                 GUILayout.BeginVertical();
                 _drawOnInspectorGUI = GUILayout.Toggle(_drawOnInspectorGUI, "DRAW ORIGINAL INSPECTOR GUI");
+
+                var text = UniverseLib.Utility.SignatureHighlighter.Parse(typeof(Amplitude.Mercury.Simulation.World), true, DestroyTerrainAtMethod);
+                var text2 = UniverseLib.Utility.SignatureHighlighter.HighlightMethod(DestroyTerrainAtMethod);
+                GUILayout.Label(text);
+                GUILayout.Label(text2);
+                
                 GUILayout.EndVertical();
                 GUILayout.Space(30f);
                 
@@ -101,7 +114,7 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
         {
             GUILayout.BeginVertical(Styles.Alpha50BlackBackgroundStyle);
             {
-                PresentationVirtualGameObjectRoot.RenderContent(Renderer.Using(PresentationHierarchyBuilder));
+                PresentationVirtualGameObjectRoot.RenderTree(Renderer.Using(PresentationHierarchyBuilder));
             }
             GUILayout.EndVertical();
         }
@@ -157,7 +170,7 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
             {
                 GUILayout.BeginVertical(Styles.Alpha50BlackBackgroundStyle);
                 {
-                    UIVirtualGameObjectRoot.RenderContent(Renderer.Using(UIHierarchyBuilder));
+                    UIVirtualGameObjectRoot.RenderTree(Renderer.Using(UIHierarchyBuilder));
                 }
                 GUILayout.EndVertical();
             }

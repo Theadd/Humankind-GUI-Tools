@@ -31,6 +31,10 @@
       <HintPath>$(HUMANKIND_GAME_PATH)\BepInEx\core\0Harmony.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="UniverseLib.Mono">
+      <HintPath>$(HUMANKIND_GAME_PATH)\BepInEx\plugins\UniverseLib.Mono.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
     <Reference Include="Amplitude.AI">
       <HintPath>$(HUMANKIND_REFERENCED_LIBRARIES_PATH)\Amplitude.AI.dll</HintPath>
       <Private>false</Private>

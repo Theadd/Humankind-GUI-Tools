@@ -12,6 +12,18 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
 
     public static class VirtualSceneEx
     {
+        private static int _depth = 0;
+
+        public static void RenderTree(this VirtualGameObject self, IVirtualSceneRenderer renderer)
+        {
+            var prev = _depth;
+            _depth = 0;
+            GUILayout.BeginVertical();
+            self.RenderContent(renderer);
+            GUILayout.EndVertical();
+            _depth = prev;
+        }
+        
         public static void RenderContent(this VirtualGameObject self, IVirtualSceneRenderer renderer)
         {
             GUILayout.BeginVertical();
@@ -37,38 +49,44 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
         
         public static void Render(this VirtualGameObject self, IVirtualSceneRenderer renderer)
         {
-            var title = ""
-                        + (self.Collapsed ? "   " : "   ") 
-                        + " " 
-                        + self.Name 
-                        + "";
+            var wasCollapsed = self.Collapsed;
             
-            GUILayout.BeginVertical();
+            GUILayoutTree.BeginRow(_depth);
             {
-                self.Collapsed = GUILayout.Toggle(self.Collapsed, title, Styles.CollapsibleSectionToggleStyle);
-                if (!self.Collapsed)
-                {
-                    GUILayout.BeginHorizontal();
-                    {
-                        GUILayout.Space(15f);
-                        self.RenderContent(renderer);
-                    }
-                    GUILayout.EndHorizontal();
-                }
+                GUILayout.Label(self.Collapsed ? "" : "", Styles.UnicodeIconStyle, GUILayout.Height(21f), GUILayout.Width(25f), GUILayout.ExpandWidth(false));
+                GUILayout.Label("<color=#efe5b0></color>", Styles.UnicodeIconStyle, GUILayout.Height(25f), GUILayout.Width(25f), GUILayout.ExpandWidth(false));
+                GUILayout.BeginHorizontal("<color=#e2c08d>" + self.Name + "</color>", Styles.TreeInlineTextStyle, GUILayout.Height(25f), GUILayout.ExpandWidth(false));
+                // GUILayout.Space(8f);
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
             }
-            GUILayout.EndVertical();
+            if (GUILayoutTree.EndRow())
+                self.Collapsed = !self.Collapsed;
+            
+            if (!self.Collapsed && !wasCollapsed)
+            {
+                _depth++;
+                self.RenderContent(renderer);
+                _depth--;
+            }
         }
 
         public static void Render(this VirtualComponent self)
         {
-            GUILayout.BeginHorizontal();
+            GUILayoutTree.BeginItem(_depth);
             {
-                self.RenderMainButton();
-
+                // GUILayout.Label("❖", Styles.UnicodeIconStyle, GUILayout.Height(25f), GUILayout.Width(25f), GUILayout.ExpandWidth(false));
+                // GUILayout.Space(8f);
+                GUILayout.BeginHorizontal("<color=#efe5b0>" + self.TypeName + "</color>", Styles.TreeInlineTextStyle, GUILayout.Height(25f), GUILayout.ExpandWidth(false));
+                // GUILayout.Space(38f);
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+                
+                // BEGIN RIGHT SIDE BUTTONS
                 if (self.Instance is UITransform uiTransform)
                 {
                     var shouldBeVisible = GUILayout.Toggle(uiTransform.VisibleSelf, "☀",
-                        Styles.InlineUnicodeButtonStyle, GUILayout.Width(22f), GUILayout.Height(21f),
+                        Styles.InlineUnicodeButtonStyle, GUILayout.Width(25f), GUILayout.Height(25f),
                         GUILayout.ExpandWidth(false));
 
                     if (shouldBeVisible != uiTransform.VisibleSelf)
@@ -77,24 +95,17 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
                 
                 //  (Toggle value of (MonoBehaviour).enabled)
                 var shouldBeEnabled = GUILayout.Toggle(self.Instance.enabled, "",
-                    Styles.InlineUnicodeButtonStyle, GUILayout.Width(22f), GUILayout.Height(21f),
+                    Styles.InlineUnicodeButtonStyle, GUILayout.Width(25f), GUILayout.Height(25f),
                     GUILayout.ExpandWidth(false));
 
                 if (shouldBeEnabled != self.Instance.enabled)
                     self.Instance.enabled = shouldBeEnabled;
+                // END RIGHT SIDE BUTTONS
                 
-                GUILayout.Space(12f);
+                
+                
             }
-            GUILayout.EndHorizontal();
-        }
-        
-        private static void RenderMainButton(this VirtualComponent self)
-        {
-            if (GUILayout.Button("<color=#FFFFFF00> ⮚  </color>"
-                                 + "❖ <color=#5588FEF0>" 
-                                 + self.TypeName 
-                                 + "</color>", 
-                Styles.CollapsibleSectionToggleStyle))
+            if (GUILayoutTree.EndItem())
             {
                 Loggr.Log(self.Instance);
 
@@ -107,6 +118,9 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
                     HumankindGame.CenterCameraAt(cursorTarget.PresentationEntity.WorldPosition.ToTileIndex());
                 }
             }
+
+            
         }
+        
     }
 }

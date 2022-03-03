@@ -1,4 +1,5 @@
-﻿using Modding.Humankind.DevTools.DeveloperTools.UI;
+﻿using Modding.Humankind.DevTools;
+using Modding.Humankind.DevTools.DeveloperTools.UI;
 using UnityEngine;
 
 namespace StyledGUI
@@ -79,7 +80,17 @@ namespace StyledGUI
                 font = StyledGUIUtility.UnicodeSymbolsFont,
                 fontSize = 16,
                 alignment = TextAnchor.MiddleCenter,
-                padding = new RectOffset(0, 0, 0, 0)
+                padding = new RectOffset(0, 0, 0, 0),
+                /*normal = new GUIStyleState()
+                {
+                    background = Graphics.BlackTexture,
+                    textColor = Color.white
+                },
+                onNormal = new GUIStyleState()
+                {
+                    background = Graphics.BlackTexture,
+                    textColor = Color.white
+                }*/
             });
 
         public static GUIStyle UnicodeLinkStyle => _unicodeLinkStyle ?? (_unicodeLinkStyle =

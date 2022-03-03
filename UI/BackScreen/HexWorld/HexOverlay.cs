@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public abstract class HexOverlay : ITileEx
+    public abstract class HexOverlay : IWorldTile
     {
         private bool _clear = true;
 

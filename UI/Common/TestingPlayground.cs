@@ -45,7 +45,7 @@ namespace DevTools.Humankind.GUITools.UI
                 _switchedToolboxTab = true;
             }
 
-            if (!_didRunOnce)
+            /*if (!_didRunOnce)
             {
                 var graphicsService = SceneInspectorRaycaster.GetCameraGraphicService;
                 var cam = graphicsService.Camera;
@@ -56,7 +56,7 @@ namespace DevTools.Humankind.GUITools.UI
                 Loggr.Log("Camera PATH = " + cam.gameObject.GetPath(), ConsoleColor.Red);
                 
                 _didRunOnce = true;
-            }
+            }*/
         }
 
         public static void PrintVars()
