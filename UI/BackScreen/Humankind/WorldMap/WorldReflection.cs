@@ -8,7 +8,7 @@ using UniverseLib.Runtime.Mono;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public static partial class WorldController
+    public partial class World
     {
 
         private static MethodInfo AsWorldMethod(string name, Type[] parameters = null) =>

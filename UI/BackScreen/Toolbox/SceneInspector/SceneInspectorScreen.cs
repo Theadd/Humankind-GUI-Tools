@@ -12,6 +12,7 @@ using Modding.Humankind.DevTools.DeveloperTools.UI;
 using StyledGUI;
 using UniverseLib;
 using UnityEngine;
+using UniverseLib.Utility;
 
 namespace DevTools.Humankind.GUITools.UI.SceneInspector
 {
@@ -44,6 +45,24 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
         
         private static readonly MethodInfo DestroyTerrainAtMethod =
             typeof(Amplitude.Mercury.Simulation.World).GetMethod("DestroyTerrainAt", R.NonPublicInstance);
+
+        private string text = UniverseLib.Utility.SignatureHighlighter.Parse(typeof(Amplitude.Mercury.Simulation.World),
+            true, DestroyTerrainAtMethod);
+        private string text2 = UniverseLib.Utility.SignatureHighlighter.HighlightMethod(DestroyTerrainAtMethod);
+
+        public static readonly Color StringOrange = new Color(0.83f, 0.61f, 0.52f);
+        public static readonly Color EnumGreen = new Color(0.57f, 0.76f, 0.43f);
+        public static readonly Color KeywordBlue = new Color(0.3f, 0.61f, 0.83f);
+        public static readonly string keywordBlueHex = KeywordBlue.ToHex();
+        public static readonly Color NumberGreen = new Color(0.71f, 0.8f, 0.65f);
+        
+        private string[] colors = new[]
+        {
+            "#a8a8a8", "#92c470", "#3a8d71", "#2df7b2", "#0fba3a", "#9b9b82", "#8d8dc6", "#c266ff", "#b55b02",
+            "#ff8000", "#588075", "#55a38e", "#a6e9e9", "#" + StringOrange.ToHex(), "#" + EnumGreen.ToHex(), "#" + KeywordBlue.ToHex(), "#" + NumberGreen.ToHex(), "#000000"
+        };
+        
+
         
         public void Draw()
         {
@@ -57,10 +76,25 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
                 GUILayout.BeginVertical();
                 _drawOnInspectorGUI = GUILayout.Toggle(_drawOnInspectorGUI, "DRAW ORIGINAL INSPECTOR GUI");
 
-                var text = UniverseLib.Utility.SignatureHighlighter.Parse(typeof(Amplitude.Mercury.Simulation.World), true, DestroyTerrainAtMethod);
-                var text2 = UniverseLib.Utility.SignatureHighlighter.HighlightMethod(DestroyTerrainAtMethod);
+                //var text = UniverseLib.Utility.SignatureHighlighter.Parse(typeof(Amplitude.Mercury.Simulation.World), true, DestroyTerrainAtMethod);
+                //var text2 = UniverseLib.Utility.SignatureHighlighter.HighlightMethod(DestroyTerrainAtMethod);
                 GUILayout.Label(text);
+                GUILayout.Label(text, Styles.TreeInlineTextStyle);
                 GUILayout.Label(text2);
+                GUILayout.Label(text2, Styles.TreeInlineTextStyle);
+                
+                GUILayout.BeginHorizontal();
+                var i = -1;
+                foreach (var color in Colors.Values)
+                {
+                    GUILayout.Label($"<color={color}><size=12> <color=#000000EE>{++i}</color></size></color>", Styles.UnicodeIconStyle, GUILayout.Width(20f), GUILayout.ExpandWidth(false));
+                }
+                GUILayout.EndHorizontal();
+
+                /*for (var i = 0; i < colors.Length - 1; i += 2)
+                {
+                    GUILayout.Label($"<color={colors[i]}FF>HelloWorld</color>.<color={colors[i+1]}FF>AnywhereDestroyAll</color>() ", Styles.TreeInlineTextStyle);
+                }*/
                 
                 GUILayout.EndVertical();
                 GUILayout.Space(30f);
@@ -151,7 +185,11 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
         {
             if (GUILayout.Button(new GUIContent("DEBUG STYLE", "TEST TOOLTIP for debug style button")))
             {
-                Loggr.Log((GUIStyle)"PopupWindow.SectionHeader");
+                Loggr.Log(GUI.skin.label);
+                Loggr.Log(Styles.TreeInlineTextStyle);
+                Loggr.Log(text);
+                Loggr.Log(text2);
+                Loggr.Log(colors);
             }
 
             GUILayout.Label(GUI.tooltip);

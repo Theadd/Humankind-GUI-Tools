@@ -28,8 +28,10 @@ namespace StyledGUI
         public static GUIStyle TreeInlineTextStyle => _treeInlineTextStyle ?? (_treeInlineTextStyle =
             new GUIStyle(StyledGUIUtility.DefaultSkin.FindStyle("Text"))
             {
-                font = StyledGUIUtility.DefaultSkin.label.font,
-                fontSize = 13,
+                // font = StyledGUIUtility.DefaultSkin.label.font,
+                // fontSize = 13,
+                font = null,
+                fontSize = 12,
                 alignment = TextAnchor.MiddleLeft,
                 padding = new RectOffset(4, 0, 0, 0),
                 margin = new RectOffset(0, 0, 0, 0),

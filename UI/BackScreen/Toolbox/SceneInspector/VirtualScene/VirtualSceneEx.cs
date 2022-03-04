@@ -53,9 +53,10 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
             
             GUILayoutTree.BeginRow(_depth);
             {
-                GUILayout.Label(self.Collapsed ? "" : "", Styles.UnicodeIconStyle, GUILayout.Height(21f), GUILayout.Width(25f), GUILayout.ExpandWidth(false));
-                GUILayout.Label("<color=#efe5b0></color>", Styles.UnicodeIconStyle, GUILayout.Height(25f), GUILayout.Width(25f), GUILayout.ExpandWidth(false));
-                GUILayout.BeginHorizontal("<color=#e2c08d>" + self.Name + "</color>", Styles.TreeInlineTextStyle, GUILayout.Height(25f), GUILayout.ExpandWidth(false));
+                GUILayout.Label(self.Collapsed ? "" : "", Styles.UnicodeIconStyle, GUILayout.Height(21f), GUILayout.Width(22f), GUILayout.ExpandWidth(false));
+                GUILayout.Label("<size=15><color=#efe5b0></color></size>", Styles.UnicodeIconStyle, GUILayout.Height(25f), GUILayout.Width(22f), GUILayout.ExpandWidth(false));
+                // GUILayout.BeginHorizontal("<color=#e2c08d>" + self.Name + "</color>", Styles.TreeInlineTextStyle, GUILayout.Height(25f), GUILayout.ExpandWidth(false));
+                GUILayout.BeginHorizontal($"<color={Colors.White}>" + self.Name + "</color>", Styles.TreeInlineTextStyle, GUILayout.Height(25f), GUILayout.ExpandWidth(false));
                 // GUILayout.Space(8f);
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
@@ -77,12 +78,19 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
             {
                 // GUILayout.Label("❖", Styles.UnicodeIconStyle, GUILayout.Height(25f), GUILayout.Width(25f), GUILayout.ExpandWidth(false));
                 // GUILayout.Space(8f);
-                GUILayout.BeginHorizontal("<color=#efe5b0>" + self.TypeName + "</color>", Styles.TreeInlineTextStyle, GUILayout.Height(25f), GUILayout.ExpandWidth(false));
+                GUILayout.BeginHorizontal($"<color={Colors.Aquamarine}>" + self.TypeName + "</color>", Styles.TreeInlineTextStyle, GUILayout.Height(25f), GUILayout.ExpandWidth(false));
                 // GUILayout.Space(38f);
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
                 
                 // BEGIN RIGHT SIDE BUTTONS
+                if (GUILayout.Button("", Styles.InlineUnicodeButtonStyle, GUILayout.Width(25f), GUILayout.Height(25f),
+                    GUILayout.ExpandWidth(false)))
+                {
+                    Loggr.Log(self.Instance);
+                    UniverseLib.Utility.MiscUtility.Inspect(self.Instance);
+                }
+                
                 if (self.Instance is UITransform uiTransform)
                 {
                     var shouldBeVisible = GUILayout.Toggle(uiTransform.VisibleSelf, "☀",
@@ -92,18 +100,18 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
                     if (shouldBeVisible != uiTransform.VisibleSelf)
                         uiTransform.VisibleSelf = shouldBeVisible;
                 }
-                
-                //  (Toggle value of (MonoBehaviour).enabled)
-                var shouldBeEnabled = GUILayout.Toggle(self.Instance.enabled, "",
-                    Styles.InlineUnicodeButtonStyle, GUILayout.Width(25f), GUILayout.Height(25f),
-                    GUILayout.ExpandWidth(false));
+                else
+                {
+                    //  (Toggle value of (MonoBehaviour).enabled)
+                    var shouldBeEnabled = GUILayout.Toggle(self.Instance.enabled, "",
+                        Styles.InlineUnicodeButtonStyle, GUILayout.Width(25f), GUILayout.Height(25f),
+                        GUILayout.ExpandWidth(false));
 
-                if (shouldBeEnabled != self.Instance.enabled)
-                    self.Instance.enabled = shouldBeEnabled;
+                    if (shouldBeEnabled != self.Instance.enabled)
+                        self.Instance.enabled = shouldBeEnabled;
+                }
                 // END RIGHT SIDE BUTTONS
-                
-                
-                
+
             }
             if (GUILayoutTree.EndItem())
             {

@@ -21,6 +21,8 @@
     <DevToolsPATH>..\BepInEx\scripts\Modding.Humankind.DevTools.dll</DevToolsPATH>
     <DevToolsPATH Condition="!Exists('$(DevToolsPATH)')">..\BepInEx\plugins\Modding.Humankind.DevTools.dll</DevToolsPATH>
     <SharedAssetsPATH>..\BepInEx\plugins\DevTools.Humankind.SharedAssets.dll</SharedAssetsPATH>
+    <UniverseLibPATH>..\BepInEx\plugins\UniverseLib.Mono.dll</UniverseLibPATH>
+    <UniverseLibPATH Condition="!Exists('$(UniverseLibPATH)')">..\BepInEx\scripts\UniverseLib.Mono.dll</UniverseLibPATH>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BepInEx">
@@ -32,7 +34,7 @@
       <Private>false</Private>
     </Reference>
     <Reference Include="UniverseLib.Mono">
-      <HintPath>$(HUMANKIND_GAME_PATH)\BepInEx\plugins\UniverseLib.Mono.dll</HintPath>
+      <HintPath>$(UniverseLibPATH)</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="Amplitude.AI">

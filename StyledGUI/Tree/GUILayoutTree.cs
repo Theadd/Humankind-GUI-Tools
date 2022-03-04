@@ -5,8 +5,8 @@ namespace StyledGUI
     public static class GUILayoutTree
     {
         public static float OneLevelDepthSize = 12f;
-        public static RectOffset RowPadding = new RectOffset(4, 0, 0, 0);
-        public static RectOffset ItemPadding = new RectOffset(25, 8, 0, 0);
+        public static RectOffset RowPadding = new RectOffset(2, 0, 0, 0);
+        public static RectOffset ItemPadding = new RectOffset(22, 8, 0, 0);
 
         public static void BeginRow(float depth = 0)
         {
