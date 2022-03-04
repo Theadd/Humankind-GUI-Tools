@@ -1,4 +1,5 @@
-﻿using Amplitude.Mercury.Presentation;
+﻿using System;
+using Amplitude.Mercury.Presentation;
 using Amplitude.Mercury.UI;
 using Amplitude.UI;
 using Amplitude.UI.Interactables;
@@ -88,6 +89,11 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
                     GUILayout.ExpandWidth(false)))
                 {
                     Loggr.Log(self.Instance);
+                    
+                    Loggr.Log("INITIALIZING UniverseLib...", ConsoleColor.DarkMagenta);
+                    UniverseLib.Universe.Init();
+                    Loggr.Log("UniverseLib initialized.", ConsoleColor.Green);
+                    
                     UniverseLib.Utility.MiscUtility.Inspect(self.Instance);
                 }
                 

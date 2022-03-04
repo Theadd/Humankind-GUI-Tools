@@ -1,3 +1,5 @@
+// #ref ${BepInExRoot}/plugins/UniverseLib.Mono.dll
+
 using System;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.DeveloperTools.UI;

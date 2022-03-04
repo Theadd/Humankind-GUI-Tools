@@ -11,7 +11,7 @@ namespace DevTools.Humankind.GUITools
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
     [BepInDependency("Modding.Humankind.DevTools")]
     [BepInDependency("DevTools.Humankind.SharedAssets")]
-    [BepInDependency("com.sinai.universelib")]
+    [BepInDependency("UniverseLib.Mono", BepInDependency.DependencyFlags.SoftDependency)]
     public class GUITools : BaseUnityPlugin 
     {
         // const string PLUGIN_GUID = "DevTools.Humankind.GUITools";

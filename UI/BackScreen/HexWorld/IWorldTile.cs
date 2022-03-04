@@ -1,5 +1,4 @@
 ﻿using System;
-using Amplitude.Mercury.Interop.AI.Data;
 
 namespace DevTools.Humankind.GUITools.UI
 {
