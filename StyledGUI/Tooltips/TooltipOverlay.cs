@@ -75,7 +75,7 @@ namespace DevTools.Humankind.GUITools.UI
         
         private static void Render()
         {
-            using (var areaScope = new GUILayout.AreaScope(new Rect(10, 10, 100, 100)))
+            using (var areaScope = new GUILayout.AreaScope(GlobalRect))
             {
                 GUILayout.Button("Click me");
                 GUILayout.Button("Or me");

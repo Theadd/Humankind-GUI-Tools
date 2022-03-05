@@ -94,20 +94,15 @@ namespace DevTools.Humankind.GUITools.Collections
 
         public override bool Equals(object x)
         {
-            switch (x)
-            {
-                case null:
-                    return this.Handle == 0;
-                case StringHandle StringHandle:
-                    return StringHandle.Handle == this.Handle;
-                case string _:
-                    string str = (string) x;
-                    return str.Length == 0
-                        ? this.Handle == 0
-                        : str.Equals(this.ToString());
-                default:
-                    return false;
-            }
+            if (x == null)
+                return this.Handle == 0;
+                
+            if (x is StringHandle stringHandle)
+                return stringHandle.Handle == this.Handle;
+            
+            // TODO: Should equality with strings be implemented?
+
+            return false;
         }
 
         public bool Equals(StringHandle other) => this.Handle == other.Handle;

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.Collections
 {
-    public interface IMetaContainer : IEquatable<IMetaContainer>
+    public interface IMetaContainer : System.IEquatable<IMetaContainer>
     {
         StringHandle Value { get; set; }
     }
@@ -10,7 +10,14 @@ namespace DevTools.Humankind.GUITools.Collections
     public class MetaContainer : IMetaContainer
     {
         public StringHandle Value { get; set; }
-        
+
+        public MetaContainer(StringHandle value)
+        {
+            Value = value;
+        }
+
+        public MetaContainer() { }
+
         public static implicit operator StringHandle(MetaContainer c) => c.Value;
 
         public static explicit operator MetaContainer(StringHandle s) =>
@@ -27,17 +34,16 @@ namespace DevTools.Humankind.GUITools.Collections
         
         public override bool Equals(object x)
         {
-            switch (x)
-            {
-                case null:
-                    return this.Value.Handle == 0;
-                case IMetaContainer metaContainer:
-                    return metaContainer.Value.Handle == this.Value.Handle;
-                case StringHandle stringHandle:
-                    return stringHandle.Handle == this.Value.Handle;
-                default:
-                    return false;
-            }
+            if (x == null)
+                return this.Value.Handle == 0;
+            
+            if (x is IMetaContainer metaContainer)
+                return metaContainer.Value.Handle == this.Value.Handle;
+            
+            if (x is StringHandle stringHandle)
+                return stringHandle.Handle == this.Value.Handle;
+
+            return false;
         }
         
         public override int GetHashCode() => this.Value.Handle;
