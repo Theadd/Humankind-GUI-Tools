@@ -47,5 +47,7 @@ namespace DevTools.Humankind.GUITools.Collections
         }
         
         public override int GetHashCode() => this.Value.Handle;
+
+        public override string ToString() => Value.ToString();
     }
 }

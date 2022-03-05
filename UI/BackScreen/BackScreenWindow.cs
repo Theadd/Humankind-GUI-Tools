@@ -1,4 +1,5 @@
 ﻿using System;
+using DevTools.Humankind.GUITools.Collections;
 using Modding.Humankind.DevTools;
 using UnityEngine;
 using StyledGUI;
@@ -138,8 +139,6 @@ namespace DevTools.Humankind.GUITools.UI
                     }
                 }
 
-
-
                 GUILayout.EndVertical();
 
                 GUILayout.EndHorizontal();
@@ -159,6 +158,11 @@ namespace DevTools.Humankind.GUITools.UI
                     _hexPainterVisible = _drawOnLiveEditorEnabled &&
                                          LiveEditorMode.EditorMode == EditorModeType.TilePainter;
                 }
+
+                if (GUI.tooltip.Length > 0)
+                    TooltipOverlay.SetTooltip(StringHandle.Parse(GUI.tooltip));
+                
+                TooltipOverlay.Run();
             }
         }
 

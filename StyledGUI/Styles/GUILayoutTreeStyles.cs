@@ -1,5 +1,4 @@
-﻿using Modding.Humankind.DevTools.DeveloperTools.UI;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace StyledGUI
 {
@@ -46,6 +45,5 @@ namespace StyledGUI
                     textColor = WhiteTextColor
                 }
             });
-        
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using DevTools.Humankind.GUITools.Collections;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.DeveloperTools;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
@@ -17,6 +18,9 @@ namespace DevTools.Humankind.GUITools.UI
         public static readonly string CollectiblesTab = "COLLECTIBLES";
         public static readonly string MapMarkerTab = "MAP MARKER";
         public static readonly string InspectorTab = "INSPECTOR";
+        
+        public static readonly StringHandle ZoomIn = new StringHandle(nameof (ZoomIn));
+        public static readonly StringHandle ZoomOut = new StringHandle(nameof (ZoomOut));
 
         private static string[] tabNames =
         {
@@ -69,11 +73,11 @@ namespace DevTools.Humankind.GUITools.UI
                 GUILayout.Space(6f);
 
                 GUI.enabled = ToolboxController.Toolbox.TypeDefinitionsGrid.GridModeChunkSize > 1 && ToolboxController.IsDisplayModeGrid;
-                if (GUILayout.Button("", Styles.UnicodeSymbolButtonStyle, GUILayout.Width(22f), GUILayout.Height(21f), GUILayout.ExpandWidth(false)))
+                if (GUILayout.Button(ZoomIn.ToGUIContent(), Styles.UnicodeSymbolButtonStyle, GUILayout.Width(22f), GUILayout.Height(21f), GUILayout.ExpandWidth(false)))
                     ToolboxController.Toolbox.TypeDefinitionsGrid.GridModeChunkSize -= 1;
                 
                 GUI.enabled = ToolboxController.Toolbox.TypeDefinitionsGrid.GridModeChunkSize < 12 && ToolboxController.IsDisplayModeGrid;
-                if (GUILayout.Button("<size=12> </size>", Styles.UnicodeSymbolButtonStyle, GUILayout.Width(22f), GUILayout.Height(21f), GUILayout.ExpandWidth(false)))
+                if (GUILayout.Button(ZoomOut.ToGUIContent(), Styles.UnicodeSymbolButtonStyle, GUILayout.Width(22f), GUILayout.Height(21f), GUILayout.ExpandWidth(false)))
                     ToolboxController.Toolbox.TypeDefinitionsGrid.GridModeChunkSize += 1;
 
                 GUI.enabled = true;

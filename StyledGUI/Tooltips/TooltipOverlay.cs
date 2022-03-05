@@ -1,65 +1,29 @@
 ﻿using System;
 using Amplitude;
 using DevTools.Humankind.GUITools.Collections;
+using DevTools.Humankind.GUITools.UI.Humankind;
+using Modding.Humankind.DevTools;
+using StyledGUI;
 using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-//    
-//        public StringHandle Value { get; set; }
-//        
-//        public static implicit operator StringHandle(CustomTooltip c) => c.Value;
-//
-//        public static explicit operator CustomTooltip(StringHandle s) =>
-//            new CustomTooltip() { Value = s };
-//        
-//        public static bool operator ==(CustomTooltip x, CustomTooltip y) =>
-//            (x?.Value.Handle ?? 0) == (y?.Value.Handle ?? 0);
-//
-//        public static bool operator !=(CustomTooltip x, CustomTooltip y) =>
-//            (x?.Value.Handle ?? 0) != (y?.Value.Handle ?? 0);
-//
-//        public bool Equals(CustomTooltip other) =>
-//            this.Value.Handle == (other?.Value.Handle ?? 0);
-//        
-//        public override bool Equals(object x)
-//        {
-//            switch (x)
-//            {
-//                case null:
-//                    return this.Value.Handle == 0;
-//                case CustomTooltip customTooltip:
-//                    return customTooltip.Value.Handle == this.Value.Handle;
-//                case StringHandle stringHandle:
-//                    return stringHandle.Handle == this.Value.Handle;
-//                default:
-//                    return false;
-//            }
-//        }
-//        
-//        public override int GetHashCode() => this.Value.Handle;
-//    }
-
-    public class TooltipContainer : MetaContainer
-    {
-        public float DelayIn { get; set; } = 0.35f;
-        public float DelayOut { get; set; } = 1f;
-    }
-
     public static class TooltipOverlay
     {
         private static bool _shouldBeVisible = false;
         private static float t = 0;
+        
         public static bool IsVisible { get; private set; }
 
         // Range is: 0.0f => x <= 1.0f
         public static Vector2 Center { get; set; } = new Vector2(0.5f, 0f);
         public static RectOffset Margin { get; set; } = new RectOffset(300, 300, 200, 200);
         public static Rect GlobalRect { get; private set; } = Rect.zero;
-        public static Vector2 MaxSize { get; set; } = new Vector2(560f, 800f);
+        public static Vector2 Size { get; set; } = new Vector2(560f, 800f);
         
-
         public static TooltipContainer CurrentValue { get; private set; } = new TooltipContainer();
+
+        private static string TooltipValue { get; set; } = string.Empty;
 
         public static void Run()
         {
@@ -75,10 +39,11 @@ namespace DevTools.Humankind.GUITools.UI
         
         private static void Render()
         {
-            using (var areaScope = new GUILayout.AreaScope(GlobalRect))
+            using (var areaScope = new GUILayout.AreaScope(GlobalRect, "TOOLTIP OVERLAY AREA", Styles.TooltipOverlayStyle))
             {
-                GUILayout.Button("Click me");
-                GUILayout.Button("Or me");
+                GUILayout.BeginVertical(Styles.TooltipContainerStyle);
+                GUILayout.Label(TooltipValue);
+                GUILayout.EndVertical();
             }
         }
 
@@ -95,6 +60,13 @@ namespace DevTools.Humankind.GUITools.UI
                 if (CurrentValue != tooltip)
                 {
                     CurrentValue = tooltip;
+                    // TODO: async
+                    TooltipValue = CurrentValue.Value.GetLocalizedDescription();
+
+                    var stored = Storage.Get<ITextContent>(CurrentValue);
+                    
+                    Loggr.Log(stored);
+                    Loggr.Log(JsonUtility.ToJson(stored));
                     UpdateRect();
                 }
             }
@@ -102,8 +74,21 @@ namespace DevTools.Humankind.GUITools.UI
 
         private static void UpdateRect()
         {
+            // TODO: Make use of something similar to RectTransform
             var pivot = new Vector2(Screen.width * Mathf.Clamp01(Center.x),
                 Screen.height * Mathf.Clamp01(Center.y));
+
+            var rect = new Rect(
+                Mathf.Round(pivot.x - (Size.x / 2f)),
+                Mathf.Round(pivot.y - (Size.y / 2f)),
+                Mathf.Round(Size.x),
+                Mathf.Round(Size.y));
+
+            var moveX = (rect.x < Margin.left) ? Margin.left - rect.x : 0;
+            var moveY = (rect.y < Margin.top) ? Margin.top - rect.y : 0;
+            rect.Set(rect.x + moveX, rect.y + moveY, rect.width, rect.height);
+
+            GlobalRect = rect;
         }
     }
 }

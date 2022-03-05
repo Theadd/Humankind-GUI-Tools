@@ -4,16 +4,16 @@ using System.Text;
 
 namespace DevTools.Humankind.GUITools.Collections
 {
-    public interface IStringify
+    public interface IStringIdentity
     {
-        string Stringify();
-        StringHandle Parse(string value);
+        string ToIdentityString();
+        StringHandle FromIdentityString(string value);
     }
 
     /// <summary>
     /// Clone of StaticString's implementation
     /// </summary>
-    public struct StringHandle : IComparable<StringHandle>, IEquatable<StringHandle>, IStringify
+    public struct StringHandle : IComparable<StringHandle>, IEquatable<StringHandle>, IStringIdentity
     {
         private static readonly char IdentityMark = '⁫';
 
@@ -120,9 +120,11 @@ namespace DevTools.Humankind.GUITools.Collections
 
         public override string ToString() => StringHandle.strings[this.Handle];
 
-        public string Stringify() => "" + IdentityMark + Handle;
+        public string ToIdentityString() => "" + IdentityMark + Handle;
 
-        public StringHandle Parse(string value) =>
+        public StringHandle FromIdentityString(string value) => Parse(value);
+
+        public static StringHandle Parse(string value) => 
             (value.Length > 1 && value[0] == IdentityMark &&
              uint.TryParse(value.Substring(1), out var handle))
                 ? new StringHandle((int)handle)

@@ -29,6 +29,7 @@ namespace DevTools.Humankind.GUITools
         public static GameStatsWindow StatsWindow { get; set; }
         public static BackScreenWindow BackScreen { get; set; }
         public static EndGameStatisticsWindow EndGameWindow { get; set; }
+        public static CameraLayersToolWindow CameraLayersWindow { get; set; }
 
         public static void Main()
         {
@@ -111,6 +112,7 @@ namespace DevTools.Humankind.GUITools
             Toolbar?.Close(saveState);
             InGameMenu?.Close();
             BasicWindow?.Close();
+            CameraLayersWindow?.Close();
             // GameInfoWindow?.Close();
             // DistrictPainterWindow?.Close();
             // SettlementWindow?.Close();

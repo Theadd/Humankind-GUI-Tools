@@ -1,9 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Amplitude.Graphics;
+using Amplitude.Mercury.Terrain;
+using Amplitude.Mercury.Terrain.Fx;
 using BepInEx.Configuration;
+using DevTools.Humankind.GUITools.UI.PauseMenu;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.Core;
+using Modding.Humankind.DevTools.DeveloperTools.UI;
 using StyledGUI;
 using UnityEngine;
 
@@ -20,6 +25,20 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 MappedActions.ToggleLiveEditorMode();
             }
+
+            /*if (ViewController.View == ViewType.InGame)
+            {
+                PopupToolWindow.Open<CameraLayersToolWindow>(w => MainTools.CameraLayersWindow = w);
+                
+                var cameraLayers = RenderContextAccess.GetInstance<CameraLayersProvider>(1);
+                Loggr.Log("\n\ncameraLayers:\n");
+                Loggr.Log(cameraLayers);
+
+                var terrainTypeNames = AssetReferenceRepository.Instance()
+                    .StringNames(AssetReferenceRepository.TerrainTypeCriteriaIndex);
+                
+                Loggr.Log(terrainTypeNames);
+            }*/
             
             HumankindDevTools.RegisterAction(
                 new KeyboardShortcut(UnityEngine.KeyCode.End), 
@@ -40,6 +59,9 @@ namespace DevTools.Humankind.GUITools.UI
 
             if (!_didRunOnce && ViewController.View == ViewType.InGame)
             {
+                
+                
+                
                 // Loggr.Log("INITIALIZING UniverseLib...");
                 // UniverseLib.Universe.Init();
                 // Loggr.Log("UniverseLib initialized.");

@@ -317,10 +317,10 @@
       <HintPath>$(HUMANKIND_REFERENCED_LIBRARIES_PATH)\UnityEngine.TextCoreModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
-    <Reference Include="UnityEngine.TextCoreTextEngineModule">
+    <!--<Reference Include="UnityEngine.TextCoreTextEngineModule">
       <HintPath>$(HUMANKIND_REFERENCED_LIBRARIES_PATH)\UnityEngine.TextCoreTextEngineModule.dll</HintPath>
       <Private>false</Private>
-    </Reference>
+    </Reference>-->
     <Reference Include="UnityEngine.TextRenderingModule">
       <HintPath>$(HUMANKIND_REFERENCED_LIBRARIES_PATH)\UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>false</Private>
@@ -337,10 +337,10 @@
       <HintPath>$(HUMANKIND_REFERENCED_LIBRARIES_PATH)\UnityEngine.UI.dll</HintPath>
       <Private>false</Private>
     </Reference>
-    <Reference Include="UnityEngine.UIElementsInputSystemModule">
+    <!--<Reference Include="UnityEngine.UIElementsInputSystemModule">
       <HintPath>$(HUMANKIND_REFERENCED_LIBRARIES_PATH)\UnityEngine.UIElementsInputSystemModule.dll</HintPath>
       <Private>false</Private>
-    </Reference>
+    </Reference>-->
     <Reference Include="UnityEngine.UIElementsModule">
       <HintPath>$(HUMANKIND_REFERENCED_LIBRARIES_PATH)\UnityEngine.UIElementsModule.dll</HintPath>
       <Private>false</Private>
