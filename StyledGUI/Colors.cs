@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using UnityEngine;
-using UniverseLib.Utility;
 
 namespace StyledGUI
 {
