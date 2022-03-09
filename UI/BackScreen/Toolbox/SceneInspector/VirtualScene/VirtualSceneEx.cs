@@ -35,7 +35,7 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
                         entity.Render();
                         if (renderer.CaptureOnMouseHover)
                         {
-                            var r = GUILayoutUtility.GetLastRect();
+                            var r = GUILayoutTree.LastItemRect;
                             if (Event.current.mousePosition.y < r.y + r.height && r.Contains(Event.current.mousePosition))
                                 renderer.OnMouseHoverComponent(entity);
                         }

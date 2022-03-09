@@ -7,6 +7,7 @@ namespace StyledGUI
         public static float OneLevelDepthSize = 12f;
         public static RectOffset RowPadding = new RectOffset(2, 0, 0, 0);
         public static RectOffset ItemPadding = new RectOffset(22, 8, 0, 0);
+        public static Rect LastItemRect { get; set; } = Rect.zero;
 
         public static void BeginRow(float depth = 0)
         {
@@ -52,10 +53,12 @@ namespace StyledGUI
             if (ItemPadding.bottom != 0)
                 GUILayout.Space(ItemPadding.bottom);
             GUILayout.EndVertical();
-            
+
+            LastItemRect = GUILayoutUtility.GetLastRect();
+                
             if (Event.current.type == EventType.MouseUp)
             {
-                if (GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition))
+                if (LastItemRect.Contains(Event.current.mousePosition))
                     return true;
             }
 

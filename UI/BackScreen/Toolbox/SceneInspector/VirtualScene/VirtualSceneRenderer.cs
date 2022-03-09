@@ -1,5 +1,7 @@
-﻿using Amplitude.Mercury.Presentation;
+﻿using System;
+using Amplitude.Mercury.Presentation;
 using Amplitude.UI;
+using Modding.Humankind.DevTools;
 using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI.SceneInspector
@@ -31,7 +33,7 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
             
             CaptureOnMouseHover = RenderHexOverlayOnWorldPositionableComponents
                                   && Event.current.type == EventType.Repaint
-                                  && InGameUIController.IsMouseCovered
+                                  // && InGameUIController.IsMouseCovered
                                   && pointer.y >= r.y
                                   && pointer.x >= r.x
                                   && pointer.x <= r.x + r.width;
@@ -51,7 +53,6 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
         public void OnMouseHoverComponent(VirtualComponent virtualComponent)
         {
             var positionable = virtualComponent.Instance.gameObject.GetComponent<IWorldPositionable>();
-
             if (positionable is PresentationEntity entity)
             {
                 SceneInspectorController.HexPainter.IsVisible = true;
