@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public partial class DataTypeDefinitionsToolbox
+    public partial class TabbedToolbox
     {
         public BackScreenWindow Window { get; set; }
         public DataTypeDefinitionsGrid TypeDefinitionsGrid { get; set; }

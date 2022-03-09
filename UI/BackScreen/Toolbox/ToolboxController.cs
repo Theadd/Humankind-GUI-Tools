@@ -10,7 +10,7 @@ namespace DevTools.Humankind.GUITools.UI
     public static class ToolboxController
     {
         public static Rect ToolboxRect { get; private set; } = Rect.zero;
-        public static DataTypeDefinitionsToolbox Toolbox { get; set; }
+        public static TabbedToolbox Toolbox { get; set; }
         public static KeyboardShortcut ToolboxPreviewKey { get; set; } = new KeyboardShortcut(KeyCode.LeftControl);
         public static KeyboardShortcut StickedToolboxKey { get; set; } = new KeyboardShortcut(KeyCode.Space, KeyCode.LeftControl);
         public static bool IsVisible { get; private set; } = false;
@@ -27,7 +27,7 @@ namespace DevTools.Humankind.GUITools.UI
             
             DataTypeStore.Rebuild();
             
-            Toolbox = new DataTypeDefinitionsToolbox()
+            Toolbox = new TabbedToolbox()
             {
                 Window = window,
                 TypeDefinitionsGrid = new DataTypeDefinitionsGrid()
