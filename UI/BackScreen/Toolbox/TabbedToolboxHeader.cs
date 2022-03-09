@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public partial class DataTypeDefinitionsToolbox
+    public partial class TabbedToolbox
     {
         public static readonly string DistrictsTab = "DISTRICTS";
         public static readonly string UnitsTab = "UNITS";

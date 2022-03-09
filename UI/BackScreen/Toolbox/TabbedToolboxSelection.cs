@@ -6,7 +6,7 @@ using StyledGUI.VirtualGridElements;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public partial class DataTypeDefinitionsToolbox
+    public partial class TabbedToolbox
     {
         private bool _drawSelectionPreview = false;
         private ICell _selectedCell = null;
