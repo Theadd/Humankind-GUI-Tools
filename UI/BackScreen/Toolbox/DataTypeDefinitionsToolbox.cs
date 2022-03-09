@@ -25,6 +25,9 @@ namespace DevTools.Humankind.GUITools.UI
         
         public void Draw(Rect targetRect)
         {
+            if (_needsRebuild)
+                Rebuild();
+            
             GUILayout.BeginArea(targetRect);
             {
                 if ((int)TypeDefinitionsGrid.FixedWidth != (int)(targetRect.width - VScrollbarWidth - ScrollViewPadding.left - ScrollViewPadding.right))

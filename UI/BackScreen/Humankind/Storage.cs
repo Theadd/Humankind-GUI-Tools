@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Amplitude.Framework;
-using Amplitude.UI;
 using DevTools.Humankind.GUITools.Collections;
 using StyledGUI;
 
@@ -17,12 +15,27 @@ namespace DevTools.Humankind.GUITools.UI.Humankind
             new TextContent()
             {
                 Name = DataTypeDefinitionsToolbox.ZoomIn, Title = "",
-                Description = $"<size=22><b><color={Colors.LimeGreen}>Zoom In </color></b></size>\n\nIncrease the size of displayed images in all tabs with similar grid lists."
+                Description = $"<size=18><b><color={Colors.Aquamarine}>Zoom In </color></b></size>\n\nIncrease the size of displayed images in all tabs with similar grid lists."
             },
             new TextContent()
             {
                 Name = DataTypeDefinitionsToolbox.ZoomOut, Title = "<size=12> </size>",
-                Description = $"<size=22><b><color={Colors.LimeGreen}>Zoom Out <size=12></size></color></b></size>\n\nReduce the size of displayed images in all tabs with similar grid lists."
+                Description = $"<size=18><b><color={Colors.Aquamarine}>Zoom Out <size=12></size></color></b></size>\n\nReduce the size of displayed images in all tabs with similar grid lists."
+            },
+            new TextContent()
+            {
+                Name = DataTypeDefinitionsToolbox.RebuildDataTypes, Title = " <size=12> </size>",
+                Description = $"<size=18><b><color={Colors.Aquamarine}>Rebuild displayed definitions <size=12> </size></color></b></size>\n\nReloads content from database definitions."
+            },
+            new TextContent()
+            {
+                Name = DataTypeDefinitionsToolbox.ViewModeList, Title = "",
+                Description = $"<size=18><b><color={Colors.Aquamarine}>List Display Mode </color></b></size>\n\nDisplay content in a List View."
+            },
+            new TextContent()
+            {
+                Name = DataTypeDefinitionsToolbox.ViewModeGrid, Title = "<size=16></size>",
+                Description = $"<size=18><b><color={Colors.Aquamarine}>Grid Display Mode <size=16></size></color></b></size>\n\nDisplay content in a Grid View."
             },
         });
 

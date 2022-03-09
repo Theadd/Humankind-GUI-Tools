@@ -1,5 +1,4 @@
 // #ref ${BepInExRoot}/plugins/UniverseLib.Mono.dll
-
 using System;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
@@ -18,7 +17,7 @@ namespace DevTools.Humankind.GUITools
 
         public static InGameMenuWindow InGameMenu { get; set; }
 
-        public static BasicToolWindow BasicWindow { get; set; }
+        // public static BasicToolWindow BasicWindow { get; set; }
 
         // public static GameInfoToolWindow GameInfoWindow { get; set; }
         // public static DistrictPainterToolWindow DistrictPainterWindow { get; set; }
@@ -29,7 +28,7 @@ namespace DevTools.Humankind.GUITools
         public static GameStatsWindow StatsWindow { get; set; }
         public static BackScreenWindow BackScreen { get; set; }
         public static EndGameStatisticsWindow EndGameWindow { get; set; }
-        public static CameraLayersToolWindow CameraLayersWindow { get; set; }
+        // public static CameraLayersToolWindow CameraLayersWindow { get; set; }
 
         public static void Main()
         {
@@ -46,8 +45,8 @@ namespace DevTools.Humankind.GUITools
             PopupToolWindow.Open<MainToolbar>(w => Toolbar = w);
             PopupToolWindow.Open<InGameMenuWindow>(w => InGameMenu = w);
             
-            if (IsDebugModeEnabled && IsTestingPlaygroundEnabled)
-                TestingPlayground.Run();
+            // if (IsDebugModeEnabled && IsTestingPlaygroundEnabled)
+            //    TestingPlayground.Run();
         }
         
         public static void ToggleHideToolbarWindow() => GlobalSettings.HideToolbarWindow.Value = !GlobalSettings.HideToolbarWindow.Value;
@@ -57,7 +56,7 @@ namespace DevTools.Humankind.GUITools
 
         // public static void CancelGodMode() => AccessTools.PropertySetter(typeof(GodMode), "Enabled")?.Invoke(null, new object[] { false });
 
-        public static void ToggleBasicToolWindow()
+        /*public static void ToggleBasicToolWindow()
         {
             if (BasicWindow == null)
             {
@@ -67,7 +66,7 @@ namespace DevTools.Humankind.GUITools
 
             BasicWindow.Close();
             BasicWindow = null;
-        }
+        }*/
 
         public static void ToggleGameOverviewWindow()
         {
@@ -111,8 +110,8 @@ namespace DevTools.Humankind.GUITools
             WireRenderer.Detach();
             Toolbar?.Close(saveState);
             InGameMenu?.Close();
-            BasicWindow?.Close();
-            CameraLayersWindow?.Close();
+            // BasicWindow?.Close();
+            // CameraLayersWindow?.Close();
             // GameInfoWindow?.Close();
             // DistrictPainterWindow?.Close();
             // SettlementWindow?.Close();
@@ -133,10 +132,12 @@ namespace DevTools.Humankind.GUITools
 
             Loggr.Log(string.Join("\n", files), ConsoleColor.DarkYellow);*/
 
+            
+            
             // When true, draws a colored border for all UIOverlays backing a FloatingToolWindow derived class
-            UIOverlay.DEBUG_DRAW_OVERLAY = false;
+            UIOverlay.DEBUG_DRAW_OVERLAY = true;
             // When not true, adds more verbosity to console output
-            Modding.Humankind.DevTools.DevTools.QuietMode = true;
+            Modding.Humankind.DevTools.DevTools.QuietMode = false;
         }
     }
 }

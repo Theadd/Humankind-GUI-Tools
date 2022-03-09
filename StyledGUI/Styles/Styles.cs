@@ -14,6 +14,8 @@ namespace StyledGUI
             Graphics.CreateSinglePixelTexture2D(new Color(0, 0, 0, 0.35f));
         public static Texture2D Alpha50BlackPixel { get; set; } =
             Graphics.CreateSinglePixelTexture2D(new Color(0, 0, 0, 0.5f));
+        public static Texture2D Alpha85BlackPixel { get; set; } =
+            Graphics.CreateSinglePixelTexture2D(new Color(0, 0, 0, 0.85f));
         public static Texture2D WhitePixel { get; set; } =
             Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 1f));
         public static Texture2D ButtonNormalPixel { get; set; } =

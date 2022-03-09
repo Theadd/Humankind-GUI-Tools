@@ -9,7 +9,7 @@ namespace DevTools.Humankind.GUITools.Collections
     
     public class MetaContainer : IMetaContainer
     {
-        public StringHandle Value { get; set; }
+        public StringHandle Value { get; set; } = StringHandle.Empty;
 
         public MetaContainer(StringHandle value)
         {

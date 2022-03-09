@@ -1,14 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Amplitude.Graphics;
-using Amplitude.Mercury.Terrain;
-using Amplitude.Mercury.Terrain.Fx;
 using BepInEx.Configuration;
-using DevTools.Humankind.GUITools.UI.PauseMenu;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.Core;
-using Modding.Humankind.DevTools.DeveloperTools.UI;
 using StyledGUI;
 using UnityEngine;
 

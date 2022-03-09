@@ -128,6 +128,8 @@ namespace DevTools.Humankind.GUITools.UI
             InnerUITransform = go.AddComponent<UITransform>();
             InnerControl = go.AddComponent<UIButton>();
             InnerControl.LoadIfNecessary();
+            InnerControl.BlockedEvents =
+                UIEventBlockingMask.All & ~UIEventBlockingMask.MouseHover;
             
             InnerCanvas = go.AddComponent<SquircleBackgroundWidget>();
             InnerCanvas.BackgroundColor = BackgroundColor;

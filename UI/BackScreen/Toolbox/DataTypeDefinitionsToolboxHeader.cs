@@ -21,6 +21,15 @@ namespace DevTools.Humankind.GUITools.UI
         
         public static readonly StringHandle ZoomIn = new StringHandle(nameof (ZoomIn));
         public static readonly StringHandle ZoomOut = new StringHandle(nameof (ZoomOut));
+        public static readonly StringHandle RebuildDataTypes = new StringHandle(nameof (RebuildDataTypes));
+        public static readonly StringHandle ViewModeList = new StringHandle(nameof (ViewModeList));
+        public static readonly StringHandle ViewModeGrid = new StringHandle(nameof (ViewModeGrid));
+
+        private static GUIContent ZoomInGUIContent;
+        private static GUIContent ZoomOutGUIContent;
+        private static GUIContent RebuildDataTypesGUIContent;
+        private static GUIContent ViewModeListGUIContent;
+        private static GUIContent ViewModeGridGUIContent;
 
         private static string[] tabNames =
         {
@@ -31,13 +40,23 @@ namespace DevTools.Humankind.GUITools.UI
             InspectorTab,
         };
         
-        private List<Vector2> _storedScrollViewPositions = tabNames.Select(n => Vector2.zero).ToList();
+        private static List<Vector2> _storedScrollViewPositions = tabNames.Select(n => Vector2.zero).ToList();
 
-        private string[] displayModeIconNames =
+        private static GUIContent[] displayModeIconNames;
+
+        private static bool _needsRebuild = true;
+
+        public static void Rebuild()
         {
-            "", 
-            "<size=16></size>"
-        };
+            _storedScrollViewPositions = tabNames.Select(n => Vector2.zero).ToList();
+            ZoomInGUIContent = ZoomIn.ToGUIContent("");
+            ZoomOutGUIContent = ZoomOut.ToGUIContent("<size=12> </size>");
+            RebuildDataTypesGUIContent = RebuildDataTypes.ToGUIContent(" <size=12> </size>");
+            ViewModeListGUIContent = ViewModeList.ToGUIContent("");
+            ViewModeGridGUIContent = ViewModeGrid.ToGUIContent("<size=16></size>");
+            displayModeIconNames = new[]
+                { ViewModeListGUIContent, ViewModeGridGUIContent };
+        }
         
         private void DrawToolboxHeader()
         {
@@ -53,7 +72,7 @@ namespace DevTools.Humankind.GUITools.UI
 
                 GUI.enabled = true;
                 
-                if (GUILayout.Button(" <size=12> </size>", Styles.UnicodeSymbolButtonStyle, GUILayout.Width(22f), GUILayout.Height(21f), GUILayout.ExpandWidth(false)))
+                if (GUILayout.Button(RebuildDataTypesGUIContent, Styles.UnicodeSymbolButtonStyle, GUILayout.Width(22f), GUILayout.Height(21f), GUILayout.ExpandWidth(false)))
                 {
                     DataTypeStore.Rebuild();
                     TypeDefinitionsGrid.Snapshot = new DataTypeStoreSnapshot()
@@ -73,11 +92,11 @@ namespace DevTools.Humankind.GUITools.UI
                 GUILayout.Space(6f);
 
                 GUI.enabled = ToolboxController.Toolbox.TypeDefinitionsGrid.GridModeChunkSize > 1 && ToolboxController.IsDisplayModeGrid;
-                if (GUILayout.Button(ZoomIn.ToGUIContent(), Styles.UnicodeSymbolButtonStyle, GUILayout.Width(22f), GUILayout.Height(21f), GUILayout.ExpandWidth(false)))
+                if (GUILayout.Button(ZoomInGUIContent, Styles.UnicodeSymbolButtonStyle, GUILayout.Width(22f), GUILayout.Height(21f), GUILayout.ExpandWidth(false)))
                     ToolboxController.Toolbox.TypeDefinitionsGrid.GridModeChunkSize -= 1;
                 
                 GUI.enabled = ToolboxController.Toolbox.TypeDefinitionsGrid.GridModeChunkSize < 12 && ToolboxController.IsDisplayModeGrid;
-                if (GUILayout.Button(ZoomOut.ToGUIContent(), Styles.UnicodeSymbolButtonStyle, GUILayout.Width(22f), GUILayout.Height(21f), GUILayout.ExpandWidth(false)))
+                if (GUILayout.Button(ZoomOutGUIContent, Styles.UnicodeSymbolButtonStyle, GUILayout.Width(22f), GUILayout.Height(21f), GUILayout.ExpandWidth(false)))
                     ToolboxController.Toolbox.TypeDefinitionsGrid.GridModeChunkSize += 1;
 
                 GUI.enabled = true;

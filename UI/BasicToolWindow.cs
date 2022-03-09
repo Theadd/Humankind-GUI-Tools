@@ -1,10 +1,9 @@
+/*
+
 using System;
 using System.Reflection;
 using Amplitude;
 using Amplitude.Framework;
-using Amplitude.Graphics;
-using Amplitude.Mercury;
-using Amplitude.Mercury.AI;
 using Amplitude.Mercury.Audio;
 using UnityEngine;
 using Modding.Humankind.DevTools;
@@ -12,16 +11,8 @@ using Modding.Humankind.DevTools.Core;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
 using Amplitude.Mercury.Interop;
 using Amplitude.Mercury.Presentation;
-using Amplitude.Mercury.Terrain;
-using Amplitude.Mercury.UI;
 using Amplitude.UI;
-using Amplitude.Framework;
-using Amplitude.Framework.Overlay;
-using Amplitude.Mercury.Audio;
-using Amplitude.Wwise.Audio;
-using System.Reflection;
 using Amplitude.Mercury.Input;
-using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI
 {
@@ -101,7 +92,7 @@ namespace DevTools.Humankind.GUITools.UI
                     /*Services.GetService<Amplitude.Wwise.Audio.IAudioModulesService>().SendAudioEvent(staticString, new object[]
                     {
                         city.SimulationEntityGUID
-                    });*/
+                    });*-/
                 }
 
                 DrawValue("rotationX", ActionController.FreeCamera.FreeCam?.rotationX.ToString());
@@ -229,7 +220,7 @@ namespace DevTools.Humankind.GUITools.UI
             for (int index = 0; index < fields.Length; ++index)
                 BasicToolWindow.reflectedEventNames[index] = (StaticString) fields[index].GetValue((object) null);
         }
-        */
+        *-/
 
         [SerializeField] private ushort inputFilterGroup = 13;
         [SerializeField] private ushort inputFilterPrority = 1;
@@ -294,3 +285,4 @@ namespace DevTools.Humankind.GUITools.UI
         }
     }
 }
+*/

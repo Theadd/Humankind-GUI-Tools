@@ -19,9 +19,10 @@ namespace DevTools.Humankind.GUITools.UI
         public static Vector2 Center { get; set; } = new Vector2(0.5f, 0f);
         public static RectOffset Margin { get; set; } = new RectOffset(300, 300, 200, 200);
         public static Rect GlobalRect { get; private set; } = Rect.zero;
-        public static Vector2 Size { get; set; } = new Vector2(560f, 800f);
-        
-        public static TooltipContainer CurrentValue { get; private set; } = new TooltipContainer();
+        public static Vector2 Size { get; set; } = new Vector2(480f, 800f);
+
+        public static TooltipContainer CurrentValue { get; private set; } =
+            TooltipContainer.Empty;
 
         private static string TooltipValue { get; set; } = string.Empty;
 
@@ -39,31 +40,33 @@ namespace DevTools.Humankind.GUITools.UI
         
         private static void Render()
         {
-            using (var areaScope = new GUILayout.AreaScope(GlobalRect, "TOOLTIP OVERLAY AREA", Styles.TooltipOverlayStyle))
+            using (var areaScope = new GUILayout.AreaScope(GlobalRect, "ⓘ", Styles.TooltipOverlayStyle))
             {
-                GUILayout.BeginVertical(Styles.TooltipContainerStyle);
+                GUILayout.BeginVertical("ⓘ", Styles.TooltipContainerStyle);
                 GUILayout.Label(TooltipValue);
                 GUILayout.EndVertical();
             }
         }
 
-        public static void SetTooltip(StringHandle tooltip) =>
-            SetTooltip((TooltipContainer) tooltip);
+        // public static void SetTooltip(StringHandle tooltip) =>
+        //     SetTooltip((TooltipContainer) tooltip);
 
-        public static void SetTooltip(TooltipContainer tooltip)
-        {
-            if (tooltip != (TooltipContainer) null)
+        public static void SetTooltip(StringHandle tooltip)
+        { 
+            if (tooltip != StringHandle.Empty)
             {
                 t = 0;
                 _shouldBeVisible = true;
 
-                if (CurrentValue != tooltip)
+                if (CurrentValue.Value != tooltip)
                 {
-                    CurrentValue = tooltip;
+                    Loggr.Log("AAA");
+                    CurrentValue = new TooltipContainer(tooltip);
+                    Loggr.Log("EEE");
                     // TODO: async
-                    TooltipValue = CurrentValue.Value.GetLocalizedDescription();
+                    TooltipValue = tooltip.GetLocalizedDescription();
 
-                    var stored = Storage.Get<ITextContent>(CurrentValue);
+                    var stored = Storage.Get<TextContent>(CurrentValue.Value);
                     
                     Loggr.Log(stored);
                     Loggr.Log(JsonUtility.ToJson(stored));

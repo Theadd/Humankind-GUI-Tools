@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
 using BepInEx;
-using Modding.Humankind.DevTools;
-using UnityEngine;
 
 namespace DevTools.Humankind.GUITools
 {
@@ -18,7 +14,7 @@ namespace DevTools.Humankind.GUITools
 
         private void Awake()
         {
-            MainTools.IsDebugModeEnabled = false;
+            MainTools.IsDebugModeEnabled = true;
             MainTools.Main();
         }
 
