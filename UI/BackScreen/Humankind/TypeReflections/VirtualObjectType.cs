@@ -29,7 +29,8 @@ namespace DevTools.Humankind.GUITools.TypeReflections
     {
         public static IEnumerable<VirtualMember> GetVirtualMembers(this VirtualObjectType self)
         {
-            IEnumerable<Type> baseTypes = TypeExtensions.GetAllBaseTypes(self.Type);
+            throw new NotImplementedException();
+            IEnumerable<Type> baseTypes = new List<Type>(); // TODO: TypeExtensions.GetAllBaseTypes(self.Type);
 
             var members = baseTypes.SelectMany(t =>
                 t.GetExtensionMethods().Select(m =>

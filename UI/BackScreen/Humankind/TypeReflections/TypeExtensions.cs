@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Modding.Humankind.DevTools;
-using UniverseLib;
+// using UniverseLib;
 
 namespace DevTools.Humankind.GUITools.TypeReflections
 {
@@ -15,11 +15,11 @@ namespace DevTools.Humankind.GUITools.TypeReflections
         private static readonly MethodInfo[] NoMethods = new MethodInfo[]{};
         private static readonly IEnumerable<Type> NoTypes = new Type[]{};
 
-        public static IEnumerable<Type> GetAllBaseTypes(object obj) =>
+        /*public static IEnumerable<Type> GetAllBaseTypes(object obj) =>
             obj != null ? GetAllBaseTypes(obj.GetActualType()) : NoTypes;
 
         public static IEnumerable<Type> GetAllBaseTypes(Type t) =>
-            ReflectionUtility.GetAllBaseTypes(t).Concat(t.GetInterfaces());
+            ReflectionUtility.GetAllBaseTypes(t).Concat(t.GetInterfaces());*/
 
         /// <summary>
         /// This Methode extends the System.Type-type to get all extended methods. It searches hereby in all assemblies which are known by the current AppDomain.

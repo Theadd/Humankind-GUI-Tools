@@ -2,9 +2,7 @@
 using System.Reflection;
 using Amplitude;
 using Amplitude.Mercury;
-using UniverseLib;
-using UniverseLib.Utility;
-using UniverseLib.Runtime.Mono;
+using HarmonyLib;
 
 namespace DevTools.Humankind.GUITools.UI
 {
@@ -12,7 +10,7 @@ namespace DevTools.Humankind.GUITools.UI
     {
 
         private static MethodInfo AsWorldMethod(string name, Type[] parameters = null) =>
-            typeof(Amplitude.Mercury.Simulation.World).GetMethod(name, ReflectionUtility.FLAGS, null,
+            typeof(Amplitude.Mercury.Simulation.World).GetMethod(name, AccessTools.all, null,
                 parameters ?? new Type[] { }, null);
 
         private static MethodInfo _destroyTerrainAt =

@@ -1,9 +1,5 @@
-﻿using System;
-using Amplitude.Mercury.Presentation;
-using Amplitude.Mercury.UI;
+﻿using Amplitude.Mercury.Presentation;
 using Amplitude.UI;
-using Amplitude.UI.Interactables;
-using Amplitude.UI.Renderers;
 using Modding.Humankind.DevTools;
 using StyledGUI;
 using UnityEngine;
@@ -89,12 +85,10 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
                     GUILayout.ExpandWidth(false)))
                 {
                     Loggr.Log(self.Instance);
-                    
-                    Loggr.Log("INITIALIZING UniverseLib...", ConsoleColor.DarkMagenta);
-                    UniverseLib.Universe.Init();
-                    Loggr.Log("UniverseLib initialized.", ConsoleColor.Green);
-                    
-                    UniverseLib.Utility.MiscUtility.Inspect(self.Instance);
+
+                    // TODO: Open in UnityExplorer's Inspector
+                    // UniverseLib.Universe.Init();
+                    // UniverseLib.Utility.MiscUtility.Inspect(self.Instance);
                 }
                 
                 if (self.Instance is UITransform uiTransform)

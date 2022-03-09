@@ -1,4 +1,4 @@
-// #ref ${BepInExRoot}/plugins/UniverseLib.Mono.dll
+// IGNORE, SKIPPING CURRENT RELEASE #--ref ${BepInExRoot}/plugins/UniverseLib.Mono.dll
 using System;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
@@ -107,7 +107,9 @@ namespace DevTools.Humankind.GUITools
         public static void Unload() => Unload(true);
 
         public static void Unload(bool saveState = false) {
-            WireRenderer.Detach();
+            if (FeatureFlags.WireRenderer)
+                WireRenderer.Detach();
+            
             Toolbar?.Close(saveState);
             InGameMenu?.Close();
             // BasicWindow?.Close();
@@ -132,12 +134,10 @@ namespace DevTools.Humankind.GUITools
 
             Loggr.Log(string.Join("\n", files), ConsoleColor.DarkYellow);*/
 
-            
-            
             // When true, draws a colored border for all UIOverlays backing a FloatingToolWindow derived class
-            UIOverlay.DEBUG_DRAW_OVERLAY = true;
+            UIOverlay.DEBUG_DRAW_OVERLAY = false;
             // When not true, adds more verbosity to console output
-            Modding.Humankind.DevTools.DevTools.QuietMode = false;
+            Modding.Humankind.DevTools.DevTools.QuietMode = FeatureFlags.QuietMode;
         }
     }
 }

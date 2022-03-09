@@ -2,17 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Amplitude.Extensions;
 using Amplitude.Mercury.Presentation;
-using Amplitude.Mercury.Sandbox;
 using Amplitude.UI;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.Core;
-using Modding.Humankind.DevTools.DeveloperTools.UI;
 using StyledGUI;
-using UniverseLib;
 using UnityEngine;
-using UniverseLib.Utility;
 
 namespace DevTools.Humankind.GUITools.UI.SceneInspector
 {
@@ -43,7 +38,7 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
             _initialized = true;
         }
         
-        private static readonly MethodInfo DestroyTerrainAtMethod =
+        /*private static readonly MethodInfo DestroyTerrainAtMethod =
             typeof(Amplitude.Mercury.Simulation.World).GetMethod("DestroyTerrainAt", R.NonPublicInstance);
 
         private string text = UniverseLib.Utility.SignatureHighlighter.Parse(typeof(Amplitude.Mercury.Simulation.World),
@@ -60,7 +55,7 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
         {
             "#a8a8a8", "#92c470", "#3a8d71", "#2df7b2", "#0fba3a", "#9b9b82", "#8d8dc6", "#c266ff", "#b55b02",
             "#ff8000", "#588075", "#55a38e", "#a6e9e9", "#" + StringOrange.ToHex(), "#" + EnumGreen.ToHex(), "#" + KeywordBlue.ToHex(), "#" + NumberGreen.ToHex(), "#000000"
-        };
+        };*/
         
 
         
@@ -78,7 +73,7 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
 
                 //var text = UniverseLib.Utility.SignatureHighlighter.Parse(typeof(Amplitude.Mercury.Simulation.World), true, DestroyTerrainAtMethod);
                 //var text2 = UniverseLib.Utility.SignatureHighlighter.HighlightMethod(DestroyTerrainAtMethod);
-                GUILayout.Label(text);
+                /*GUILayout.Label(text);
                 GUILayout.Label(text, Styles.TreeInlineTextStyle);
                 GUILayout.Label(text2);
                 GUILayout.Label(text2, Styles.TreeInlineTextStyle);
@@ -89,7 +84,7 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
                 {
                     GUILayout.Label($"<color={color}><size=12> <color=#000000EE>{++i}</color></size></color>", Styles.UnicodeIconStyle, GUILayout.Width(20f), GUILayout.ExpandWidth(false));
                 }
-                GUILayout.EndHorizontal();
+                GUILayout.EndHorizontal();*/
 
                 /*for (var i = 0; i < colors.Length - 1; i += 2)
                 {
@@ -187,9 +182,6 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
             {
                 Loggr.Log(GUI.skin.label);
                 Loggr.Log(Styles.TreeInlineTextStyle);
-                Loggr.Log(text);
-                Loggr.Log(text2);
-                Loggr.Log(colors);
             }
 
             GUILayout.Label(GUI.tooltip);

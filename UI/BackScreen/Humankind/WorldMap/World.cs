@@ -5,11 +5,6 @@ using Amplitude.Mercury.Simulation;
 using Amplitude.Mercury.Interop.AI;
 using Amplitude.Mercury.Interop.AI.Data;
 
-using UniverseLib;
-using UniverseLib.Utility;
-using UniverseLib.Runtime.Mono;
-
-
 namespace DevTools.Humankind.GUITools.UI
 {
     public partial class World
