@@ -12,6 +12,7 @@ namespace DevTools.Humankind.GUITools.UI
     {
         private static bool _shouldBeVisible = false;
         private static float t = 0;
+        private static float dt = 0;
         
         public static bool IsVisible { get; private set; }
 
@@ -31,8 +32,9 @@ namespace DevTools.Humankind.GUITools.UI
             if (IsVisible)
                 Render();
 
-            _shouldBeVisible = t < 1f;
+            _shouldBeVisible = t < 1f && dt >= 1f;
             t += Time.deltaTime / CurrentValue.DelayOut;
+            dt += Time.deltaTime / CurrentValue.DelayIn;
 
             if (Event.current.type == EventType.Repaint)
                 IsVisible = _shouldBeVisible;
@@ -60,16 +62,16 @@ namespace DevTools.Humankind.GUITools.UI
 
                 if (CurrentValue.Value != tooltip)
                 {
-                    Loggr.Log("AAA");
+                    dt = 0;
                     CurrentValue = new TooltipContainer(tooltip);
-                    Loggr.Log("EEE");
+                    
                     // TODO: async
                     TooltipValue = tooltip.GetLocalizedDescription();
 
                     var stored = Storage.Get<TextContent>(CurrentValue.Value);
                     
-                    Loggr.Log(stored);
-                    Loggr.Log(JsonUtility.ToJson(stored));
+                    // Loggr.Log(stored);
+                    // Loggr.Log(JsonUtility.ToJson(stored));
                     UpdateRect();
                 }
             }
