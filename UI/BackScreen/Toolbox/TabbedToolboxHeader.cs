@@ -31,14 +31,14 @@ namespace DevTools.Humankind.GUITools.UI
         private static GUIContent ViewModeListGUIContent;
         private static GUIContent ViewModeGridGUIContent;
 
-        private static string[] tabNames =
+        private static string[] tabNames = (new string[]
         {
             DistrictsTab,
             UnitsTab, 
             CollectiblesTab, 
             MapMarkerTab, 
             InspectorTab,
-        };
+        }).Where(t => !(!FeatureFlags.MapMarker && t == MapMarkerTab)).ToArray();
         
         private static List<Vector2> _storedScrollViewPositions = tabNames.Select(n => Vector2.zero).ToList();
 

@@ -48,7 +48,7 @@ namespace DevTools.Humankind.GUITools.UI
         {
             if (!_switchedToolboxTab && LiveEditorMode.Enabled && ToolboxController.Toolbox != null)
             {
-                ToolboxController.Toolbox.SetActiveTab(4);
+                ToolboxController.Toolbox.SetActiveTab(3);
                 _switchedToolboxTab = true;
             }
 
