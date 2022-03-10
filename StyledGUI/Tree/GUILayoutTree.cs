@@ -2,29 +2,29 @@
 
 namespace StyledGUI
 {
-    public static class GUILayoutTree
+    public static class Styled
     {
-        public static float OneLevelDepthSize = 12f;
-        public static RectOffset RowPadding = new RectOffset(2, 0, 0, 0);
-        public static RectOffset ItemPadding = new RectOffset(22, 8, 0, 0);
+        public static float TreeLevelDepthSize = 12f;
+        public static RectOffset TreeRowPadding = new RectOffset(2, 0, 0, 0);
+        public static RectOffset TreeItemPadding = new RectOffset(22, 8, 0, 0);
         public static Rect LastItemRect { get; set; } = Rect.zero;
 
-        public static void BeginRow(float depth = 0)
+        public static void BeginTreeRow(float depth = 0)
         {
             GUILayout.BeginVertical(Styles.TreeBackgroundRowStyle);
-            if (RowPadding.top != 0)
-                GUILayout.Space(RowPadding.top);
+            if (TreeRowPadding.top != 0)
+                GUILayout.Space(TreeRowPadding.top);
             
             GUILayout.BeginHorizontal();
-            GUILayout.Space(RowPadding.left + OneLevelDepthSize * depth);
+            GUILayout.Space(TreeRowPadding.left + TreeLevelDepthSize * depth);
         }
         
-        public static bool EndRow()
+        public static bool EndTreeRow()
         {
-            GUILayout.Space(RowPadding.right);
+            GUILayout.Space(TreeRowPadding.right);
             GUILayout.EndHorizontal();
-            if (RowPadding.bottom != 0)
-                GUILayout.Space(RowPadding.bottom);
+            if (TreeRowPadding.bottom != 0)
+                GUILayout.Space(TreeRowPadding.bottom);
             GUILayout.EndVertical();
             
             if (Event.current.type == EventType.MouseUp)
@@ -36,22 +36,22 @@ namespace StyledGUI
             return false;
         }
         
-        public static void BeginItem(float depth = 0)
+        public static void BeginTreeItem(float depth = 0)
         {
             GUILayout.BeginVertical(Styles.TreeBackgroundRowStyle);
-            if (ItemPadding.top != 0)
-                GUILayout.Space(ItemPadding.top);
+            if (TreeItemPadding.top != 0)
+                GUILayout.Space(TreeItemPadding.top);
             
             GUILayout.BeginHorizontal();
-            GUILayout.Space(RowPadding.left + ItemPadding.left + OneLevelDepthSize * depth);
+            GUILayout.Space(TreeRowPadding.left + TreeItemPadding.left + TreeLevelDepthSize * depth);
         }
         
-        public static bool EndItem()
+        public static bool EndTreeItem()
         {
-            GUILayout.Space(RowPadding.right + ItemPadding.right);
+            GUILayout.Space(TreeRowPadding.right + TreeItemPadding.right);
             GUILayout.EndHorizontal();
-            if (ItemPadding.bottom != 0)
-                GUILayout.Space(ItemPadding.bottom);
+            if (TreeItemPadding.bottom != 0)
+                GUILayout.Space(TreeItemPadding.bottom);
             GUILayout.EndVertical();
 
             LastItemRect = GUILayoutUtility.GetLastRect();

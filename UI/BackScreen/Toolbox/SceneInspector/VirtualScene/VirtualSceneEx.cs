@@ -31,7 +31,7 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
                         entity.Render();
                         if (renderer.CaptureOnMouseHover)
                         {
-                            var r = GUILayoutTree.LastItemRect;
+                            var r = Styled.LastItemRect;
                             if (Event.current.mousePosition.y < r.y + r.height && r.Contains(Event.current.mousePosition))
                                 renderer.OnMouseHoverComponent(entity);
                         }
@@ -48,7 +48,7 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
         {
             var wasCollapsed = self.Collapsed;
             
-            GUILayoutTree.BeginRow(_depth);
+            Styled.BeginTreeRow(_depth);
             {
                 GUILayout.Label(self.Collapsed ? "" : "", Styles.UnicodeIconStyle, GUILayout.Height(21f), GUILayout.Width(22f), GUILayout.ExpandWidth(false));
                 GUILayout.Label("<size=15><color=#efe5b0></color></size>", Styles.UnicodeIconStyle, GUILayout.Height(25f), GUILayout.Width(22f), GUILayout.ExpandWidth(false));
@@ -58,7 +58,7 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
             }
-            if (GUILayoutTree.EndRow())
+            if (Styled.EndTreeRow())
                 self.Collapsed = !self.Collapsed;
             
             if (!self.Collapsed && !wasCollapsed)
@@ -71,7 +71,7 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
 
         public static void Render(this VirtualComponent self)
         {
-            GUILayoutTree.BeginItem(_depth);
+            Styled.BeginTreeItem(_depth);
             {
                 // GUILayout.Label("❖", Styles.UnicodeIconStyle, GUILayout.Height(25f), GUILayout.Width(25f), GUILayout.ExpandWidth(false));
                 // GUILayout.Space(8f);
@@ -113,7 +113,7 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
                 // END RIGHT SIDE BUTTONS
 
             }
-            if (GUILayoutTree.EndItem())
+            if (Styled.EndTreeItem())
             {
                 Loggr.Log(self.Instance);
 
