@@ -41,6 +41,7 @@ namespace DevTools.Humankind.GUITools.UI
 
         private bool _drawInspectorAdditionalContent = false;
         private bool _drawMapMarkerAdditionalContent = false;
+        private bool _drawCollectiblesAdditionalContent = false;
 
         public void Draw()
         {
@@ -59,9 +60,23 @@ namespace DevTools.Humankind.GUITools.UI
                 "verticalscrollbar",
                 "scrollview");
             {
-                
-                Styled.Alert("Work in progress.");
-                
+                // ADDITIONAL CONTENT PER ACTIVE TAB, IF ANY
+                if (_drawInspectorAdditionalContent)
+                {
+                    Styled.Alert("<b>WARNING:</b> Under development and at an early stage of development.\n" + 
+                                 "In order to inspect GameObjects with an attached UITransform component under your mouse, press [SPACE].");
+                    SceneInspectorController.Screen.Draw();
+                }
+                else if (_drawMapMarkerAdditionalContent)
+                {
+                    TestingPlayground.DrawUnicodeCharacters();
+                }
+                else if (_drawCollectiblesAdditionalContent)
+                {
+                    Styled.Alert("<b>NOTICE:</b> This section is under development. It's only a preview so live editor actions are not yet available.");
+                }
+                //
+
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(ScrollViewPadding.left);
                 GUILayout.BeginVertical(GUILayout.Width(TypeDefinitionsGrid.FixedWidth));
@@ -89,16 +104,7 @@ namespace DevTools.Humankind.GUITools.UI
                 }
                 GUILayout.EndVertical();
                 GUILayout.EndHorizontal();
-                // ADDITIONAL CONTENT PER ACTIVE TAB, IF ANY
-                if (_drawInspectorAdditionalContent)
-                {
-                    SceneInspectorController.Screen.Draw();
-                }
-                else if (_drawMapMarkerAdditionalContent)
-                {
-                    TestingPlayground.DrawUnicodeCharacters();
-                }
-                //
+                
             }
             GUILayout.EndScrollView();
             if (Event.current.type == EventType.Repaint)
@@ -107,6 +113,7 @@ namespace DevTools.Humankind.GUITools.UI
                 MousePosition = new Vector2(Event.current.mousePosition.x, Event.current.mousePosition.y);
                 IsMouseHover = ScrollViewRect.Contains(MousePosition);
                 _drawMapMarkerAdditionalContent = tabNames[ActiveTab] == MapMarkerTab;
+                _drawCollectiblesAdditionalContent = tabNames[ActiveTab] == CollectiblesTab;
                 
                 var lastInspectorState = _drawInspectorAdditionalContent;
                 _drawInspectorAdditionalContent = tabNames[ActiveTab] == InspectorTab;

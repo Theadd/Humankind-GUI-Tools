@@ -13,6 +13,7 @@ namespace StyledGUI
                 padding = new RectOffset(12, 8, 8, 8),
                 border = new RectOffset(8, 2, 8, 8),
                 overflow = new RectOffset(0, 0, 0, 0),
+                // alignment = TextAnchor.MiddleCenter,
                 font = null,
                 fontSize = 12,
                 normal = new GUIStyleState()
