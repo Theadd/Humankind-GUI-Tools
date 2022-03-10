@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DevTools.Humankind.GUITools.UI.SceneInspector;
 using Modding.Humankind.DevTools;
+using StyledGUI;
 using StyledGUI.VirtualGridElements;
 using UnityEngine;
 
@@ -58,6 +59,9 @@ namespace DevTools.Humankind.GUITools.UI
                 "verticalscrollbar",
                 "scrollview");
             {
+                
+                Styled.Alert("Work in progress.");
+                
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(ScrollViewPadding.left);
                 GUILayout.BeginVertical(GUILayout.Width(TypeDefinitionsGrid.FixedWidth));
