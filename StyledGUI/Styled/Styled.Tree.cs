@@ -2,7 +2,7 @@
 
 namespace StyledGUI
 {
-    public static class Styled
+    public static partial class Styled
     {
         public static float TreeLevelDepthSize = 12f;
         public static RectOffset TreeRowPadding = new RectOffset(2, 0, 0, 0);
