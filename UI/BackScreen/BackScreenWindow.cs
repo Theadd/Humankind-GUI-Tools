@@ -329,7 +329,7 @@ namespace DevTools.Humankind.GUITools.UI
 
         public override void OnZeroGUI()
         {
-            if (MainTools.IsDebugModeEnabled && MainTools.IsTestingPlaygroundEnabled)
+            if (MainTools.IsDebugModeEnabled && FeatureFlags.TestingPlayground)
                 TestingPlayground.OnZeroUpdate();
             
             if (!Initialized)

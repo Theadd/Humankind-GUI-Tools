@@ -48,7 +48,8 @@ namespace DevTools.Humankind.GUITools.UI
         {
             if (!_switchedToolboxTab && LiveEditorMode.Enabled && ToolboxController.Toolbox != null)
             {
-                ToolboxController.Toolbox.SetActiveTab(3);
+                if (FeatureFlags.Inspector)
+                    ToolboxController.Toolbox.SetActiveTab(FeatureFlags.MapMarker ? 4 : 3);
                 _switchedToolboxTab = true;
             }
 

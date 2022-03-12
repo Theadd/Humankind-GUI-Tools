@@ -64,7 +64,7 @@ namespace DevTools.Humankind.GUITools.UI
                 if (_drawInspectorAdditionalContent)
                 {
                     Styled.Alert("<b>WARNING:</b> Under development and at an early stage of development.\n" + 
-                                 "In order to inspect GameObjects with an attached UITransform component under your mouse, press [SPACE].");
+                                 "In order to inspect GameObjects with an attached UITransform component under your mouse, press [SPACE].", Colors.Khaki);
                     SceneInspectorController.Screen.Draw();
                 }
                 else if (_drawMapMarkerAdditionalContent)

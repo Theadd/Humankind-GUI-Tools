@@ -10,7 +10,7 @@ namespace DevTools.Humankind.GUITools
         /// <summary>
         ///     Change REVISION value to force a reset of player preferences.
         /// </summary>
-        public const int REVISION = 304;
+        public const int REVISION = 305;
         public const string DISPLAY_NAME = "GUI Tools";
         public const string FULL_DISPLAY_NAME = "HUMANKIND GUI Tools";
         public const string MOD_IO_URL_TEXT = "humankind.mod.io/gui-tools";

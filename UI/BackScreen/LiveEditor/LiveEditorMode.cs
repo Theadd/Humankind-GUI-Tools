@@ -49,13 +49,13 @@ namespace DevTools.Humankind.GUITools.UI
         private static KeyboardShortcut DebugKey { get; set; }
 
         private static PaintBrush BrushPainter { get; set; }
-        private static bool IsMouseOverUIControls { get; set; }
+        // private static bool IsMouseOverUIControls { get; set; }
 
         public static void Initialize()
         {
             HexPainter = new HoveredHexPainter(HandleOnTileChange);
             BrushPainter = new PaintBrush();
-            IsMouseOverUIControls = false;
+            // IsMouseOverUIControls = false;
             UpdateKeyMappings();
         }
 

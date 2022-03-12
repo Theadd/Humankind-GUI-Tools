@@ -34,11 +34,13 @@ namespace DevTools.Humankind.GUITools.UI
         private static string[] tabNames = (new string[]
         {
             DistrictsTab,
-            UnitsTab, 
-            CollectiblesTab, 
-            MapMarkerTab, 
+            UnitsTab,
+            CollectiblesTab,
+            MapMarkerTab,
             InspectorTab,
-        }).Where(t => !(!FeatureFlags.MapMarker && t == MapMarkerTab)).ToArray();
+        }).Where(t =>
+            !((!FeatureFlags.MapMarker && t == MapMarkerTab) ||
+              (!FeatureFlags.Inspector && t == InspectorTab))).ToArray();
         
         private static List<Vector2> _storedScrollViewPositions = tabNames.Select(n => Vector2.zero).ToList();
 

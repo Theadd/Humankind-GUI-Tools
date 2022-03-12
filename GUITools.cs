@@ -16,6 +16,7 @@ namespace DevTools.Humankind.GUITools
         private void Awake()
         {
             MainTools.IsDebugModeEnabled = FeatureFlags.DebugMode;
+            Modding.Humankind.DevTools.DevTools.QuietMode = FeatureFlags.QuietMode;
             MainTools.Main();
         }
 

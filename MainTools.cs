@@ -11,8 +11,7 @@ namespace DevTools.Humankind.GUITools
     public static class MainTools
     {
         public static bool IsDebugModeEnabled { get; set; } = true;
-        public static bool IsTestingPlaygroundEnabled { get; set; } = true;
-
+        
         public static MainToolbar Toolbar { get; set; }
 
         public static InGameMenuWindow InGameMenu { get; set; }
