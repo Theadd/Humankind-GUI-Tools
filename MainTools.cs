@@ -1,3 +1,4 @@
+// IGNORE, SKIPPING CURRENT RELEASE #--ref ${BepInExRoot}/plugins/UniverseLib.Mono.dll
 using System;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
@@ -10,12 +11,12 @@ namespace DevTools.Humankind.GUITools
     public static class MainTools
     {
         public static bool IsDebugModeEnabled { get; set; } = true;
-
+        
         public static MainToolbar Toolbar { get; set; }
 
         public static InGameMenuWindow InGameMenu { get; set; }
 
-        public static BasicToolWindow BasicWindow { get; set; }
+        // public static BasicToolWindow BasicWindow { get; set; }
 
         // public static GameInfoToolWindow GameInfoWindow { get; set; }
         // public static DistrictPainterToolWindow DistrictPainterWindow { get; set; }
@@ -26,6 +27,7 @@ namespace DevTools.Humankind.GUITools
         public static GameStatsWindow StatsWindow { get; set; }
         public static BackScreenWindow BackScreen { get; set; }
         public static EndGameStatisticsWindow EndGameWindow { get; set; }
+        // public static CameraLayersToolWindow CameraLayersWindow { get; set; }
 
         public static void Main()
         {
@@ -33,13 +35,17 @@ namespace DevTools.Humankind.GUITools
             
             ViewController.Initialize(true);
             
-            UIController.OnceGUIHasLoaded(() => StyledGUIUtility.DefaultSkin = UIController.DefaultSkin);
+            UIController.OnceGUIHasLoaded(() =>
+            {
+                StyledGUIUtility.DefaultSkin = UIController.DefaultSkin;
+                StyledGUIUtility.UnicodeSymbolsFont = Utils.SegoeUISymbolFont;
+            });
             PopupToolWindow.Open<BackScreenWindow>(w => BackScreen = w);
             PopupToolWindow.Open<MainToolbar>(w => Toolbar = w);
             PopupToolWindow.Open<InGameMenuWindow>(w => InGameMenu = w);
             
-            // if (IsDebugModeEnabled)
-            //     TestingPlayground.Run();
+            // if (IsDebugModeEnabled && IsTestingPlaygroundEnabled)
+            //    TestingPlayground.Run();
         }
         
         public static void ToggleHideToolbarWindow() => GlobalSettings.HideToolbarWindow.Value = !GlobalSettings.HideToolbarWindow.Value;
@@ -49,7 +55,7 @@ namespace DevTools.Humankind.GUITools
 
         // public static void CancelGodMode() => AccessTools.PropertySetter(typeof(GodMode), "Enabled")?.Invoke(null, new object[] { false });
 
-        public static void ToggleBasicToolWindow()
+        /*public static void ToggleBasicToolWindow()
         {
             if (BasicWindow == null)
             {
@@ -59,7 +65,7 @@ namespace DevTools.Humankind.GUITools
 
             BasicWindow.Close();
             BasicWindow = null;
-        }
+        }*/
 
         public static void ToggleGameOverviewWindow()
         {
@@ -100,9 +106,13 @@ namespace DevTools.Humankind.GUITools
         public static void Unload() => Unload(true);
 
         public static void Unload(bool saveState = false) {
+            if (FeatureFlags.WireRenderer)
+                WireRenderer.Detach();
+            
             Toolbar?.Close(saveState);
             InGameMenu?.Close();
-            BasicWindow?.Close();
+            // BasicWindow?.Close();
+            // CameraLayersWindow?.Close();
             // GameInfoWindow?.Close();
             // DistrictPainterWindow?.Close();
             // SettlementWindow?.Close();
@@ -126,7 +136,7 @@ namespace DevTools.Humankind.GUITools
             // When true, draws a colored border for all UIOverlays backing a FloatingToolWindow derived class
             UIOverlay.DEBUG_DRAW_OVERLAY = false;
             // When not true, adds more verbosity to console output
-            Modding.Humankind.DevTools.DevTools.QuietMode = true;
+            Modding.Humankind.DevTools.DevTools.QuietMode = FeatureFlags.QuietMode;
         }
     }
 }

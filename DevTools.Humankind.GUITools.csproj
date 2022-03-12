@@ -21,6 +21,8 @@
     <DevToolsPATH>..\BepInEx\scripts\Modding.Humankind.DevTools.dll</DevToolsPATH>
     <DevToolsPATH Condition="!Exists('$(DevToolsPATH)')">..\BepInEx\plugins\Modding.Humankind.DevTools.dll</DevToolsPATH>
     <SharedAssetsPATH>..\BepInEx\plugins\DevTools.Humankind.SharedAssets.dll</SharedAssetsPATH>
+    <!--<UniverseLibPATH>..\BepInEx\plugins\UniverseLib.Mono.dll</UniverseLibPATH>
+    <UniverseLibPATH Condition="!Exists('$(UniverseLibPATH)')">..\BepInEx\scripts\UniverseLib.Mono.dll</UniverseLibPATH>-->
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BepInEx">
@@ -31,6 +33,10 @@
       <HintPath>$(HUMANKIND_GAME_PATH)\BepInEx\core\0Harmony.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <!--<Reference Include="UniverseLib.Mono">
+      <HintPath>$(UniverseLibPATH)</HintPath>
+      <Private>false</Private>
+    </Reference>-->
     <Reference Include="Amplitude.AI">
       <HintPath>$(HUMANKIND_REFERENCED_LIBRARIES_PATH)\Amplitude.AI.dll</HintPath>
       <Private>false</Private>
@@ -311,10 +317,10 @@
       <HintPath>$(HUMANKIND_REFERENCED_LIBRARIES_PATH)\UnityEngine.TextCoreModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
-    <Reference Include="UnityEngine.TextCoreTextEngineModule">
+    <!--<Reference Include="UnityEngine.TextCoreTextEngineModule">
       <HintPath>$(HUMANKIND_REFERENCED_LIBRARIES_PATH)\UnityEngine.TextCoreTextEngineModule.dll</HintPath>
       <Private>false</Private>
-    </Reference>
+    </Reference>-->
     <Reference Include="UnityEngine.TextRenderingModule">
       <HintPath>$(HUMANKIND_REFERENCED_LIBRARIES_PATH)\UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>false</Private>
@@ -331,10 +337,10 @@
       <HintPath>$(HUMANKIND_REFERENCED_LIBRARIES_PATH)\UnityEngine.UI.dll</HintPath>
       <Private>false</Private>
     </Reference>
-    <Reference Include="UnityEngine.UIElementsInputSystemModule">
+    <!--<Reference Include="UnityEngine.UIElementsInputSystemModule">
       <HintPath>$(HUMANKIND_REFERENCED_LIBRARIES_PATH)\UnityEngine.UIElementsInputSystemModule.dll</HintPath>
       <Private>false</Private>
-    </Reference>
+    </Reference>-->
     <Reference Include="UnityEngine.UIElementsModule">
       <HintPath>$(HUMANKIND_REFERENCED_LIBRARIES_PATH)\UnityEngine.UIElementsModule.dll</HintPath>
       <Private>false</Private>

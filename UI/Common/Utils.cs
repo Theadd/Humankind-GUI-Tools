@@ -84,6 +84,12 @@ namespace DevTools.Humankind.GUITools.UI
         public static Texture InfluenceTexture = SharedAssets.SharedAssets.Load<Texture2D>("Influence");
         public static Texture FaithTexture = SharedAssets.SharedAssets.Load<Texture2D>("Faith");
         public static Texture StabilityTexture = SharedAssets.SharedAssets.Load<Texture2D>("Stability");
+        public static Texture LeftArrowHeadTexture = SharedAssets.SharedAssets.Load<Texture2D>("LeftArrowHead");
+
+        public static Font SegoeUISymbolFont { get; set; } =
+            SharedAssets.SharedAssets.Load<Font>("seguisym");
+        public static Font SourceCodeProRegularFont { get; set; } =
+            Modding.Humankind.DevTools.DevTools.Assets.Load<Font>("sourcecodepro-regular");
 
         public static GUIContent GetLootInfoContent(string text)
         {

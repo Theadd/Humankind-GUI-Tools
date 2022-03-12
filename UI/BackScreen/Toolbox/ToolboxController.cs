@@ -10,16 +10,14 @@ namespace DevTools.Humankind.GUITools.UI
     public static class ToolboxController
     {
         public static Rect ToolboxRect { get; private set; } = Rect.zero;
-        public static Rect InputFilterRect { get; private set; } = Rect.zero;
-        public static ConstructiblesToolbox Toolbox { get; set; }
+        public static TabbedToolbox Toolbox { get; set; }
         public static KeyboardShortcut ToolboxPreviewKey { get; set; } = new KeyboardShortcut(KeyCode.LeftControl);
         public static KeyboardShortcut StickedToolboxKey { get; set; } = new KeyboardShortcut(KeyCode.Space, KeyCode.LeftControl);
         public static bool IsVisible { get; private set; } = false;
         public static bool IsSticked { get; set; } = true;
         public static bool IsDocked { get; private set; } = true;
-        public static string InputFilter { get; set; } = string.Empty;
         public static RectOffset DockedMargin { get; set; } = new RectOffset(-2, 0, -2, -2);
-        public static float PanelWidth { get; set; } = 410f;
+        public static float PanelWidth { get; set; } = 400f;
         private static BackScreenWindow _backScreenWindow;
 
         public static void Initialize(BackScreenWindow window)
@@ -27,21 +25,22 @@ namespace DevTools.Humankind.GUITools.UI
             _backScreenWindow = window;
             AutoResize();
             
-            ConstructibleStore.Rebuild();
+            DataTypeStore.Rebuild();
             
-            Toolbox = new ConstructiblesToolbox()
+            Toolbox = new TabbedToolbox()
             {
                 Window = window,
-                ConstructiblesGrid = new ConstructiblesGrid()
+                TypeDefinitionsGrid = new DataTypeDefinitionsGrid()
                 {
-                    Snapshot = new ConstructibleStoreSnapshot()
+                    Snapshot = new DataTypeStoreSnapshot()
                     {
-                        Districts = ConstructibleStore.Districts,
-                        Units = ConstructibleStore.Units
+                        Districts = DataTypeStore.Districts,
+                        Units = DataTypeStore.Units,
+                        Curiosities = DataTypeStore.Curiosities,
                     },
                     VirtualGrid = new VirtualGrid()
                     {
-                        Grid = new ConstructiblesStyledGrid(),
+                        Grid = new DataTypeDefinitionsStyledGrid(),
                         DrawRowHeaders = false,
                         DrawSectionHeaders = true,
                         VisibleViews = new[] { 0 },
@@ -54,8 +53,8 @@ namespace DevTools.Humankind.GUITools.UI
                 }
             };
 
-            Toolbox.ConstructiblesGrid.VirtualGrid.Cursor.OnSelectionChange += LiveEditorMode.UpdatePaintBrush;
-            Toolbox.ConstructiblesGrid.GridModeChunkSize = 5;
+            Toolbox.TypeDefinitionsGrid.VirtualGrid.Cursor.OnSelectionChange += LiveEditorMode.UpdatePaintBrush;
+            Toolbox.TypeDefinitionsGrid.GridModeChunkSize = 5;
             IsDisplayModeGrid = true;
         }
 
@@ -66,35 +65,37 @@ namespace DevTools.Humankind.GUITools.UI
 
         public static bool IsDisplayModeGrid
         {
-            get => Toolbox.ConstructiblesGrid.VirtualGrid.Grid.DisplayMode == VirtualGridDisplayMode.Grid;
+            get => Toolbox.TypeDefinitionsGrid.VirtualGrid.Grid.DisplayMode == VirtualGridDisplayMode.Grid;
             set
             {
-                Toolbox.ConstructiblesGrid.VirtualGrid.Grid.DisplayMode =
+                Toolbox.TypeDefinitionsGrid.VirtualGrid.Grid.DisplayMode =
                     value ? VirtualGridDisplayMode.Grid : VirtualGridDisplayMode.List;
-                Toolbox.ConstructiblesGrid.VirtualGrid.AlternateType =
+                Toolbox.TypeDefinitionsGrid.VirtualGrid.AlternateType =
                     value ? VirtualGridAlternateType.Columns : VirtualGridAlternateType.Rows;
                 
                 if (value)
                 {
-                    Toolbox.ConstructiblesGrid.VirtualGrid.Grid.CellTintColor = CellTintColorOnGridMode;
-                    Toolbox.ConstructiblesGrid.VirtualGrid.Grid.CellTintColorAlt = CellTintColorAltOnGridMode;
+                    Toolbox.TypeDefinitionsGrid.VirtualGrid.Grid.CellTintColor = CellTintColorOnGridMode;
+                    Toolbox.TypeDefinitionsGrid.VirtualGrid.Grid.CellTintColorAlt = CellTintColorAltOnGridMode;
                 }
                 else
                 {
-                    Toolbox.ConstructiblesGrid.VirtualGrid.Grid.CellTintColor = CellTintColorOnListMode;
-                    Toolbox.ConstructiblesGrid.VirtualGrid.Grid.CellTintColorAlt = CellTintColorAltOnListMode;
+                    Toolbox.TypeDefinitionsGrid.VirtualGrid.Grid.CellTintColor = CellTintColorOnListMode;
+                    Toolbox.TypeDefinitionsGrid.VirtualGrid.Grid.CellTintColorAlt = CellTintColorAltOnListMode;
                 }
                 
-                Toolbox.ConstructiblesGrid.VirtualGrid.ExpandWidthOnSingleColumnGrid = !value;
-                Toolbox.ConstructiblesGrid.GridModeChunkSize = Toolbox.ConstructiblesGrid.GridModeChunkSize * 1;
+                Toolbox.TypeDefinitionsGrid.VirtualGrid.ExpandWidthOnSingleColumnGrid = !value;
+                Toolbox.TypeDefinitionsGrid.GridModeChunkSize = Toolbox.TypeDefinitionsGrid.GridModeChunkSize * 1;
             }
         }
 
         public static void SetToolboxRect(Rect newRect)
         {
             ToolboxRect = newRect;
-            InputFilterRect = new Rect(newRect.x + 12f, newRect.y - 24f, newRect.width, 24f);
         }
+
+        public static ScreenUIOverlay GetBackScreenUIOverlay() =>
+            _backScreenWindow != null ? _backScreenWindow.ScreenOverlay : null;
 
         public static bool Draw()
         {
@@ -111,37 +112,15 @@ namespace DevTools.Humankind.GUITools.UI
                 if (!IsVisible)
                     OnShow();
                 
-                if (InputFilter.Length > 0)
-                    DrawInputFilter();
-                
                 Toolbox.Draw(ToolboxRect);
-                
-                if (Event.current.type == EventType.Repaint && Input.inputString.Length > 0)
-                    InputFilter = (InputFilter + Input.inputString).TrimStart(' ');
                 
                 return true;
             }
 
-            InputFilter = string.Empty;
             if (IsVisible)
                 OnHide();
             
             return false;
-        }
-
-        private static void DrawInputFilter()
-        {
-            GUILayout.BeginArea(InputFilterRect);
-            {
-                GUILayout.BeginHorizontal();
-                {
-                    GUILayout.Label("<color=#000000FF><b><size=10>FILTER: </size></b></color>");
-                    GUILayout.Label("<color=#000000FF><b>" + InputFilter.ToUpper() + "</b></color>");
-                    GUILayout.FlexibleSpace();
-                }
-                GUILayout.EndHorizontal();
-            }
-            GUILayout.EndArea();
         }
 
         private static bool AreKeysHeldDown(KeyboardShortcut shortcut) => 
@@ -194,7 +173,7 @@ namespace DevTools.Humankind.GUITools.UI
         public static void Unload()
         {
             if (Toolbox != null)
-                Toolbox.ConstructiblesGrid.VirtualGrid.Cursor.OnSelectionChange -= LiveEditorMode.UpdatePaintBrush;
+                Toolbox.TypeDefinitionsGrid.VirtualGrid.Cursor.OnSelectionChange -= LiveEditorMode.UpdatePaintBrush;
         }
     }
 }

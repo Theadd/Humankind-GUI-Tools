@@ -1,4 +1,5 @@
 ﻿using System;
+using DevTools.Humankind.GUITools.Collections;
 using Modding.Humankind.DevTools;
 using UnityEngine;
 using StyledGUI;
@@ -32,7 +33,9 @@ namespace DevTools.Humankind.GUITools.UI
         {
             ViewController.Initialize();
             
-            ScreenOverlay.SetInnerRectAsVisible(false);
+            ScreenOverlay
+                .SetInnerRectAsVisible(false)
+                .SetUIMarkerVisibility(false);
             OnCollapse();
 
             Initialized = true;
@@ -42,7 +45,9 @@ namespace DevTools.Humankind.GUITools.UI
         {
             SyncToScreenSize();
             LiveEditorMode.Initialize();
-            ScreenOverlay.SetInnerRectAsVisible(false);
+            ScreenOverlay
+                .SetInnerRectAsVisible(false)
+                .SetUIMarkerVisibility(false);
             ToolboxController.Initialize(this);
 
             InitializedInGame = true;
@@ -114,7 +119,12 @@ namespace DevTools.Humankind.GUITools.UI
                             IsToolboxVisible = !IsToolboxVisible;
 
                             ScreenOverlay
-                                .SetInnerRect(ToolboxController.ToolboxRect)
+                                .SetInnerRect(
+                                    new Rect(
+                                        ToolboxController.ToolboxRect.x, 
+                                        ToolboxController.ToolboxRect.y, 
+                                        ToolboxController.ToolboxRect.width - 1f, 
+                                        ToolboxController.ToolboxRect.height))
                                 .SetInnerRectAsVisible(IsToolboxVisible);
 
                             if (IsToolboxVisible)
@@ -129,8 +139,6 @@ namespace DevTools.Humankind.GUITools.UI
                     }
                 }
 
-
-
                 GUILayout.EndVertical();
 
                 GUILayout.EndHorizontal();
@@ -138,7 +146,7 @@ namespace DevTools.Humankind.GUITools.UI
             }
             catch (Exception e)
             {
-                // Ignored
+                Loggr.Log(e);
             }
             finally
             {
@@ -150,6 +158,11 @@ namespace DevTools.Humankind.GUITools.UI
                     _hexPainterVisible = _drawOnLiveEditorEnabled &&
                                          LiveEditorMode.EditorMode == EditorModeType.TilePainter;
                 }
+
+                if (GUI.tooltip.Length > 0)
+                    TooltipOverlay.SetTooltip(StringHandle.Parse(GUI.tooltip));
+                
+                TooltipOverlay.Run();
             }
         }
 
@@ -316,7 +329,8 @@ namespace DevTools.Humankind.GUITools.UI
 
         public override void OnZeroGUI()
         {
-            // ViewController.Initialize();
+            if (MainTools.IsDebugModeEnabled && FeatureFlags.TestingPlayground)
+                TestingPlayground.OnZeroUpdate();
             
             if (!Initialized)
                 Initialize();

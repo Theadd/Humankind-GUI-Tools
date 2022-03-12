@@ -28,6 +28,8 @@ namespace DevTools.Humankind.GUITools.UI
         public static Camera Camera => _camera ? _camera 
             : (_camera = GameObject.Find("Camera")?.GetComponent<Camera>());
 
+        public static Camera ImpostorCamera => GameObject.Find("ImpostorCamera")?.GetComponent<Camera>();
+
         public static void SwitchCameraFieldOfView()
         {
             var camera = Camera;

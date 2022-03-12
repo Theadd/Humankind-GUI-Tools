@@ -6,7 +6,7 @@ using StyledGUI.VirtualGridElements;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public partial class ConstructiblesToolbox
+    public partial class TabbedToolbox
     {
         private bool _drawSelectionPreview = false;
         private ICell _selectedCell = null;
@@ -48,7 +48,7 @@ namespace DevTools.Humankind.GUITools.UI
                 // Utils.DrawHorizontalLine();
                 var prevTint = GUI.backgroundColor;
                 GUI.backgroundColor = SelectionPreviewTintColor;
-                using (var cellScope = new GUILayout.HorizontalScope(SelectionPreviewCell))
+                using (var cellScope = new GUILayout.HorizontalScope(SelectionPreviewCell, GUILayout.Height(128f)))
                 {
                     GUILayout.BeginVertical(GUILayout.Width(128f), GUILayout.Height(128f));
                     {
@@ -57,9 +57,9 @@ namespace DevTools.Humankind.GUITools.UI
                             new Rect(r.x + 16f, r.y + 16f, 96f, 96f), 
                             // StyledGUI.Graphics.BlackTexture,
                             _selectedImage ? _selectedImage : StyledGUI.Graphics.TransparentTexture, 
-                            ScaleMode.StretchToFill, 
+                            ScaleMode.ScaleToFit, 
                             true, 
-                            1f,
+                            0,
                             Color.white, 
                             0, 
                             0
@@ -90,26 +90,26 @@ namespace DevTools.Humankind.GUITools.UI
             
             if (Event.current.type == EventType.Repaint)
             {
-                if ((ConstructiblesGrid.VirtualGrid.Cursor.IsSelectionActive && ToolboxController.IsDisplayModeGrid) != _drawSelectionPreview ||
-                    ((ConstructiblesGrid.VirtualGrid.Cursor.IsSelectionActive && ToolboxController.IsDisplayModeGrid) &&
-                     _selectedCell != ConstructiblesGrid.VirtualGrid.Cursor.SelectedCell.Cell))
+                if (((TypeDefinitionsGrid.VirtualGrid.Cursor.IsSelectionActive || IsMouseHoverCell) && ToolboxController.IsDisplayModeGrid) != _drawSelectionPreview ||
+                    (((TypeDefinitionsGrid.VirtualGrid.Cursor.IsSelectionActive || IsMouseHoverCell) && ToolboxController.IsDisplayModeGrid) &&
+                     _selectedCell != (IsMouseHoverCell ? CellWithMouseHover : TypeDefinitionsGrid.VirtualGrid.Cursor.SelectedCell.Cell)))
                 {
-                    _drawSelectionPreview = ConstructiblesGrid.VirtualGrid.Cursor.IsSelectionActive &&
+                    _drawSelectionPreview = (TypeDefinitionsGrid.VirtualGrid.Cursor.IsSelectionActive || IsMouseHoverCell) &&
                                             ToolboxController.IsDisplayModeGrid;
                     
                     if (_drawSelectionPreview)
                     {
-                        _selectedCell = ConstructiblesGrid.VirtualGrid.Cursor.SelectedCell.Cell;
-                        Loggr.Log(SelectionPreviewCell);
+                        _selectedCell = IsMouseHoverCell ? CellWithMouseHover : TypeDefinitionsGrid.VirtualGrid.Cursor.SelectedCell.Cell;
+                        // Loggr.Log(SelectionPreviewCell);
                         // Loggr.Log(UIController.DefaultSkin.FindStyle("Text"));
                         if (_selectedCell is IClickableImageCell cell)
                         {
-                            if (cell.Image != null)
-                                Loggr.Log("" + cell.Image.width + " x " + cell.Image.height);
+                            // if (cell.Image != null)
+                            //     Loggr.Log("" + cell.Image.width + " x " + cell.Image.height);
                             _selectedImage = cell.Image;
                             _selectedTitle = "<size=16><b>" + cell.Title + "</b></size>";
                             _selectedSubtitle = "<size=12>" + cell.UniqueName + "</size>";
-                            _selectedType = "<size=12>" + (LiveEditorMode.ActivePaintBrush?.GetType().Name ?? "") + "</size>";
+                            _selectedType = "<size=12>" + (IsMouseHoverCell ? "" : (LiveEditorMode.ActivePaintBrush?.GetType().Name ?? "")) + "</size>";
                             _selectedCategory = "<size=10>" + cell.Category + "</size>";
                             _selectedTags = cell.Tags;
                         }

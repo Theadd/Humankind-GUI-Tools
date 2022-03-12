@@ -13,10 +13,11 @@ using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public static partial class ConstructibleStore
+    public static partial class DataTypeStore
     {
         public static DefinitionsGroup[] Districts { get; set; }
         public static DefinitionsGroup[] Units { get; set; }
+        public static DefinitionsGroup[] Curiosities { get; set; }
 
         public static string[] ExcludeNames { get; set; } = new[]
         {
@@ -28,13 +29,16 @@ namespace DevTools.Humankind.GUITools.UI
             "Extension_Prototype_BaseMilitary",
             "Extension_Prototype_Emblematic",
             "Ruin",
+            "Exploitation",
         };
-        
-        public static Constructible CreateDistrictConstructible(DistrictDefinition definition)
+
+        private static IDatabase<LootTableDefinition> LootTables { get; set; }
+
+        public static DataTypeDefinition CreateDistrictDataType(DistrictDefinition definition)
         {
             var name = LastName(definition.name);
 
-            return new Constructible()
+            return new DataTypeDefinition()
             {
                 DefinitionName = definition.Name,
                 Title = UIController.GetLocalizedTitle(definition.Name, name),
@@ -45,11 +49,11 @@ namespace DevTools.Humankind.GUITools.UI
             };
         }
         
-        public static Constructible CreateUnitConstructible(UnitDefinition definition)
+        public static DataTypeDefinition CreateUnitDataType(UnitDefinition definition)
         {
             var name = UnitLastName(definition.name);
 
-            return new Constructible()
+            return new DataTypeDefinition()
             {
                 DefinitionName = definition.Name,
                 Title = UIController.GetLocalizedTitle(definition.Name, name),
@@ -59,10 +63,42 @@ namespace DevTools.Humankind.GUITools.UI
                 Image = AssetHunter.LoadTexture(definition)     // Utils.LoadTexture(definition.name)
             };
         }
-
-        public static void Rebuild(ConstructibleStoreBuildOptions options = null)
+        
+        public static DataTypeDefinition CreateCuriosityDataType(CuriosityDefinition definition)
         {
-            options = options ?? new ConstructibleStoreBuildOptions();
+            var name = definition.name;
+            string[] lootTypes;
+            LootTableDefinition lootTable;
+
+            try
+            {
+                lootTable = LootTables.GetValue(definition.LootTableReference.ElementName);
+                lootTypes = lootTable.Loots.SelectMany(
+                    loot => loot.SimulationEventEffects.SelectMany(
+                        e => e.GainValues?.Select(
+                            g => g.Type.ToString()) ?? new string[] { })).Distinct().ToArray();
+            }
+            catch (Exception)
+            {
+                lootTypes = new[] { "" };
+            }
+
+            return new DataTypeDefinition()
+            {
+                DefinitionName = definition.Name,
+                Title = UIController.GetLocalizedTitle(definition.Name, name),
+                Name = name,
+                Category = "" + string.Join(", ", lootTypes),
+                Era = definition.EraIndex,
+                Image = AssetHunter.LoadTexture(definition)
+            };
+        }
+
+        public static void Rebuild(DataTypeStoreBuildOptions options = null)
+        {
+            options = options ?? new DataTypeStoreBuildOptions();
+            
+            // CONSTRUCTIBLES
             
             var constructibles = Databases
                 .GetDatabase<ConstructibleDefinition>(false);
@@ -74,7 +110,8 @@ namespace DevTools.Humankind.GUITools.UI
             Districts = RebuildDistricts(
                 options.ExcludeKnownInvalid
                     ? districts.Where(d => !ExcludeNames.Contains(d.name)).ToArray()
-                    : districts, options);
+                    : districts, 
+                options);
             
             var units = constructibles
                 .OfType<UnitDefinition>()
@@ -83,10 +120,43 @@ namespace DevTools.Humankind.GUITools.UI
             Units = RebuildUnits(
                 options.ExcludeKnownInvalid 
                     ? units.Where(u => !ExcludeNames.Contains(u.name)).ToArray()
-                    : units, options);
+                    : units, 
+                options);
+            
+            // COLLECTIBLES
+
+            var collectibles = Databases.GetDatabase<CollectibleDefinition>(false);
+            
+            var curiosities = collectibles
+                .OfType<CuriosityDefinition>()
+                .ToArray();
+                
+            LootTables = Databases.GetDatabase<LootTableDefinition>(false);
+
+            Curiosities = RebuildCuriosities(
+                options.ExcludeObsolete 
+                    ? curiosities.Where(c => !c.IsObsolete) 
+                    : curiosities,
+                options);
         }
 
-        private static DefinitionsGroup[] RebuildDistricts(DistrictDefinition[] districts, ConstructibleStoreBuildOptions options)
+        private static DefinitionsGroup[] RebuildCuriosities(IEnumerable<CuriosityDefinition> curiosities,
+            DataTypeStoreBuildOptions options)
+        {
+            return curiosities
+                .Select(c => new { group = c.GetType().Name, definition = c }).ToList()
+                .GroupBy(c => c.group).ToList()
+                .Select(g => new DefinitionsGroup
+                {
+                    Title = R.Text.SplitCamelCase(g.First().group).Replace("Definition", "Definitions"),
+                    Values = g.OrderBy(i => i.definition.EraIndex)
+                        .Select(d => CreateCuriosityDataType(d.definition))
+                        .ToArray()
+                })
+                .OrderBy(gs => gs.Title).ToArray();
+        }
+
+        private static DefinitionsGroup[] RebuildDistricts(DistrictDefinition[] districts, DataTypeStoreBuildOptions options)
         {
             var commonDistricts = districts.Where(CommonDistrictsClause);
             var remaining = districts.Where(d => !CommonDistrictsClause(d)).ToArray();
@@ -101,7 +171,7 @@ namespace DevTools.Humankind.GUITools.UI
                 {
                     Title = "Common Districts",
                     Values = commonDistricts
-                        .Select(CreateDistrictConstructible)
+                        .Select(CreateDistrictDataType)
                         .ToArray()
                 },
                 
@@ -112,7 +182,7 @@ namespace DevTools.Humankind.GUITools.UI
                     {
                         Title = "Extractors & Manufactories",
                         Values = resourceDistricts
-                            .Select(CreateDistrictConstructible)
+                            .Select(CreateDistrictDataType)
                             .ToArray()
                     });
 
@@ -120,7 +190,7 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 Title = "Emblematic Districts",
                 Values = emblematicDistricts
-                    .Select(CreateDistrictConstructible)
+                    .Select(CreateDistrictDataType)
                     .ToArray()
             });
             
@@ -129,7 +199,7 @@ namespace DevTools.Humankind.GUITools.UI
                 {
                     Title = "Other Districts",
                     Values = otherDistricts
-                        .Select(CreateDistrictConstructible)
+                        .Select(CreateDistrictDataType)
                         .ToArray()
                 });
             
@@ -137,7 +207,7 @@ namespace DevTools.Humankind.GUITools.UI
             return result;
         }
 
-        private static DefinitionsGroup[] RebuildUnits(UnitDefinition[] units, ConstructibleStoreBuildOptions options)
+        private static DefinitionsGroup[] RebuildUnits(UnitDefinition[] units, DataTypeStoreBuildOptions options)
         {
             var landUnits = units
                 .Where(u => u.SpawnType == UnitSpawnType.Land && !(u is NavalTransportDefinition))
@@ -158,21 +228,21 @@ namespace DevTools.Humankind.GUITools.UI
                 {
                     Title = "Land Units",
                     Values = landUnits
-                        .Select(CreateUnitConstructible)
+                        .Select(CreateUnitDataType)
                         .ToArray()
                 },
                 new DefinitionsGroup()
                 {
                     Title = "Maritime Units",
                     Values = maritimeUnits
-                        .Select(CreateUnitConstructible)
+                        .Select(CreateUnitDataType)
                         .ToArray()
                 },
                 new DefinitionsGroup()
                 {
                     Title = "Air & Missile Units",
                     Values = airUnits
-                        .Select(CreateUnitConstructible)
+                        .Select(CreateUnitDataType)
                         .ToArray()
                 }
             };
@@ -182,7 +252,7 @@ namespace DevTools.Humankind.GUITools.UI
                 {
                     Title = "Other Units",
                     Values = otherUnits
-                        .Select(CreateUnitConstructible)
+                        .Select(CreateUnitDataType)
                         .ToArray()
                 });
 

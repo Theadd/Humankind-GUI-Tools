@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.Core;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
@@ -25,12 +26,21 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
         public override Rect WindowRect { get; set; } = new Rect(Screen.width - FixedWidth, 0, FixedWidth, Screen.height);
 
         public static string LatestVersion { get; private set; }
+        
+        public static string VersionInfo { get; private set; }
+        public static string OtherInfo { get; private set; }
+        
         public static bool VersionFound { get; private set; }
 
         private GUIStyle CenteredLink { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("Link")) {
             alignment = TextAnchor.MiddleCenter,
             margin = new RectOffset(4, 4, 4, 0),
-            padding = new RectOffset(4, 4, 3, 0)
+            padding = new RectOffset(4, 4, 3, 0),
+            normal = new GUIStyleState()
+            {
+                background = UIController.DefaultSkin.FindStyle("Link").normal.background,
+                textColor = Color.white
+            }
         };
         private GUIStyle CenteredText { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("Link")) {
             alignment = TextAnchor.MiddleCenter,
@@ -66,21 +76,73 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
             StartCoroutine(GetLatestVersion());
         }
         
+        /*private static string versionText => @"1.3.2.0
+/=VERSION_INFO/
+<size=14><b>HELLO WORLD!</b></size>
+<size=11><color=#66FF66FF>Lorem <b>ipsum</b> dolor sit amet.</color></size>
+/=OTHER_INFO/
+<color=red><b>OTHER STUFF HERE...</b></color>";*/
 
         IEnumerator GetLatestVersion() {
             UnityWebRequest www = UnityWebRequest.Get("https://raw.githubusercontent.com/Theadd/Humankind-GUI-Tools/main/VERSION");
             yield return www.SendWebRequest();
  
             if (www.result != UnityWebRequest.Result.Success) {
-                Loggr.Log(www.error, ConsoleColor.Red);
+                Loggr.Log(www.error, ConsoleColor.Red); 
                 VersionFound = false;
             }
             else
             {
-                LatestVersion = www.downloadHandler.text;
-                VersionFound = true;
-                Loggr.Log(LatestVersion, ConsoleColor.Green);
+                // string text = versionText;
+                string text = www.downloadHandler.text;
+                if (TryGetVersionInfo(text, out string version, out string versionInfo, out string otherInfo))
+                {
+                    VersionFound = true;
+                    LatestVersion = version;
+                    VersionInfo = versionInfo;
+                    OtherInfo = otherInfo;
+                }
+                else 
+                    VersionFound = false;
+
             }
+        }
+
+        private static char[] ValidVersionChars => new[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'};
+        private bool TryGetVersionInfo(string text, out string version, out string versionInfo, out string otherInfo)
+        {
+            version = string.Empty;
+            versionInfo = string.Empty;
+            otherInfo = string.Empty;
+
+            if (text != null && text.Length > 1)
+            {
+                var parts = text.Split(new string[] {"/="}, StringSplitOptions.None);
+                var endLinePos = parts[0].IndexOf('\n');
+                version = endLinePos == -1 ? parts[0] : parts[0].Substring(0, endLinePos);
+                version = new string(version.Where(c => ValidVersionChars.Contains(c)).ToArray());
+                if (parts.Length > 1)
+                {
+                    for (var i = 1; i < parts.Length; i++)
+                    {
+                        var endIdPos = parts[i].IndexOf('/');
+                        var contentId = parts[i].Substring(0, endIdPos != -1 ? endIdPos : parts[i].Length);
+                        switch (contentId)
+                        {
+                            case "VERSION_INFO":
+                                versionInfo = parts[i].Substring(endIdPos + 1).TrimStart(' ', '\n', '\r').TrimEnd(' ', '\n', '\r');
+                                break;
+                            case "OTHER_INFO":
+                                otherInfo = parts[i].Substring(endIdPos + 1).TrimStart(' ', '\n', '\r').TrimEnd(' ', '\n', '\r');
+                                break;
+                        }
+                    }
+                }
+                
+                return true;
+            }
+
+            return false;
         }
 
         public override void OnGUIStyling()
@@ -142,7 +204,6 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
                     {
                         GUILayout.MaxHeight(contentHeight)
                     });
-                    GUILayout.Space(12f);
 
                     OnDrawWindowHeader();
 
@@ -159,8 +220,70 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
             OnDrawTooltip();
         }
 
+        private bool _drawLatestVersion = false;
+        private bool _drawLatestVersionInfo = false;
+        private bool _drawOtherInfo = false;
+        private string _versionLabelText = string.Empty;
+        private bool _newVersionAvailable = false;
+        
+        private void OnDrawLatestVersionInfo()
+        {
+            if (_drawLatestVersion)
+            {
+                GUILayout.BeginVertical();
+                {
+                    if (_newVersionAvailable)
+                    {
+                        GUILayout.Space(IsBigScreen ? 10f : 6f);
+                        GUI.backgroundColor = Color.black;
+                        GUILayout.BeginVertical("PopupWindow.Sidebar.Heading", GUILayout.ExpandHeight(false));
+                        if (GUILayout.Button(_versionLabelText, CenteredLink))
+                        {
+                            Application.OpenURL(PluginInfo.MOD_IO_URL);
+                        }
+                        GUILayout.EndVertical();
+                        GUI.backgroundColor = Color.white;
+                    }
+                    else 
+                        GUILayout.Label(_versionLabelText, CenteredText);
+                    
+                    if (_drawLatestVersionInfo)
+                        GUILayout.Label(VersionInfo, "Text");
+
+                    if (_drawOtherInfo)
+                    {
+                        if (_drawLatestVersionInfo)
+                            Utils.DrawHorizontalLine(0.3f);
+                        
+                        GUILayout.Label(OtherInfo, "Text");
+                    }
+                    
+                    if (_drawLatestVersionInfo || _drawOtherInfo)
+                        Utils.DrawHorizontalLine(0.3f);
+
+                    // GUILayout.Space(IsBigScreen ? 12f : 8f);
+                }
+                GUILayout.EndVertical();
+            }
+
+            if (Event.current.type == EventType.Repaint)
+            {
+                _drawLatestVersion = VersionFound;
+                _newVersionAvailable = LatestVersion != PluginInfo.PLUGIN_VERSION;
+                _drawLatestVersionInfo = _drawLatestVersion && _newVersionAvailable && VersionInfo.Length > 10;
+                _drawOtherInfo = _drawLatestVersion && OtherInfo.Length > 10;
+                _versionLabelText = !_newVersionAvailable
+                    ? BlueText("<size=9>" + PluginInfo.FULL_DISPLAY_NAME.ToUpper() + " IS UP TO DATE</size>")
+                    : GreenText("<size=15><b>NEW VERSION AVAILABLE</b></size>") + 
+                      "\n<size=9><b>GET IT FROM " + 
+                      PluginInfo.MOD_IO_URL_TEXT.ToUpper() + "</b></size>";
+            }
+        }
+
         private void OnDrawWindowHeader()
         {
+            OnDrawLatestVersionInfo();
+            GUILayout.Space(IsBigScreen ? 12f : 8f);
             Utils.DrawText("Customize keys and discover more features by switching to the " + BlueText("Keyboard Shortcuts") + " tab in the " + BlueText("Game Overview") + " window.");
 
             GUILayout.Space(IsBigScreen ? 12f : 8f);
@@ -368,10 +491,11 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
             if (repeat && t >= 1)
                 t = 0;
             
-            InGameMenuController.SetBackgroundColor(Color.Lerp(InitialColor, TargetColor, t));
-  
             if (t < 1)
+            {
                 t += Time.deltaTime / Duration;
+                InGameMenuController.SetBackgroundColor(Color.Lerp(InitialColor, TargetColor, t));
+            }
         }
     }
 }

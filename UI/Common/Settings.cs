@@ -82,7 +82,8 @@ namespace DevTools.Humankind.GUITools.UI
     public static class GlobalSettings
     {
         public static bool ShouldHideTools => ViewController.View != ViewType.InGame 
-                                              || (ViewController.View == ViewType.InGame && ViewController.ViewMode != ViewModeType.Normal);    // TODO: // GameStatsWindow.IsVisibleFullscreen || PauseMenu.InGameMenuController.IsEndGameWindowVisible || (HideToolsInGameMenu.Value && PauseMenu.InGameMenuController.IsVisible);
+                                              || (ViewController.View == ViewType.InGame 
+                                                  && ViewController.ViewMode != ViewModeType.Normal);
 
         public static CheckboxSetting WindowTransparency = new CheckboxSetting(
             "Toggles the background transparency of all tool windows.", 

@@ -3,6 +3,7 @@ using System.Linq;
 using Amplitude;
 using Amplitude.Mercury.Data.Simulation;
 using BepInEx.Configuration;
+using DevTools.Humankind.GUITools.UI.SceneInspector;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
 using StyledGUI.VirtualGridElements;
@@ -25,7 +26,9 @@ namespace DevTools.Humankind.GUITools.UI
     public enum EditorModeType
     {
         TilePainter,
-        Settlement
+        Settlement,
+        Inspector,
+        MapMarker
     }
     
     public static class LiveEditorMode
@@ -37,7 +40,7 @@ namespace DevTools.Humankind.GUITools.UI
         public static readonly string DebugUnderCursorActionName = "DebugTileUnderCursor";
         public static bool Enabled { get; set; } = false;
         public static EditorModeType EditorMode { get; set; } = EditorModeType.TilePainter;
-        public static HexOverlay HexPainter { get; set; }
+        public static HoveredHexPainter HexPainter { get; set; }
         public static ConstructibleDefinition ActivePaintBrush { get; private set; } = null;
         public static LiveBrushType BrushType { get; private set; } = LiveBrushType.None;
 
@@ -46,13 +49,13 @@ namespace DevTools.Humankind.GUITools.UI
         private static KeyboardShortcut DebugKey { get; set; }
 
         private static PaintBrush BrushPainter { get; set; }
-        private static bool IsMouseOverUIControls { get; set; }
+        // private static bool IsMouseOverUIControls { get; set; }
 
         public static void Initialize()
         {
-            HexPainter = new HexOverlay(HandleOnTileChange);
+            HexPainter = new HoveredHexPainter(HandleOnTileChange);
             BrushPainter = new PaintBrush();
-            IsMouseOverUIControls = false;
+            // IsMouseOverUIControls = false;
             UpdateKeyMappings();
         }
 
@@ -75,7 +78,7 @@ namespace DevTools.Humankind.GUITools.UI
 
         public static void UpdatePaintBrush()
         {
-            var gridCell = ToolboxController.Toolbox.ConstructiblesGrid.VirtualGrid.Cursor.SelectedCell;
+            var gridCell = ToolboxController.Toolbox.TypeDefinitionsGrid.VirtualGrid.Cursor.SelectedCell;
 
             if (gridCell != null && gridCell.Cell is Clickable4xCell cell)
             {
@@ -117,6 +120,11 @@ namespace DevTools.Humankind.GUITools.UI
                 if (DebugKey.IsDown()) BrushPainter.Debug();
                 if (CreateKey.IsDown()) BrushPainter.Paint();
                 if (DestroyKey.IsDown()) BrushPainter.Erase();
+            }
+
+            if (EditorMode == EditorModeType.Inspector /* TODO: && !InGameUIController.IsMouseCovered*/)
+            {
+                SceneInspectorController.Run();
             }
         }
 

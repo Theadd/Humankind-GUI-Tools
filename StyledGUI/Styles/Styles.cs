@@ -2,14 +2,20 @@
 
 namespace StyledGUI
 {
-    public static class Styles
+    public static partial class Styles
     {
+        public static Texture2D Alpha80WhitePixel { get; set; } =
+            Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.80f));
         public static Texture2D Alpha65WhitePixel { get; set; } =
             Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.65f));
         public static Texture2D Alpha35WhitePixel { get; set; } =
             Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.35f));
-        public static Texture2D Alpha25BlackPixel { get; set; } =
+        public static Texture2D Alpha35BlackPixel { get; set; } =
             Graphics.CreateSinglePixelTexture2D(new Color(0, 0, 0, 0.35f));
+        public static Texture2D Alpha50BlackPixel { get; set; } =
+            Graphics.CreateSinglePixelTexture2D(new Color(0, 0, 0, 0.5f));
+        public static Texture2D Alpha85BlackPixel { get; set; } =
+            Graphics.CreateSinglePixelTexture2D(new Color(0, 0, 0, 0.85f));
         public static Texture2D WhitePixel { get; set; } =
             Graphics.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 1f));
         public static Texture2D ButtonNormalPixel { get; set; } =
@@ -24,9 +30,33 @@ namespace StyledGUI
         public static Color GreenTextColor { get; set; } = (Color) new Color32(80, 230, 80, 220);
         public static Color WhiteTextColor { get; set; } = (Color) new Color32(250, 250, 250, 255);
         public static Color WhitePearlTextColor { get; set; } = (Color) new Color32(200, 200, 200, 255);
+        public static Color DarkTextColor { get; set; } = (Color) new Color32(10, 10, 10, 190);
         public static Color BlueTextColor { get; set; } = (Color) new Color32(40, 86, 240, 255);
         public static Color GoldTextColor { get; set; } = new Color(0.85f, 0.75f, 0f, 0.85f);
 
+        public static GUIStyle Alpha50BlackBackgroundStyle { get; set; } = new GUIStyle()
+        {
+            normal = new GUIStyleState()
+            {
+                background = Alpha50BlackPixel,
+                textColor = Color.white
+            }
+        };
+        
+        public static GUIStyle Alpha65WhiteBackgroundStyle { get; set; } = new GUIStyle()
+        {
+            normal = new GUIStyleState()
+            {
+                background = Alpha65WhitePixel,
+                textColor = Color.white
+            }
+        };
+        
+        public static GUIStyle SmallPaddingStyle { get; set; } = new GUIStyle()
+        {
+            padding = new RectOffset(8, 8, 8, 8),
+        };
+        
         public static GUIStyle RowStyle { get; set; } =
             new GUIStyle(StyledGUIUtility.DefaultSkin.FindStyle("PopupWindow.Row"))
             {
@@ -142,7 +172,7 @@ namespace StyledGUI
             padding = RectOffsetZero,
             normal = new GUIStyleState()
             {
-                background = Alpha25BlackPixel,
+                background = Alpha35BlackPixel,
                 textColor = Color.white
             },
             hover = new GUIStyleState()

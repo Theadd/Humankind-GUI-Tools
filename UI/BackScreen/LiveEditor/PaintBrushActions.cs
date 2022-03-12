@@ -36,6 +36,8 @@ namespace DevTools.Humankind.GUITools.UI
         public static readonly string CreateLuxuryExtractorAction = "CREATE LUXURY EXTRACTOR";
         public static readonly string CreateStrategicExtractorAction = "CREATE STRATEGIC EXTRACTOR";
         public static readonly string CreateLuxuryManufactoryAction = "UPGRADE TO LUXURY MANUFACTORY";
+        
+        // TODO: PresentationArmy.TeleportToPosition // PresentationArmy.UpdatePosition(WorldPosition worldPosition)
 
         // DESTROY ACTIONS
         public static void DestroySettlementAt(int tileIndex) => SandboxManager

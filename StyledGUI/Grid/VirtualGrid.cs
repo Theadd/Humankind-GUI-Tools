@@ -26,7 +26,15 @@ namespace StyledGUI
     {
         public VirtualGridAlternateType AlternateType { get; set; } = VirtualGridAlternateType.Columns;
         public Column[] Columns { get; set; }
-        public Section[] Sections { get; set; }
+        public Section[] Sections
+        {
+            get => _sections;
+            set
+            {
+                NeedsCursorSync = true;
+                _sections = value;
+            }
+        }
         public IStyledGrid Grid { get => _grid; set => SetStyledGrid(value); }
         public bool DrawSectionHeaders { get; set; } = true;
         public bool DrawRowHeaders { get; set; } = true;
@@ -67,6 +75,10 @@ namespace StyledGUI
         private Action OnTargetCellNotFound { get; set; }
         private bool _isAnyCellFound = false;
         private VirtualGridCursor _cursor = new VirtualGridCursor();
+        private Section[] _sections;
+        public bool NeedsCursorSync { get; private set; } = false;
+        
+        
 
         public void FindCellAtPosition(Vector2 position, Action<ICell> callbackOnSuccess, Action callbackOnFailure = null)
         {
@@ -86,6 +98,7 @@ namespace StyledGUI
             
             Cursor.Reset();
             UpdateColumnCellSpan();
+            NeedsCursorSync = NeedsCursorSync && Cursor.IsSelectionActive && Cursor.SelectedCell?.Cell is IEquatableCell;
 
             for (var sectionIndex = 0; sectionIndex < Sections.Length; sectionIndex++)
             {
@@ -97,9 +110,7 @@ namespace StyledGUI
                     Cursor.SectionIndex++;
                     continue;
                 }
-
                 
-
                 // START drawing Section header
                 if (section.SpaceBefore != 0)
                 {
@@ -171,6 +182,20 @@ namespace StyledGUI
                 TargetCellPosition = Vector2.zero;
                 OnTargetCellFound = null;
                 OnTargetCellNotFound = null;
+            }
+
+            NeedsCursorSync = false;
+        }
+
+        public void SyncCursorSelection(IEquatableCell cell)
+        {
+            if (cell is IEquatableCellById cellWithId)
+            {
+                if ((Cursor.SelectedCell?.Cell as IEquatableCellById)?.Id == cellWithId.Id)
+                {
+                    Cursor.AddToSelection(false);
+                    NeedsCursorSync = false;
+                }
             }
         }
         

@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Modding.Humankind.DevTools;
 using StyledGUI;
 using StyledGUI.VirtualGridElements;
 using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public class ConstructiblesStyledGrid : GridStyles
+    public class DataTypeDefinitionsStyledGrid : GridStyles
     {
         public override Color CellTintColor { get; set; } = new Color(0, 0, 0, 0.6f);
         public override Color CellTintColorAlt { get; set; } = new Color(0, 0, 0, 0.2f);
@@ -19,11 +21,25 @@ namespace DevTools.Humankind.GUITools.UI
         private Texture2D _missingTex;
     }
 
-    public class ConstructiblesGrid
+    public class DataTypeDefinitionsGrid
     {
         public VirtualGrid VirtualGrid { get; set; }
-        public ConstructibleStoreSnapshot Snapshot { get; set; }
+        public DataTypeStoreSnapshot Snapshot { get; set; }
         public bool IsDirty { get; set; } = true;
+        public string FilterBy
+        {
+            get => _filterBy;
+            set
+            {
+                if (_filterBy != value)
+                {
+                    _filterBy = value;
+                    IsDirty = true;
+                }
+            }
+        }
+
+        private string _filterBy = string.Empty;
         public int GridModeChunkSize
         {
             get => Grid.GridModeChunkSize;
@@ -38,8 +54,8 @@ namespace DevTools.Humankind.GUITools.UI
                     ((_fixedWidth - (Grid.GetCellSpace() * (Grid.GridModeChunkSize - 1))) 
                      / Grid.GridModeChunkSize);
                 var cellWidth = totalCellWidth - Grid.CellPadding.left - Grid.CellPadding.right;
-                ((ConstructiblesStyledGrid) Grid).CellHeight = (float) cellWidth + Grid.CellPadding.top + Grid.CellPadding.bottom;
-                ((ConstructiblesStyledGrid) Grid).Resize(totalCellWidth, ((ConstructiblesStyledGrid) Grid).GetCellSpace());
+                ((DataTypeDefinitionsStyledGrid) Grid).CellHeight = (float) cellWidth + Grid.CellPadding.top + Grid.CellPadding.bottom;
+                ((DataTypeDefinitionsStyledGrid) Grid).Resize(totalCellWidth, ((DataTypeDefinitionsStyledGrid) Grid).GetCellSpace());
             }
         }
 
@@ -58,7 +74,7 @@ namespace DevTools.Humankind.GUITools.UI
 
         protected IStyledGrid Grid;
 
-        public ConstructiblesGrid()
+        public DataTypeDefinitionsGrid()
         {
         }
 
@@ -80,7 +96,7 @@ namespace DevTools.Humankind.GUITools.UI
 
         
         
-        private Row[] GetRowsInListMode(Constructible[] values)
+        private Row[] GetRowsInListMode(DataTypeDefinition[] values)
         {
             return values.Select(c => new Row()
             {
@@ -88,6 +104,7 @@ namespace DevTools.Humankind.GUITools.UI
                 {
                     new Clickable4xCell()
                     {
+                        Id = c.DefinitionName.Handle,
                         Title = "<size=11><b>" + c.Title.ToUpper() + "</b></size>",
                         Subtitle = c.Name,
                         UniqueName = c.DefinitionName.ToString(),
@@ -100,10 +117,10 @@ namespace DevTools.Humankind.GUITools.UI
             }).ToArray();
         }
         
-        private Row[] GetRowsInGridMode(Constructible[] values)
+        private Row[] GetRowsInGridMode(DataTypeDefinition[] values)
         {
             int i = 0;
-            IEnumerable<IEnumerable<Constructible>> groups = values
+            IEnumerable<IEnumerable<DataTypeDefinition>> groups = values
                 .GroupBy(c => i++ / GridModeChunkSize)
                 .Select(g => g);
 
@@ -116,6 +133,7 @@ namespace DevTools.Humankind.GUITools.UI
                     {
                         Cells = group.Select(c => new ClickableImageCell()
                         {
+                            Id = c.DefinitionName.Handle,
                             Title = c.Title.ToUpper(),
                             Subtitle = c.Name,
                             UniqueName = c.DefinitionName.ToString(),
@@ -135,10 +153,12 @@ namespace DevTools.Humankind.GUITools.UI
         {
             VirtualGrid.Columns = new Column[]
             {
-                new Column() {Name = "Constructibles"}
+                new Column() { Name = "DataTypes" }
             };
 
             VirtualGrid.Sections = Snapshot.Districts
+                .Select(ApplyFilterBy)
+                .Where(group => group.Values.Length > 0)
                 .Select(group => new Section()
                 {
                     Title = "<size=13><b>" + group.Title.ToUpper() + "</b></size>",
@@ -148,15 +168,47 @@ namespace DevTools.Humankind.GUITools.UI
                         : GetRowsInListMode(group.Values)
                 })
                 .Concat(
-                Snapshot.Units.Select(group => new Section()
-                {
-                    Title = "<size=13><b>" + group.Title.ToUpper() + "</b></size>",
-                    View = 1,
-                    Rows = Grid.DisplayMode == VirtualGridDisplayMode.Grid 
-                        ? GetRowsInGridMode(group.Values) 
-                        : GetRowsInListMode(group.Values)
-                }))
+                    Snapshot.Units
+                        .Select(ApplyFilterBy)
+                        .Where(group => group.Values.Length > 0)
+                        .Select(group => new Section() 
+                        {
+                            Title = "<size=13><b>" + group.Title.ToUpper() + "</b></size>", 
+                            View = 1, 
+                            Rows = Grid.DisplayMode == VirtualGridDisplayMode.Grid 
+                                ? GetRowsInGridMode(group.Values) 
+                                : GetRowsInListMode(group.Values)
+                        }))
+                .Concat(
+                    Snapshot.Curiosities
+                        .Select(ApplyFilterBy)
+                        .Where(group => group.Values.Length > 0)
+                        .Select(group => new Section() 
+                        {
+                            Title = "<size=13><b>" + group.Title.ToUpper() + "</b></size>", 
+                            View = 2, 
+                            Rows = Grid.DisplayMode == VirtualGridDisplayMode.Grid 
+                                ? GetRowsInGridMode(group.Values) 
+                                : GetRowsInListMode(group.Values)
+                        }))
                 .ToArray();
+        }
+
+        private DefinitionsGroup ApplyFilterBy(DefinitionsGroup group)
+        {
+            if (_filterBy.Length == 0)
+                return group;
+
+            return new DefinitionsGroup()
+            {
+                Title = group.Title,
+                Values = group.Values
+                    .Where(c => 
+                        c.Category.IndexOf(_filterBy, StringComparison.OrdinalIgnoreCase) >= 0 
+                        || c.Title.IndexOf(_filterBy, StringComparison.OrdinalIgnoreCase) >= 0 
+                        || c.DefinitionName.ToString().IndexOf(_filterBy, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToArray()
+            };
         }
     }
 }

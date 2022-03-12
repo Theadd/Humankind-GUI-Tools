@@ -17,8 +17,10 @@ namespace DevTools.Humankind.GUITools.UI
         public Color BackgroundColor { get; set; } = new Color(0, 0, 0, 0.7f);
         public UITransform UITransform { get; protected set; }
         public UITransform InnerUITransform { get; protected set; }
+        public UITransform UIMarkerUITransform { get; protected set; }
         public SquircleBackgroundWidget InnerCanvas { get; protected set; }
         public SquircleBackgroundWidget Canvas { get; protected set; }
+        public SquircleBackgroundWidget UIMarkerCanvas { get; protected set; }
         public bool IsVisibleSelf { get; private set; } = true;
         private static GameObject _container = null;
         public static GameObject Container
@@ -126,12 +128,50 @@ namespace DevTools.Humankind.GUITools.UI
             InnerUITransform = go.AddComponent<UITransform>();
             InnerControl = go.AddComponent<UIButton>();
             InnerControl.LoadIfNecessary();
+            InnerControl.BlockedEvents =
+                UIEventBlockingMask.All & ~UIEventBlockingMask.MouseHover;
             
             InnerCanvas = go.AddComponent<SquircleBackgroundWidget>();
             InnerCanvas.BackgroundColor = BackgroundColor;
             InnerCanvas.OuterBorderColor = Color.clear;
             InnerCanvas.BorderColor = Color.clear;
             InnerCanvas.CornerRadius = 7f;
+            
+            var markerGo = new GameObject("UIMarkerOverlayRect");
+            markerGo.transform.parent = gameObject.transform;
+            UIMarkerUITransform = markerGo.AddComponent<UITransform>();
+
+            UIMarkerCanvas = markerGo.AddComponent<SquircleBackgroundWidget>();
+            UIMarkerCanvas.BackgroundColor = Color.clear;
+            UIMarkerCanvas.OuterBorderColor = Color.green;
+            UIMarkerCanvas.BorderColor = Color.magenta;
+            UIMarkerCanvas.CornerRadius = 0f;
+            
+        }
+        
+        public ScreenUIOverlay SetUIMarkerRect(Rect uiMarkerRect, bool applyRelativeResolution)
+        {
+            if (UIMarkerUITransform == null)
+                return this;
+            
+            var rect = applyRelativeResolution ? ApplyRelativeResolution(uiMarkerRect) : uiMarkerRect;
+            
+            UIMarkerUITransform.X = rect.x;
+            UIMarkerUITransform.Y = rect.y;
+            UIMarkerUITransform.Width = rect.width;
+            UIMarkerUITransform.Height = rect.height;
+
+            return this;
+        }
+
+        public ScreenUIOverlay SetUIMarkerVisibility(bool shouldBeVisible)
+        {
+            if (UIMarkerUITransform == null)
+                return this;
+            
+            UIMarkerUITransform.VisibleSelf = shouldBeVisible;
+
+            return this;
         }
 
         public ScreenUIOverlay SetInnerRect(Rect innerRect)

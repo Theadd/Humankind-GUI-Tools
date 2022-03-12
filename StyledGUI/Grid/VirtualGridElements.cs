@@ -10,6 +10,16 @@ namespace StyledGUI.VirtualGridElements
         
     }
     
+    public interface IEquatableCell
+    {
+        
+    }
+    
+    public interface IEquatableCellById : IEquatableCell
+    {
+        int Id { get; set; }
+    }
+    
     public interface IElement
     {
         
@@ -103,8 +113,9 @@ namespace StyledGUI.VirtualGridElements
         bool Enabled { get; set; }
     }
 
-    public class Clickable4xCell : IClickableImageCell
+    public class Clickable4xCell : IClickableImageCell, IEquatableCellById
     {
+        public int Id { get; set; }
         public string Title { get; set; }
         public string Subtitle { get; set; }
         public string Tags { get; set; }
@@ -117,8 +128,9 @@ namespace StyledGUI.VirtualGridElements
         public bool Enabled { get; set; } = true;
     }
     
-    public class ClickableImageCell : IClickableImageCell
+    public class ClickableImageCell : IClickableImageCell, IEquatableCellById
     {
+        public int Id { get; set; }
         public string Title { get; set; }
         public string Subtitle { get; set; }
         public string Tags { get; set; }

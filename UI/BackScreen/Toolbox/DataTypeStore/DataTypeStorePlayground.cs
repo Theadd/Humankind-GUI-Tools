@@ -9,7 +9,7 @@ using Modding.Humankind.DevTools.DeveloperTools.UI;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public static partial class ConstructibleStore
+    public static partial class DataTypeStore
     {
         
         public static void PrintAllDistricts()

@@ -18,6 +18,16 @@ namespace DevTools.Humankind.GUITools.UI
         public Camera LinkedCamera { get; set; } = null;
         public PresentationCameraMover CameraMover { get; set; } = null;
 
+        void OnPreRender()
+        {
+            GL.wireframe = true;
+        }
+
+        void OnPostRender()
+        {
+            GL.wireframe = false;
+        }
+
         public Transform GetTransform() => transform;
         void Update()
         {
