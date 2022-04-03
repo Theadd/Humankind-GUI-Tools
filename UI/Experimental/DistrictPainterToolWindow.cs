@@ -1,17 +1,14 @@
+using System;
+using System.Linq;
+using Amplitude;
 using Amplitude.Framework;
-using Amplitude.Framework.Overlay;
 using Amplitude.Mercury.Data.Simulation;
 using Amplitude.Mercury.Interop;
 using Amplitude.Mercury.Presentation;
 using Amplitude.Mercury.Runtime;
-using Amplitude.Mercury.Overlay;
-using Amplitude;
-using System;
-using System.Linq;
-using UnityEngine;
-
-using Modding.Humankind.DevTools.Core;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
+using UnityEngine;
+using IRuntimeService = Amplitude.Framework.Runtime.IRuntimeService;
 
 namespace DevTools.Humankind.GUITools.UI
 {
@@ -47,14 +44,14 @@ namespace DevTools.Humankind.GUITools.UI
         private ScrollableGrid VisualAffinityGrid;
         private ScrollableGrid DistrictDefinitionGrid;
 
-        private Amplitude.Framework.Runtime.IRuntimeService runtimeService;
+        private IRuntimeService runtimeService;
         private int affinityIndex = -1;
         private int extensionDistrictIndex = -1;
         private string[] affinities;
         private string[] extensionDistrictDefinitions;
-        private Vector2 extensionDistrictPosition;
-        private Vector2 affinityPosition;
-        private Vector2 initialAffinityPosition;
+        // private Vector2 extensionDistrictPosition;
+        // private Vector2 affinityPosition;
+        // private Vector2 initialAffinityPosition;
         private bool useAffinity;
         private bool useDistrictDefinition;
         private bool useInitialAffinity;
@@ -66,83 +63,87 @@ namespace DevTools.Humankind.GUITools.UI
             GUI.backgroundColor = Color.white;
             if (Snapshots.GameSnapshot == null || Snapshots.SandboxSnapshot == null)
                 return;
-            using (new GUILayout.VerticalScope((GUIStyle)"Widget.ClientArea", new GUILayoutOption[1]
+            using (new GUILayout.VerticalScope("Widget.ClientArea", GUILayout.ExpandWidth(true)))
             {
-                GUILayout.ExpandWidth(true)
-            }))
-            {
-                if (this.runtimeService == null)
+                if (runtimeService == null)
                 {
                     GUILayout.Label("Waiting for the runtime service...");
-                    if (Event.current.type != UnityEngine.EventType.Repaint)
+                    if (Event.current.type != EventType.Repaint)
                         return;
-                    this.runtimeService = Services.GetService<Amplitude.Framework.Runtime.IRuntimeService>();
+                    runtimeService = Services.GetService<IRuntimeService>();
                 }
-                else if (this.runtimeService.Runtime == null || !this.runtimeService.Runtime.HasBeenLoaded)
+                else if (runtimeService.Runtime == null || !runtimeService.Runtime.HasBeenLoaded)
                     GUILayout.Label("Waiting for the runtime...");
-                else if (this.runtimeService.Runtime.FiniteStateMachine.CurrentState == null)
+                else if (runtimeService.Runtime.FiniteStateMachine.CurrentState == null)
                     GUILayout.Label("Waiting for the runtime...");
-                else if (this.runtimeService.Runtime.FiniteStateMachine.CurrentState.GetType() != typeof(RuntimeState_InGame))
+                else if (runtimeService.Runtime.FiniteStateMachine.CurrentState.GetType() != typeof(RuntimeState_InGame))
                     GUILayout.Label("Waiting for the runtime state...");
-                else if (!Amplitude.Mercury.Presentation.Presentation.HasBeenStarted)
+                else if (!Presentation.HasBeenStarted)
                     GUILayout.Label("Waiting for the presentation...");
                 else
-                    this.DrawClientArea();
+                    DrawClientArea();
             }
         }
 
         private void DrawClientArea()
         {
-            if (this.affinities == null)
+            if (affinities == null)
             {
-                this.affinities = Databases.GetDatabase<BuildingVisualAffinityDefinition>().Select<BuildingVisualAffinityDefinition, string>((Func<BuildingVisualAffinityDefinition, string>)(element => element.Name.ToString())).ToArray<string>();
-                this.extensionDistrictDefinitions = Databases.GetDatabase<ConstructibleDefinition>().Where<ConstructibleDefinition>((Func<ConstructibleDefinition, bool>)(element => element is ExtensionDistrictDefinition)).Select<ConstructibleDefinition, string>((Func<ConstructibleDefinition, string>)(element => element.Name.ToString())).ToArray<string>();
+                affinities = Databases.GetDatabase<BuildingVisualAffinityDefinition>()
+                    .Select(element => element.Name.ToString())
+                    .ToArray();
+                extensionDistrictDefinitions = Databases.GetDatabase<ConstructibleDefinition>()
+                    .Where(element => element is ExtensionDistrictDefinition)
+                    .Select(element => element.Name.ToString())
+                    .ToArray();
 
-                VisualAffinityGrid = new ScrollableGrid() {
+                VisualAffinityGrid = new ScrollableGrid
+                {
                     ItemsPerRow = 1,
-                    Items = this.affinities.Select(name => new GUIContent(name)).ToArray(),
+                    Items = affinities.Select(name => new GUIContent(name)).ToArray(),
                 };
 
-                DistrictDefinitionGrid = new ScrollableGrid() {
+                DistrictDefinitionGrid = new ScrollableGrid
+                {
                     ItemsPerRow = 1,
-                    Items = this.extensionDistrictDefinitions.Select(name => new GUIContent(
+                    Items = extensionDistrictDefinitions.Select(name => new GUIContent(
                             /*R.Text.GetLocalizedTitle(new StaticString(name)) + "  " +*/ name
                         )).ToArray(),
                 };
             }
-            DistrictPainterCursor currentCursor = Amplitude.Mercury.Presentation.Presentation.PresentationCursorController.CurrentCursor as DistrictPainterCursor;
+            DistrictPainterCursor currentCursor = Presentation.PresentationCursorController.CurrentCursor as DistrictPainterCursor;
             int num = currentCursor == null ? 1 : 0;
-            this.activeCursor = GUILayout.Toggle(this.activeCursor, "Activate toggle cursor");
+            activeCursor = GUILayout.Toggle(activeCursor, "Activate toggle cursor");
             if (num != 0)
             {
-                if (this.activeCursor)
+                if (activeCursor)
                 {
-                    Amplitude.Mercury.Presentation.Presentation.PresentationCursorController.ChangeToDistrictPainterCursor();
-                    currentCursor = Amplitude.Mercury.Presentation.Presentation.PresentationCursorController.CurrentCursor as DistrictPainterCursor;
+                    Presentation.PresentationCursorController.ChangeToDistrictPainterCursor();
+                    currentCursor = Presentation.PresentationCursorController.CurrentCursor as DistrictPainterCursor;
                 }
                 else
                     GUI.enabled = false;
             }
-            else if (!this.activeCursor)
+            else if (!activeCursor)
             {
-                Amplitude.Mercury.Presentation.Presentation.PresentationCursorController.ChangeToDefaultCursor();
+                Presentation.PresentationCursorController.ChangeToDefaultCursor();
                 GUI.enabled = false;
             }
             using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
             {
                 using (new GUILayout.VerticalScope(Array.Empty<GUILayoutOption>()))
                 {
-                    GUI.enabled = this.activeCursor;
+                    GUI.enabled = activeCursor;
                     using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
                     {
-                        this.useAffinity = GUILayout.Toggle(this.useAffinity, "Paint affinity");
-                        this.useInitialAffinity = GUILayout.Toggle(this.useInitialAffinity, "Paint initial affinity");
+                        useAffinity = GUILayout.Toggle(useAffinity, "Paint affinity");
+                        useInitialAffinity = GUILayout.Toggle(useInitialAffinity, "Paint initial affinity");
                         GUILayout.FlexibleSpace();
                     }
                     GUILayout.Space(10f);
                     GUI.enabled = true;
 
-                    this.affinityIndex = VisualAffinityGrid.Draw<GUIContent>();
+                    affinityIndex = VisualAffinityGrid.Draw<GUIContent>();
                     /*this.affinityPosition = GUILayout.BeginScrollView(
                         this.affinityPosition,
                         false,
@@ -158,16 +159,16 @@ namespace DevTools.Humankind.GUITools.UI
                 }
                 using (new GUILayout.VerticalScope(Array.Empty<GUILayoutOption>()))
                 {
-                    GUI.enabled = this.activeCursor;
+                    GUI.enabled = activeCursor;
                     using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
                     {
-                        this.useDistrictDefinition = GUILayout.Toggle(this.useDistrictDefinition, "Paint district definition");
+                        useDistrictDefinition = GUILayout.Toggle(useDistrictDefinition, "Paint district definition");
                         GUILayout.FlexibleSpace();
                     }
                     GUILayout.Space(10f);
                     GUI.enabled = true;
 
-                    this.extensionDistrictIndex = DistrictDefinitionGrid.Draw<GUIContent>();
+                    extensionDistrictIndex = DistrictDefinitionGrid.Draw<GUIContent>();
                     /*this.extensionDistrictPosition = GUILayout.BeginScrollView(
                         this.extensionDistrictPosition,
                         false,
@@ -182,12 +183,12 @@ namespace DevTools.Humankind.GUITools.UI
                 }
                 if (currentCursor != null)
                 {
-                    currentCursor.UseCurrentAffinity = this.useAffinity;
-                    currentCursor.UseCurrentInitialAffinity = this.useInitialAffinity;
-                    currentCursor.UseCurrentDistrictDefinition = this.useDistrictDefinition;
-                    currentCursor.CurrentAffinity = this.affinityIndex < 0 ? StaticString.Empty : new StaticString(this.affinities[this.affinityIndex]);
-                    currentCursor.CurrentInitialAffinity = this.affinityIndex < 0 ? StaticString.Empty : new StaticString(this.affinities[this.affinityIndex]);
-                    currentCursor.CurrentDistrictDefinition = this.extensionDistrictIndex < 0 ? StaticString.Empty : new StaticString(this.extensionDistrictDefinitions[this.extensionDistrictIndex]);
+                    currentCursor.UseCurrentAffinity = useAffinity;
+                    currentCursor.UseCurrentInitialAffinity = useInitialAffinity;
+                    currentCursor.UseCurrentDistrictDefinition = useDistrictDefinition;
+                    currentCursor.CurrentAffinity = affinityIndex < 0 ? StaticString.Empty : new StaticString(affinities[affinityIndex]);
+                    currentCursor.CurrentInitialAffinity = affinityIndex < 0 ? StaticString.Empty : new StaticString(affinities[affinityIndex]);
+                    currentCursor.CurrentDistrictDefinition = extensionDistrictIndex < 0 ? StaticString.Empty : new StaticString(extensionDistrictDefinitions[extensionDistrictIndex]);
                 }
             }
             GUI.enabled = true;

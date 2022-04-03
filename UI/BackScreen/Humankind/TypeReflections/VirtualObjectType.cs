@@ -30,17 +30,17 @@ namespace DevTools.Humankind.GUITools.TypeReflections
         public static IEnumerable<VirtualMember> GetVirtualMembers(this VirtualObjectType self)
         {
             throw new NotImplementedException();
-            IEnumerable<Type> baseTypes = new List<Type>(); // TODO: TypeExtensions.GetAllBaseTypes(self.Type);
-
-            var members = baseTypes.SelectMany(t =>
-                t.GetExtensionMethods().Select(m =>
-                    new VirtualMember()
-                    {
-                        Value = m,
-                        RelatedType = t
-                    }));
-
-            return members;
+//            IEnumerable<Type> baseTypes = new List<Type>(); // TODO: TypeExtensions.GetAllBaseTypes(self.Type);
+//
+//            var members = baseTypes.SelectMany(t =>
+//                t.GetExtensionMethods().Select(m =>
+//                    new VirtualMember()
+//                    {
+//                        Value = m,
+//                        RelatedType = t
+//                    }));
+//
+//            return members;
         }
     }
 }

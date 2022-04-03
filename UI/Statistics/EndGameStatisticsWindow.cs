@@ -42,7 +42,6 @@ namespace DevTools.Humankind.GUITools.UI
         public static EndGameWindow EndGameWindow => endGameWindow ?? (endGameWindow = WindowsUtils.GetWindow<EndGameWindow>());
         private static EndGameWindow endGameWindow;
 
-        private int loop = 0;
         public override void OnDrawUI()
         {
             if (!isClosing)

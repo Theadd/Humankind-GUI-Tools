@@ -14,6 +14,7 @@ namespace DevTools.Humankind.GUITools.UI
     {
         public static void GiveVisionAtCursorPosition()
         {
+            if (ViewController.IsGloballyDisabled) return;
             SandboxManager.PostOrder(new OrderGiveVisionAtPosition
             {
                 WorldPosition = Presentation.PresentationCursorController.CurrentHighlightedPosition,
@@ -26,6 +27,7 @@ namespace DevTools.Humankind.GUITools.UI
         
         public static void CreateCityAtCursorPosition()
         {
+            if (ViewController.IsGloballyDisabled) return;
             SandboxManager.PostOrder(new EditorOrderCreateCityAt
             {
                 EmpireIndex = (int)Snapshots.GameSnapshot.PresentationData.LocalEmpireInfo.EmpireIndex,
@@ -35,6 +37,7 @@ namespace DevTools.Humankind.GUITools.UI
         
         public static void CreateExtensionDistrictIndustryUnderCursor()
         {
+            if (ViewController.IsGloballyDisabled) return;
             DistrictInfo districtInfo2;
             if (TryGetDistrictInfoAt(Presentation.PresentationCursorController.CurrentHighlightedPosition, out districtInfo2))
             {
@@ -48,6 +51,7 @@ namespace DevTools.Humankind.GUITools.UI
         
         public static void DestroyDistrictOrSettlementUnderCursor()
         {
+            if (ViewController.IsGloballyDisabled) return;
             DistrictInfo districtInfo3;
             WorldPosition worldPosition = Presentation.PresentationCursorController.CurrentHighlightedPosition;
             

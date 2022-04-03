@@ -36,41 +36,43 @@ namespace DevTools.Humankind.GUITools.UI
         public static readonly string CreateLuxuryExtractorAction = "CREATE LUXURY EXTRACTOR";
         public static readonly string CreateStrategicExtractorAction = "CREATE STRATEGIC EXTRACTOR";
         public static readonly string CreateLuxuryManufactoryAction = "UPGRADE TO LUXURY MANUFACTORY";
-        
+
         // TODO: PresentationArmy.TeleportToPosition // PresentationArmy.UpdatePosition(WorldPosition worldPosition)
 
         // DESTROY ACTIONS
         public static void DestroySettlementAt(int tileIndex) => SandboxManager
-            .PostOrder(new EditorOrderDestroySettlement {SettlementTileIndex = tileIndex});
-        
+            .PostOrder(new EditorOrderDestroySettlement { SettlementTileIndex = tileIndex });
+
         public static void DestroyDistrictAt(int tileIndex) => SandboxManager
-            .PostOrder(new EditorOrderRemoveDistrictAt {TileIndex = tileIndex});
-        
+            .PostOrder(new EditorOrderRemoveDistrictAt { TileIndex = tileIndex });
+
         public static void RemoveUnitFromArmyAt(int tileIndex) => SandboxManager
             .PostOrder(new EditorOrderRemoveUnitFromArmy { ArmyTileIndex = tileIndex, UnitIndex = 0 });
-        
+
         // CREATE ACTIONS
-        public static void CreateDistrictAt(int tileIndex, StaticString districtDefinitionName) => SandboxManager
-            .PostOrder(new EditorOrderCreateExtensionDistrictAt
-            {
-                TileIndex = tileIndex,
-                DistrictDefinitionName = districtDefinitionName
-            });
-        
+        public static void CreateDistrictAt(int tileIndex, StaticString districtDefinitionName) =>
+            SandboxManager
+                .PostOrder(new EditorOrderCreateExtensionDistrictAt
+                {
+                    TileIndex = tileIndex,
+                    DistrictDefinitionName = districtDefinitionName
+                });
+
         public static void CreateCampAt(int tileIndex) => SandboxManager
             .PostOrder(new EditorOrderCreateCampAt()
             {
                 CampTileIndex = tileIndex,
-                EmpireIndex = Amplitude.Mercury.Interop.Snapshots.GameSnapshot.PresentationData.LocalEmpireInfo.EmpireIndex
+                EmpireIndex = Amplitude.Mercury.Interop.Snapshots.GameSnapshot.PresentationData
+                    .LocalEmpireInfo.EmpireIndex
             });
-        
+
         public static void CreateArmyAt(int tileIndex, StaticString unitDefinitionName) => SandboxManager
             .PostOrder(new OrderSpawnArmy
             {
                 WorldPosition = Snapshots.World.Tiles[tileIndex].WorldPosition,
-                UnitDefinitions = new []{ unitDefinitionName }
+                UnitDefinitions = new[] { unitDefinitionName }
             });
-        
+
         public static void AddUnitToArmy(int tileIndex, StaticString unitDefinitionName) => SandboxManager
             .PostOrder(new OrderAddUnitToArmy()
             {
@@ -78,32 +80,47 @@ namespace DevTools.Humankind.GUITools.UI
                 UnitDefinition = unitDefinitionName,
                 IgnoreArmyFull = true
             });
-        
+
         public static void CreateLuxuryResourceExtractorAt(int tileIndex) => SandboxManager
             .PostOrder(new EditorOrderCreateExtensionDistrictAt
             {
                 TileIndex = tileIndex,
                 DistrictDefinitionName = new StaticString("Extension_Base_Luxury")
             });
-        
-        public static void CreateStrategicResourceExtractorAt(int tileIndex, string resourceNum) => SandboxManager
-            .PostOrder(new EditorOrderCreateExtensionDistrictAt
-            {
-                TileIndex = tileIndex,
-                DistrictDefinitionName = new StaticString("Extension_Base_Strategic" + resourceNum)
-            });
-        
+
+        public static void CreateStrategicResourceExtractorAt(int tileIndex, string resourceNum) =>
+            SandboxManager
+                .PostOrder(new EditorOrderCreateExtensionDistrictAt
+                {
+                    TileIndex = tileIndex,
+                    DistrictDefinitionName = new StaticString("Extension_Base_Strategic" + resourceNum)
+                });
+
         public static void CreateLuxuryManufactoryAt(int tileIndex, string resourceNum) => SandboxManager
             .PostOrder(new EditorOrderCreateExtensionDistrictAt
             {
                 TileIndex = tileIndex,
                 DistrictDefinitionName = new StaticString("Extension_Wondrous_Resource" + resourceNum)
             });
-        
-        
+
+
         // TRANSFORM ACTIONS
         public static void EvolveOutpostToCityAt(int tileIndex) => SandboxManager
-            .PostOrder(new EditorOrderEvolveCampToCity {CampTileIndex = tileIndex});
+            .PostOrder(new EditorOrderEvolveCampToCity { CampTileIndex = tileIndex });
+
+        /*public static void PaintDistrictAfinity(MouseButton mouseButton)
+        {
+            DistrictInfo districtInfo;
+            if (!this.TryGetDistrictInfoAt(Amplitude.Mercury.Presentation.Presentation.PresentationCursorController.CurrentHighlightedPosition.ToTileIndex(), out districtInfo))
+                return;
+            SandboxManager.PostOrder((Order) new OrderForceDistrictAffinity()
+            {
+                DistrictGUID = (SimulationEntityGUID) districtInfo.SimulationEntityGUID,
+                Affinity = (this.UseCurrentAffinity ? this.CurrentAffinity : StaticString.Empty),
+                InitialAffinity = (this.UseCurrentInitialAffinity ? this.CurrentInitialAffinity : StaticString.Empty),
+                DistrictDefinition = (this.UseCurrentDistrictDefinition ? this.CurrentDistrictDefinition : StaticString.Empty)
+            });
+        }*/
 
         // OTHER ACTIONS
         public static void RemoveMinorEmpire(int minorEmpireIndex) => SandboxManager
@@ -119,9 +136,8 @@ namespace DevTools.Humankind.GUITools.UI
 
         private bool Destroy(Action action, string actionName)
         {
-            
             ActionNameOnDestroy = actionName;
-            
+
             OnDestroy = () =>
             {
                 LastTileIndex = TileIndex;
@@ -132,11 +148,11 @@ namespace DevTools.Humankind.GUITools.UI
 
             return true;
         }
-        
+
         private bool Create(Action action, string actionName)
         {
             ActionNameOnCreate = actionName;
-            
+
             OnCreate = () =>
             {
                 LastTileIndex = TileIndex;

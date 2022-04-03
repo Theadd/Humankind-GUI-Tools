@@ -23,8 +23,6 @@ namespace DevTools.Humankind.GUITools.UI
         private static int localEmpireIndex = 0;
         // Snapshot currently being displayed
         private static GameStatsSnapshot Snapshot;
-        // True when the snapshot current snapshot can be "live" updated or it is a previously saved one.
-        private static bool isLiveSnapshot;
         
         private int activeTab = 0;
         private int previousActiveTab = 0;
@@ -87,7 +85,6 @@ namespace DevTools.Humankind.GUITools.UI
         {
             if (HumankindGame.IsGameLoaded)
             {
-                isLiveSnapshot = true;
                 localEmpireIndex = (int)Snapshots.GameSnapshot.PresentationData.LocalEmpireInfo.EmpireIndex;
 
                 Snapshot = new GameStatsSnapshot();

@@ -21,7 +21,7 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
 
     public class VirtualSceneRenderer : IVirtualSceneRenderer
     {
-        private IRenderableScene _renderable;
+        // private IRenderableScene _renderable;
         private bool _clearOnRepaint = true;
         public bool RenderHexOverlayOnWorldPositionableComponents { get; set; } = true;
         public bool CaptureOnMouseHover { get; private set; } = false;

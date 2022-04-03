@@ -14,7 +14,6 @@ using Amplitude.Mercury.Terrain;
 using System;
 using System.Reflection;
 using UnityEngine;
-
 using Modding.Humankind.DevTools.Core;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
@@ -28,7 +27,7 @@ namespace DevTools.Humankind.GUITools.UI
         public override string WindowGUIStyle { get; set; } = "PopupWindow";
 
         public override bool ShouldBeVisible => !GlobalSettings.ShouldHideTools || OverrideVisibility;
-        
+
         public bool OverrideVisibility { get; set; } = false;
 
         public override bool ShouldRestoreLastWindowPosition => true;
@@ -45,10 +44,10 @@ namespace DevTools.Humankind.GUITools.UI
         }
 
         public static readonly FieldInfo GameUtilsField =
-                typeof(Amplitude.Mercury.UI.Utils).GetField("GameUtils", R.NonPublicStatic);
+            typeof(Amplitude.Mercury.UI.Utils).GetField("GameUtils", R.NonPublicStatic);
 
         public static Amplitude.Mercury.UI.Helpers.GameUtils GameUtils =>
-                ((Amplitude.Mercury.UI.Helpers.GameUtils)GameUtilsField.GetValue(null));
+            ((Amplitude.Mercury.UI.Helpers.GameUtils) GameUtilsField.GetValue(null));
 
         public override void OnDrawUI()
         {
@@ -57,24 +56,24 @@ namespace DevTools.Humankind.GUITools.UI
 
             OnDrawWindowClientArea(0);
         }
-        [RenderContext.RenderContext]
-        [SerializeField]
-        private int renderContext;
-        [SerializeField]
-        private bool moreTileInfo;
-        [SerializeField]
-        private bool moreDistrictInfo;
 
-        private GUIStyle GridHeaderStyle { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Grid"))
-        {
-            alignment = TextAnchor.LowerRight,
-            padding = new RectOffset(0, 4, 4, 4),
-            normal = new GUIStyleState()
+        [RenderContext.RenderContext] [SerializeField]
+        private int renderContext = 0;
+
+        [SerializeField] private bool moreTileInfo;
+        [SerializeField] private bool moreDistrictInfo;
+
+        private GUIStyle GridHeaderStyle { get; set; } =
+            new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Grid"))
             {
-                background = null,
-                textColor = Color.white
-            }
-        };
+                alignment = TextAnchor.LowerRight,
+                padding = new RectOffset(0, 4, 4, 4),
+                normal = new GUIStyleState()
+                {
+                    background = null,
+                    textColor = Color.white
+                }
+            };
 
         private static float cellWidth = 34f;
         private static float cellSpace = 1f;
@@ -93,27 +92,34 @@ namespace DevTools.Humankind.GUITools.UI
         {
             GUI.color = Color.white;
             GUI.backgroundColor = bgCellColor;
-            GUILayout.BeginVertical((GUIStyle)"Widget.ClientArea", GUILayout.ExpandWidth(true));
+            GUILayout.BeginVertical((GUIStyle) "Widget.ClientArea", GUILayout.ExpandWidth(true));
             GUILayout.Space(4f);
-            if ((UnityEngine.Object)Amplitude.Mercury.Presentation.Presentation.PresentationCursorController != (UnityEngine.Object)null && Amplitude.Mercury.Presentation.Presentation.PresentationCursorController.HasBeenStarted && !Amplitude.Mercury.Presentation.Presentation.PresentationCursorController.HasBeenShutdown)
+            if ((UnityEngine.Object) Amplitude.Mercury.Presentation.Presentation
+                    .PresentationCursorController != (UnityEngine.Object) null &&
+                Amplitude.Mercury.Presentation.Presentation.PresentationCursorController.HasBeenStarted &&
+                !Amplitude.Mercury.Presentation.Presentation.PresentationCursorController.HasBeenShutdown)
             {
-                ITerrainPickingService instance = RenderContextAccess.GetInstance<ITerrainPickingService>(this.renderContext);
+                ITerrainPickingService instance =
+                    RenderContextAccess.GetInstance<ITerrainPickingService>(renderContext);
                 if (instance != null)
                 {
                     Hexagon.OffsetCoords offsetHexCoords = new Hexagon.OffsetCoords();
-                    if (instance.ScreenPositionToHexagonOffsetCoords((Vector2)Input.mousePosition, ref offsetHexCoords))
+                    if (instance.ScreenPositionToHexagonOffsetCoords((Vector2) Input.mousePosition,
+                            ref offsetHexCoords))
                     {
                         WorldPosition hexagon = new WorldPosition(offsetHexCoords);
                         using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
                         {
                             GUILayout.Label("Coordinates", GridHeaderStyle, span5Cells);
-                            GUILayout.Label(hexagon.Column.ToString(), (GUIStyle)"PopupWindow.Grid", span1Cell);
+                            GUILayout.Label(hexagon.Column.ToString(), (GUIStyle) "PopupWindow.Grid",
+                                span1Cell);
                             int num = hexagon.Row;
-                            GUILayout.Label(num.ToString(), (GUIStyle)"PopupWindow.Grid", span1Cell);
+                            GUILayout.Label(num.ToString(), (GUIStyle) "PopupWindow.Grid", span1Cell);
                             GUILayout.Label("Index", GridHeaderStyle, span4Cells);
                             num = hexagon.ToTileIndex();
-                            GUILayout.Label(num.ToString(), (GUIStyle)"PopupWindow.Grid", span2Cells);
+                            GUILayout.Label(num.ToString(), (GUIStyle) "PopupWindow.Grid", span2Cells);
                         }
+
                         this.DisplayTileInfoAt(hexagon);
                         this.DisplayDistrictInfoAt(hexagon);
                     }
@@ -132,14 +138,18 @@ namespace DevTools.Humankind.GUITools.UI
 
         private void DisplayTileInfoAt(WorldPosition hexagon)
         {
-            ref TileInfo local = ref Snapshots.GameSnapshot.PresentationData.LocalEmpireInfo.TileInfo.Data[hexagon.ToTileIndex()];
+            ref TileInfo local =
+                ref Snapshots.GameSnapshot.PresentationData.LocalEmpireInfo.TileInfo.Data[
+                    hexagon.ToTileIndex()];
             using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
             {
                 GUILayout.Label("Territory", GridHeaderStyle, span5Cells);
-                GUILayout.Label(local.TerritoryIndex.ToString(), (GUIStyle)"PopupWindow.Grid", span1Cell);
+                GUILayout.Label(local.TerritoryIndex.ToString(), (GUIStyle) "PopupWindow.Grid", span1Cell);
 
-                GUILayout.Label(GameUtils.GetTerritoryName((int)local.TerritoryIndex), (GUIStyle)"PopupWindow.Grid", span7Cells);
+                GUILayout.Label(GameUtils.GetTerritoryName((int) local.TerritoryIndex),
+                    (GUIStyle) "PopupWindow.Grid", span7Cells);
             }
+
             this.moreTileInfo = true;
             /*using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
             {
@@ -151,50 +161,76 @@ namespace DevTools.Humankind.GUITools.UI
             using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
             {
                 GUILayout.Label("Elevation", GridHeaderStyle, span5Cells);
-                GUILayout.Label(local.Elevation.ToString(), (GUIStyle)"PopupWindow.Grid", span1Cell);
+                GUILayout.Label(local.Elevation.ToString(), (GUIStyle) "PopupWindow.Grid", span1Cell);
             }
+
             using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
             {
-                string text = (int)local.TerrainType < Snapshots.WorldSnapshot.PresentationData.TerrainTypeDefinitions.Length ? Snapshots.WorldSnapshot.PresentationData.TerrainTypeDefinitions[(int)local.TerrainType].Name.ToString() : "Unknown";
+                string text =
+                    (int) local.TerrainType <
+                    Snapshots.WorldSnapshot.PresentationData.TerrainTypeDefinitions.Length
+                        ? Snapshots.WorldSnapshot.PresentationData
+                            .TerrainTypeDefinitions[(int) local.TerrainType].Name.ToString()
+                        : "Unknown";
                 GUILayout.Label("Terrain", GridHeaderStyle, span5Cells);
-                GUILayout.Label(local.TerrainType.ToString(), (GUIStyle)"PopupWindow.Grid", span1Cell);
-                GUILayout.Label(text, (GUIStyle)"PopupWindow.Grid", span7Cells);
+                GUILayout.Label(local.TerrainType.ToString(), (GUIStyle) "PopupWindow.Grid", span1Cell);
+                GUILayout.Label(text, (GUIStyle) "PopupWindow.Grid", span7Cells);
             }
+
             using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
             {
-                string text = (int)local.Biome < Snapshots.WorldSnapshot.PresentationData.BiomeDefinitions.Length ? Snapshots.WorldSnapshot.PresentationData.BiomeDefinitions[(int)local.Biome].Name.ToString() : "Unknown";
+                string text =
+                    (int) local.Biome < Snapshots.WorldSnapshot.PresentationData.BiomeDefinitions.Length
+                        ? Snapshots.WorldSnapshot.PresentationData.BiomeDefinitions[(int) local.Biome].Name
+                            .ToString()
+                        : "Unknown";
                 GUILayout.Label("Biome", GridHeaderStyle, span5Cells);
-                GUILayout.Label(local.Biome.ToString(), (GUIStyle)"PopupWindow.Grid", span1Cell);
-                GUILayout.Label(text, (GUIStyle)"PopupWindow.Grid", span7Cells);
+                GUILayout.Label(local.Biome.ToString(), (GUIStyle) "PopupWindow.Grid", span1Cell);
+                GUILayout.Label(text, (GUIStyle) "PopupWindow.Grid", span7Cells);
             }
+
             using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
             {
-                string text = (int)local.PointOfInterest < Snapshots.WorldSnapshot.PresentationData.PointOfInterestDefinitions.Length ? Snapshots.WorldSnapshot.PresentationData.PointOfInterestDefinitions[(int)local.PointOfInterest].Name.ToString() : "None";
+                string text =
+                    (int) local.PointOfInterest < Snapshots.WorldSnapshot.PresentationData
+                        .PointOfInterestDefinitions.Length
+                        ? Snapshots.WorldSnapshot.PresentationData
+                            .PointOfInterestDefinitions[(int) local.PointOfInterest].Name.ToString()
+                        : "None";
                 GUILayout.Label("Point of Interest", GridHeaderStyle, span5Cells);
-                GUILayout.Label(local.PointOfInterest.ToString(), (GUIStyle)"PopupWindow.Grid", span1Cell);
-                GUILayout.Label(text, (GUIStyle)"PopupWindow.Grid", span7Cells);
+                GUILayout.Label(local.PointOfInterest.ToString(), (GUIStyle) "PopupWindow.Grid", span1Cell);
+                GUILayout.Label(text, (GUIStyle) "PopupWindow.Grid", span7Cells);
             }
+
             using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
             {
                 byte wonderDefinitionIndex = local.GetNaturalWonderDefinitionIndex();
-                string text = (int)wonderDefinitionIndex < Snapshots.WorldSnapshot.PresentationData.NaturalWonderDefinitions.Length ? Snapshots.WorldSnapshot.PresentationData.NaturalWonderDefinitions[(int)wonderDefinitionIndex].Name.ToString() : "None";
+                string text =
+                    (int) wonderDefinitionIndex < Snapshots.WorldSnapshot.PresentationData
+                        .NaturalWonderDefinitions.Length
+                        ? Snapshots.WorldSnapshot.PresentationData
+                            .NaturalWonderDefinitions[(int) wonderDefinitionIndex].Name.ToString()
+                        : "None";
                 GUILayout.Label("Natural wonder", GridHeaderStyle, span5Cells);
-                GUILayout.Label(wonderDefinitionIndex.ToString(), (GUIStyle)"PopupWindow.Grid", span1Cell);
-                GUILayout.Label(local.EncodedNaturalWonder.ToString(), (GUIStyle)"PopupWindow.Grid", span1Cell);
-                GUILayout.Label(text, (GUIStyle)"PopupWindow.Grid", span6Cells);
+                GUILayout.Label(wonderDefinitionIndex.ToString(), (GUIStyle) "PopupWindow.Grid", span1Cell);
+                GUILayout.Label(local.EncodedNaturalWonder.ToString(), (GUIStyle) "PopupWindow.Grid",
+                    span1Cell);
+                GUILayout.Label(text, (GUIStyle) "PopupWindow.Grid", span6Cells);
             }
+
             using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
             {
                 GUILayout.Label("River (id, distance, downstream)", GridHeaderStyle, span5Cells);
-                GUILayout.Label(local.RiverIndex.ToString(), (GUIStyle)"PopupWindow.Grid", span1Cell);
-                GUILayout.Label(local.RiverDistance.ToString(), (GUIStyle)"PopupWindow.Grid", span1Cell);
-                GUILayout.Label(local.RiverDownstream.ToString(), (GUIStyle)"PopupWindow.Grid", span1Cell);
+                GUILayout.Label(local.RiverIndex.ToString(), (GUIStyle) "PopupWindow.Grid", span1Cell);
+                GUILayout.Label(local.RiverDistance.ToString(), (GUIStyle) "PopupWindow.Grid", span1Cell);
+                GUILayout.Label(local.RiverDownstream.ToString(), (GUIStyle) "PopupWindow.Grid", span1Cell);
             }
         }
 
         private void DisplayDistrictInfoAt(WorldPosition hexagon)
         {
-            int districtIndexAt = Snapshots.GameSnapshot.PresentationData.GetDistrictIndexAt(hexagon.ToTileIndex());
+            int districtIndexAt =
+                Snapshots.GameSnapshot.PresentationData.GetDistrictIndexAt(hexagon.ToTileIndex());
             if (districtIndexAt < 0)
             {
                 // using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
@@ -207,15 +243,18 @@ namespace DevTools.Humankind.GUITools.UI
             }
             else
             {
-                ref DistrictInfo local = ref Snapshots.GameSnapshot.PresentationData.DistrictInfo.Data[districtIndexAt];
+                ref DistrictInfo local =
+                    ref Snapshots.GameSnapshot.PresentationData.DistrictInfo.Data[districtIndexAt];
                 using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
                 {
                     GUILayout.Label("District (Index, Guid)", GridHeaderStyle, span5Cells);
-                    GUILayout.Label(districtIndexAt.ToString(), (GUIStyle)"PopupWindow.Grid", span1Cell);
-                    GUILayout.Label(local.SimulationEntityGUID.ToString(), (GUIStyle)"PopupWindow.Grid", span1Cell);
+                    GUILayout.Label(districtIndexAt.ToString(), (GUIStyle) "PopupWindow.Grid", span1Cell);
+                    GUILayout.Label(local.SimulationEntityGUID.ToString(), (GUIStyle) "PopupWindow.Grid",
+                        span1Cell);
                     GUILayout.Label("Owner EmpireIndex", GridHeaderStyle, span5Cells);
-                    GUILayout.Label(local.EmpireIndex.ToString(), (GUIStyle)"PopupWindow.Grid", span1Cell);
+                    GUILayout.Label(local.EmpireIndex.ToString(), (GUIStyle) "PopupWindow.Grid", span1Cell);
                 }
+
                 /*using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
                 {
                     GUILayout.FlexibleSpace();
@@ -227,28 +266,34 @@ namespace DevTools.Humankind.GUITools.UI
                 using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
                 {
                     GUILayout.Label("Definition", GridHeaderStyle, span5Cells);
-                    GUILayout.Label(local.DistrictDefinitionName.ToString(), (GUIStyle)"PopupWindow.Grid", span8Cells);
+                    GUILayout.Label(local.DistrictDefinitionName.ToString(), (GUIStyle) "PopupWindow.Grid",
+                        span8Cells);
                 }
+
                 using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
                 {
                     GUILayout.Label("VisualAffinityName", GridHeaderStyle, span5Cells);
-                    GUILayout.Label(local.VisualAffinityName.ToString(), (GUIStyle)"PopupWindow.Grid", span8Cells);
+                    GUILayout.Label(local.VisualAffinityName.ToString(), (GUIStyle) "PopupWindow.Grid",
+                        span8Cells);
                 }
+
                 using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
                 {
                     GUILayout.Label("Visual level", GridHeaderStyle, span5Cells);
-                    GUILayout.Label(local.VisualLevel.ToString(), (GUIStyle)"PopupWindow.Grid", span1Cell);
+                    GUILayout.Label(local.VisualLevel.ToString(), (GUIStyle) "PopupWindow.Grid", span1Cell);
                 }
+
                 using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
                 {
                     GUILayout.Label("IsFortified", GridHeaderStyle, span5Cells);
-                    GUILayout.Label(local.IsFortified.ToString(), (GUIStyle)"PopupWindow.Grid", span2Cells);
+                    GUILayout.Label(local.IsFortified.ToString(), (GUIStyle) "PopupWindow.Grid", span2Cells);
                     GUILayout.Label("Fort Health", GridHeaderStyle, span2Cells);
-                    GUILayout.Label(((int)(local.FortificationHealthRatio * 100f)).ToString() + "%", (GUIStyle)"PopupWindow.Grid", span1Cell);
+                    GUILayout.Label(((int) (local.FortificationHealthRatio * 100f)).ToString() + "%",
+                        (GUIStyle) "PopupWindow.Grid", span1Cell);
                     GUILayout.Label("Fort Level", GridHeaderStyle, span2Cells);
-                    GUILayout.Label(local.FortificationLevel.ToString(), (GUIStyle)"PopupWindow.Grid", span1Cell);
+                    GUILayout.Label(local.FortificationLevel.ToString(), (GUIStyle) "PopupWindow.Grid",
+                        span1Cell);
                 }
-                
             }
         }
     }

@@ -12,19 +12,21 @@ namespace DevTools.Humankind.GUITools.UI
 {
     public abstract class BackScreenWindowBase : PopupToolWindow
     {
-        public virtual Rect WindowRect { get; set; } = new Rect (0, 0, Screen.width, Screen.height);
+        public virtual Rect WindowRect { get; set; } = new Rect(0, 0, Screen.width, Screen.height);
         public virtual string WindowGUIStyle { get; set; } = "PopupWindow.Sidebar";
         public ScreenUIOverlay ScreenOverlay { get; set; }
         public abstract string UniqueName { get; }
         public int WindowID => Math.Abs(GetInstanceID());
-        
+
         public abstract void OnDrawUI(int _);
 
         public abstract void OnZeroGUI();
 
-        protected int loop = 0;
-        protected int maxLoop = 10; // TODO: Changed from 40 to 10 for quicker development on live reload env
-        
+        private int loop = 0;
+        private bool _doLazyLoop = true;
+        private bool _doDrawUI = true;
+        protected int maxLoop = 30; // TODO: Changed from 40 to 10 for quicker development on live reload env
+
         protected override void Awake()
         {
             WindowStartupLocation = new Vector2(WindowRect.x, WindowRect.y);
@@ -32,8 +34,9 @@ namespace DevTools.Humankind.GUITools.UI
             base.Awake();
             Width = WindowRect.width;
         }
-        
-        void OnGUI () {
+
+        void OnGUI()
+        {
             GUI.skin = UIController.DefaultSkin;
             GUI.color = Color.white;
             GUI.backgroundColor = Color.white;
@@ -43,14 +46,23 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 if (loop == 0)
                 {
+                    _doLazyLoop = !ViewController.IsGloballyDisabled;
+                    _doDrawUI = _doLazyLoop;
                     SyncScreenUIOverlay();
-                    OnZeroGUI();
                 }
 
                 if (loop++ > maxLoop)
                     loop = 0;
+                
+                if (_doLazyLoop)
+                {
+                    OnZeroGUI();
+                    _doLazyLoop = false;
+                }
             }
-            WindowRect = GUI.Window (WindowID, WindowRect, OnDrawUI, string.Empty, WindowGUIStyle);
+
+            if (_doDrawUI)
+                WindowRect = GUI.Window(WindowID, WindowRect, OnDrawUI, string.Empty, WindowGUIStyle);
         }
 
         public void SyncScreenUIOverlay()
@@ -64,10 +76,15 @@ namespace DevTools.Humankind.GUITools.UI
                 ScreenOverlay.FullScreenSync();
             }
         }
-        
-        protected override void OnBecomeVisible() { }
-        protected override void OnBecomeInvisible() { }
-        
+
+        protected override void OnBecomeVisible()
+        {
+        }
+
+        protected override void OnBecomeInvisible()
+        {
+        }
+
         public override Rect GetWindowRect() => WindowRect;
 
         public override void SetWindowRect(Rect rect)
@@ -77,6 +94,7 @@ namespace DevTools.Humankind.GUITools.UI
 
         public override void Close(bool saveVisibilityStateBeforeClosing = false)
         {
+            PlacementCursorController.Unload();
             ToolboxController.Unload();
             ScreenUIOverlay.Unload();
             SceneInspectorController.Unload();
