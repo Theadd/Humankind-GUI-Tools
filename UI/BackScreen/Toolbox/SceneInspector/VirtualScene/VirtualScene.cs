@@ -15,12 +15,12 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
             {
                 _root = value;
                 RootGameObjectName = _root.name;
-                _isDirty = true;
+                // _isDirty = true;
             }
         }
         private GameObject _root;
 
-        private bool _isDirty = true;
+        // private bool _isDirty = true;
         private int _count = 0;
 
         public VirtualComponent[] Entities { get; private set; } = new VirtualComponent[] { };

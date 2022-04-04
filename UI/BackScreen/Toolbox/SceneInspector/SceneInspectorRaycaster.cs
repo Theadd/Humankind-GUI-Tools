@@ -35,7 +35,7 @@ namespace DevTools.Humankind.GUITools.UI.SceneInspector
             (Dictionary<Type, Cursor>) CursorByTypeField.GetValue(Presentation.PresentationCursorController);
 
         private static readonly int AllLayers = ~0;
-        private static bool _wireRendererAttached = false;
+        // private static bool _wireRendererAttached = false;
 
         public void TestRaycastFromCameraToScreenPoint()
         {

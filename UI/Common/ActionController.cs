@@ -15,10 +15,17 @@ namespace DevTools.Humankind.GUITools.UI
         public static bool IsPresentationFogOfWarEnabled =>
             Snapshots.GameSnapshot?.PresentationData?.IsPresentationFogOfWarEnabled ?? false;
 
-        public static void TogglePresentationFogOfWar() =>
+        public static void TogglePresentationFogOfWar()
+        {
+            if (ViewController.IsGloballyDisabled) return;
             Snapshots.GameSnapshot?.SetFogOfWarEnabled(!IsPresentationFogOfWarEnabled);
+        }
 
-        public static void ToggleFreeCameraMode() => FreeCamera.ToggleFreeCameraMode();
+        public static void ToggleFreeCameraMode()
+        {
+            if (ViewController.IsGloballyDisabled) return;
+            FreeCamera.ToggleFreeCameraMode();
+        }
 
         public static FreeCameraController FreeCamera { get; set; } = new FreeCameraController();
 
@@ -32,23 +39,44 @@ namespace DevTools.Humankind.GUITools.UI
 
         public static void SwitchCameraFieldOfView()
         {
+            if (ViewController.IsGloballyDisabled) return;
             var camera = Camera;
 
             if (camera != null)
                 camera.fieldOfView = camera.fieldOfView < 40f ? (camera.fieldOfView < 30f ? 65f : 15f) : 35f;
         }
 
-        public static void ToggleTooltipsVisibility() =>
+        public static void ToggleTooltipsVisibility()
+        {
+            if (ViewController.IsGloballyDisabled) return;
             UIController.AreTooltipsVisible = !UIController.AreTooltipsVisible;
+        }
 
-        public static void ToggleAmplitudeUIVisibility() =>
+        public static void ToggleAmplitudeUIVisibility()
+        {
+            if (ViewController.IsGloballyDisabled) return;
             UIController.IsAmplitudeUIVisible = !UIController.IsAmplitudeUIVisible;
+        }
 
-        public static void ToggleFrontiersVisibility() => Presentation.PresentationFrontiersController?
-            .DisplayAllFrontiers(!Presentation.PresentationFrontiersController?.FrontiersDisplayed ?? false);
+        public static void ToggleFrontiersVisibility()
+        {
+            if (ViewController.IsGloballyDisabled) return;
+            Presentation.PresentationFrontiersController?
+                .DisplayAllFrontiers(!Presentation.PresentationFrontiersController?.FrontiersDisplayed ??
+                                     false);
+        }
 
-        public static void ToggleGodMode() => UIController.GodMode = !UIController.GodMode;
-        public static void ToggleLiveEditorMode() => LiveEditorMode.Enabled = !LiveEditorMode.Enabled;
+        public static void ToggleGodMode()
+        {
+            if (ViewController.IsGloballyDisabled) return;
+            UIController.GodMode = !UIController.GodMode;
+        }
+
+        public static void ToggleLiveEditorMode()
+        {
+            if (ViewController.IsGloballyDisabled) return;
+            LiveEditorMode.Enabled = !LiveEditorMode.Enabled;
+        }
 
         public static bool TryGetDistrictInfoAt(WorldPosition position, out DistrictInfo districtInfo)
         {

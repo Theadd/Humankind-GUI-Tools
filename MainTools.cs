@@ -48,7 +48,11 @@ namespace DevTools.Humankind.GUITools
             //    TestingPlayground.Run();
         }
         
-        public static void ToggleHideToolbarWindow() => GlobalSettings.HideToolbarWindow.Value = !GlobalSettings.HideToolbarWindow.Value;
+        public static void ToggleHideToolbarWindow()
+        {
+            if (ViewController.IsGloballyDisabled) return;
+            GlobalSettings.HideToolbarWindow.Value = !GlobalSettings.HideToolbarWindow.Value;
+        }
 
         public static void ToggleHideAllUIWindows() =>
             Loggr.Log("HIDDING ALL GUI TOOLS WINDOWS IS TEMPORARILY DISABLED", ConsoleColor.Magenta); //FloatingToolWindow.HideAllGUITools = !FloatingToolWindow.HideAllGUITools);
@@ -69,6 +73,7 @@ namespace DevTools.Humankind.GUITools
 
         public static void ToggleGameOverviewWindow()
         {
+            if (ViewController.IsGloballyDisabled) return;
             if (StatsWindow == null)
             {
                 PopupToolWindow.Open<GameStatsWindow>(w => StatsWindow = w);
@@ -81,6 +86,7 @@ namespace DevTools.Humankind.GUITools
 
         public static void ToggleEndGameStatisticsWindow()
         {
+            if (ViewController.IsGloballyDisabled) return;
             if (EndGameWindow == null)
             {
                 PopupToolWindow.Open<EndGameStatisticsWindow>(w => EndGameWindow = w);
@@ -93,6 +99,7 @@ namespace DevTools.Humankind.GUITools
         
         public static void CloseEndGameStatisticsWindow()
         {
+            if (ViewController.IsGloballyDisabled) return;
             if (EndGameWindow != null)
             {
                 EndGameWindow.Close(false);

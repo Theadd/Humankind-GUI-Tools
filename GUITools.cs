@@ -1,9 +1,9 @@
 using BepInEx;
 using DevTools.Humankind.GUITools.UI;
+using Modding.Humankind.DevTools;
 
 namespace DevTools.Humankind.GUITools
 {
-    // [BepInPlugin(PLUGIN_GUID, "GUITools", "1.3.1.0")]
     // [BepInDependency("UniverseLib.Mono", BepInDependency.DependencyFlags.SoftDependency)]
     
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
@@ -16,6 +16,7 @@ namespace DevTools.Humankind.GUITools
         private void Awake()
         {
             MainTools.IsDebugModeEnabled = FeatureFlags.DebugMode;
+            Loggr.WriteLogToDisk = FeatureFlags.WriteLogToDisk;
             Modding.Humankind.DevTools.DevTools.QuietMode = FeatureFlags.QuietMode;
             MainTools.Main();
         }

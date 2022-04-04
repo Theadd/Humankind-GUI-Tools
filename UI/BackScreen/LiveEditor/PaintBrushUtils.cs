@@ -2,7 +2,11 @@
 using Modding.Humankind.DevTools;
 using System.Linq;
 using System.Reflection;
+using Amplitude;
+using Amplitude.Framework;
 using Amplitude.Framework.Simulation;
+using Amplitude.Mercury.Data.Simulation;
+using Amplitude.Mercury.Interop;
 using Amplitude.Mercury.Sandbox;
 using Amplitude.Mercury.Simulation;
 using Amplitude.Serialization;
@@ -16,6 +20,9 @@ namespace DevTools.Humankind.GUITools.UI
 {
     public partial class PaintBrush
     {
+        private static BuildingVisualAffinityDefinition[] _allAffinities = null;
+        public static BuildingVisualAffinityDefinition[] AllAffinities => _allAffinities ??
+            (_allAffinities = Databases.GetDatabase<BuildingVisualAffinityDefinition>().ToArray());
         
         public static bool TryGetEntitiesAt(int tileIndex, out int empireIndex, out Settlement settlement, out Territory territory)
         {
@@ -164,6 +171,34 @@ namespace DevTools.Humankind.GUITools.UI
             
             return false;
         }
+
+        public static string GetRelatedVisualAffinityDefinitionName(StaticString constructibleDefinitionName)
+        {
+            var name = constructibleDefinitionName.ToString();
+            
+            if (name.StartsWith("Extension_"))
+            {
+                name = name.Replace("Extension_", "BuildingVisualAffinity_");
+
+                return AllAffinities.FirstOrDefault(el => el.name == name)?.name ?? string.Empty;
+            }
+
+            return string.Empty;
+        }
         
+        public static bool TryGetDistrictInfoAt(int position, out DistrictInfo districtInfo)
+        {
+            DistrictInfo[] districtInfo1 = (DistrictInfo[]) Snapshots.GameSnapshot.PresentationData.LocalEmpireInfo.DistrictInfo;
+            for (int index = 0; index < districtInfo1.Length; ++index)
+            {
+                if (districtInfo1[index].TileIndex == position)
+                {
+                    districtInfo = districtInfo1[index];
+                    return true;
+                }
+            }
+            districtInfo = new DistrictInfo();
+            return false;
+        }
     }
 }
