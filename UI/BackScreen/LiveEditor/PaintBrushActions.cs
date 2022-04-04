@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Linq;
 using Amplitude;
+using Amplitude.Framework;
 using Amplitude.Mercury;
+using Amplitude.Mercury.Data.Simulation;
 using Amplitude.Mercury.Interop;
 using Amplitude.Mercury.Interop.AI.Data;
 using Amplitude.Mercury.Presentation;
@@ -50,13 +53,35 @@ namespace DevTools.Humankind.GUITools.UI
             .PostOrder(new EditorOrderRemoveUnitFromArmy { ArmyTileIndex = tileIndex, UnitIndex = 0 });
 
         // CREATE ACTIONS
-        public static void CreateDistrictAt(int tileIndex, StaticString districtDefinitionName) =>
+        public static void CreateDistrictAt(int tileIndex, StaticString districtDefinitionName)
+        {
+            var affinityName = GetRelatedVisualAffinityDefinitionName(districtDefinitionName);
+            if (affinityName == string.Empty ||
+                !TryGetDistrictInfoAt(tileIndex, out DistrictInfo districtInfo))
+                CreateExtensionDistrictAt(tileIndex, districtDefinitionName);
+            else
+                PaintDistrictAffinityAt(districtInfo.SimulationEntityGUID, districtDefinitionName,
+                    new StaticString(affinityName));
+        }
+
+        public static void CreateExtensionDistrictAt(int tileIndex, StaticString districtDefinitionName) =>
             SandboxManager
                 .PostOrder(new EditorOrderCreateExtensionDistrictAt
                 {
                     TileIndex = tileIndex,
                     DistrictDefinitionName = districtDefinitionName
                 });
+
+
+        public static void PaintDistrictAffinityAt(SimulationEntityGUID simulationEntityGuid,
+            StaticString districtDefinitionName, StaticString affinityDefinitionName) =>
+            SandboxManager.PostOrder(new OrderForceDistrictAffinity()
+            {
+                DistrictGUID = simulationEntityGuid,
+                Affinity = affinityDefinitionName,
+                InitialAffinity = affinityDefinitionName,
+                DistrictDefinition = districtDefinitionName
+            });
 
         public static void CreateCampAt(int tileIndex) => SandboxManager
             .PostOrder(new EditorOrderCreateCampAt()
@@ -108,19 +133,6 @@ namespace DevTools.Humankind.GUITools.UI
         public static void EvolveOutpostToCityAt(int tileIndex) => SandboxManager
             .PostOrder(new EditorOrderEvolveCampToCity { CampTileIndex = tileIndex });
 
-        /*public static void PaintDistrictAfinity(MouseButton mouseButton)
-        {
-            DistrictInfo districtInfo;
-            if (!this.TryGetDistrictInfoAt(Amplitude.Mercury.Presentation.Presentation.PresentationCursorController.CurrentHighlightedPosition.ToTileIndex(), out districtInfo))
-                return;
-            SandboxManager.PostOrder((Order) new OrderForceDistrictAffinity()
-            {
-                DistrictGUID = (SimulationEntityGUID) districtInfo.SimulationEntityGUID,
-                Affinity = (this.UseCurrentAffinity ? this.CurrentAffinity : StaticString.Empty),
-                InitialAffinity = (this.UseCurrentInitialAffinity ? this.CurrentInitialAffinity : StaticString.Empty),
-                DistrictDefinition = (this.UseCurrentDistrictDefinition ? this.CurrentDistrictDefinition : StaticString.Empty)
-            });
-        }*/
 
         // OTHER ACTIONS
         public static void RemoveMinorEmpire(int minorEmpireIndex) => SandboxManager
