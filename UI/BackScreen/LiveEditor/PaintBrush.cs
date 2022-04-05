@@ -59,7 +59,31 @@ namespace DevTools.Humankind.GUITools.UI
             var brush = LiveEditorMode.ActivePaintBrush; // ConstructibleDefinition
             var brushType = LiveEditorMode.BrushType; // LiveBrushType
 
-            if ((brushType | LiveBrushType.Unit) != brushType)
+            if ((brushType | LiveBrushType.Unit) == brushType)
+            {
+                // brushType is Unit
+
+                // If there's no army on that tile, create it
+                if ((HexTile | HexTileType.Army) != HexTile)
+                    return Create(() => CreateArmyAt(TileIndex, brush.Name), CreateArmyAction);
+
+                // There's already an army there, add unit to army instead.
+                return Create(() => AddUnitToArmy(TileIndex, brush.Name), AddUnitToArmyAction);
+            }
+            else if ((brushType | LiveBrushType.Collectible) == brushType)
+            {
+                // brushType is Collectible
+
+                // If it's a curiosity
+                if ((brushType | LiveBrushType.Curiosity) == brushType)
+                    // If there's no army on that tile, create it
+                    if ((HexTile | HexTileType.Army) != HexTile)
+                        return Create(() => CreateCuriosityAt(TileIndex, brush.Name), CreateCuriosityAction);
+
+                // There's already an army there or it's not a curiosity, do nothing.
+                return false;
+            }
+            else
             {
                 // TODO: Mountains
                 // if ((HexTile | HexTileType.Mountain) == HexTile)
@@ -108,17 +132,6 @@ namespace DevTools.Humankind.GUITools.UI
                     // Over an unclaimed territory, let's create an outpost
                     return Create(() => CreateCampAt(TileIndex), CreateCampAction);
                 }
-            }
-            else
-            {
-                // brushType is Unit
-
-                // If there's no army on that tile, create it
-                if ((HexTile | HexTileType.Army) != HexTile)
-                    return Create(() => CreateArmyAt(TileIndex, brush.Name), CreateArmyAction);
-
-                // There's already an army there, add unit to army instead.
-                return Create(() => AddUnitToArmy(TileIndex, brush.Name), AddUnitToArmyAction);
             }
 
             return false;

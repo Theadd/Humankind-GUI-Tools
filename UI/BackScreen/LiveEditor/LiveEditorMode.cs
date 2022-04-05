@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Amplitude;
+using Amplitude.Framework;
 using Amplitude.Mercury.Data.Simulation;
 using BepInEx.Configuration;
 using DevTools.Humankind.GUITools.UI.SceneInspector;
@@ -21,6 +22,8 @@ namespace DevTools.Humankind.GUITools.UI
         AirUnit = 8,
         LandUnit = 16,
         MissileUnit = 32,
+        Collectible = 64,
+        Curiosity = 128
     }
 
     public enum EditorModeType
@@ -30,7 +33,7 @@ namespace DevTools.Humankind.GUITools.UI
         Inspector,
         MapMarker
     }
-    
+
     public static class LiveEditorMode
     {
         public static readonly string ToolboxPreviewActionName = "ShowToolboxWhileHoldingKey";
@@ -41,7 +44,7 @@ namespace DevTools.Humankind.GUITools.UI
         public static bool Enabled { get; set; } = false;
         public static EditorModeType EditorMode { get; set; } = EditorModeType.TilePainter;
         public static HoveredHexPainter HexPainter { get; set; }
-        public static ConstructibleDefinition ActivePaintBrush { get; private set; } = null;
+        public static IDatatableElement ActivePaintBrush { get; private set; } = null;
         public static LiveBrushType BrushType { get; private set; } = LiveBrushType.None;
 
         private static KeyboardShortcut CreateKey { get; set; }
@@ -70,7 +73,7 @@ namespace DevTools.Humankind.GUITools.UI
                 KeyMappings.Keys.First(map => map.ActionName == ToolboxPreviewActionName).Key;
             ToolboxController.StickedToolboxKey =
                 KeyMappings.Keys.First(map => map.ActionName == StickedToolboxActionName).Key;
-            
+
             CreateKey = KeyMappings.Keys.First(map => map.ActionName == CreateUnderCursorActionName).Key;
             DestroyKey = KeyMappings.Keys.First(map => map.ActionName == DestroyUnderCursorActionName).Key;
             DebugKey = KeyMappings.Keys.First(map => map.ActionName == DebugUnderCursorActionName).Key;
@@ -82,16 +85,27 @@ namespace DevTools.Humankind.GUITools.UI
 
             if (gridCell != null && gridCell.Cell is Clickable4xCell cell)
             {
-                ActivePaintBrush = UIController.GameUtils.GetConstructibleDefinition(new StaticString(cell.UniqueName));
+                ActivePaintBrush =
+                    UIController.GameUtils.GetConstructibleDefinition(new StaticString(cell.UniqueName));
+
+                if (ActivePaintBrush == null)
+                    ActivePaintBrush = UIController.GameUtils.GetDefinition<CollectibleDefinition>(
+                        new StaticString(cell.UniqueName));
             }
             else if (gridCell != null && gridCell.Cell is ClickableImageCell imageCell)
             {
-                ActivePaintBrush = UIController.GameUtils.GetConstructibleDefinition(new StaticString(imageCell.UniqueName));
+                ActivePaintBrush =
+                    UIController.GameUtils.GetConstructibleDefinition(new StaticString(imageCell.UniqueName));
+
+                if (ActivePaintBrush == null)
+                    ActivePaintBrush = UIController.GameUtils.GetDefinition<CollectibleDefinition>(
+                        new StaticString(imageCell.UniqueName));
             }
             else
             {
                 ActivePaintBrush = null;
             }
+
             UpdateBrushType();
         }
 
@@ -112,11 +126,11 @@ namespace DevTools.Humankind.GUITools.UI
                         BrushPainter.UpdateTile();
                     }
                 }
-                
+
                 // if (DebugKey.IsPressed()) BrushPainter.Debug();
                 // if (CreateKey.IsPressed()) BrushPainter.Paint();
                 // if (DestroyKey.IsPressed()) BrushPainter.Erase();
-                
+
                 if (DebugKey.IsDown()) BrushPainter.Debug();
                 if (CreateKey.IsDown()) BrushPainter.Paint();
                 if (DestroyKey.IsDown()) BrushPainter.Erase();
@@ -138,7 +152,7 @@ namespace DevTools.Humankind.GUITools.UI
             if (ActivePaintBrush is UnitDefinition)
             {
                 BrushType = LiveBrushType.Unit;
-                
+
                 if (ActivePaintBrush is AirUnitDefinition) BrushType |= LiveBrushType.AirUnit;
                 if (ActivePaintBrush is MissileUnitDefinition) BrushType |= LiveBrushType.MissileUnit;
                 if (ActivePaintBrush is LandUnitDefinition) BrushType |= LiveBrushType.LandUnit;
@@ -150,11 +164,18 @@ namespace DevTools.Humankind.GUITools.UI
                 if (ActivePaintBrush is MissileUnitDefinition) BrushType |= LiveBrushType.MissileUnit;
                 if (ActivePaintBrush is MissileUnitDefinition) BrushType |= LiveBrushType.MissileUnit;
             }
-            
-            if (ActivePaintBrush is DistrictDefinition)
+            else if (ActivePaintBrush is DistrictDefinition)
             {
                 BrushType = LiveBrushType.District;
-                
+
+                // ...
+            }
+            else if (ActivePaintBrush is CollectibleDefinition)
+            {
+                BrushType = LiveBrushType.Collectible;
+
+                if (ActivePaintBrush is CuriosityDefinition) BrushType |= LiveBrushType.Curiosity;
+
                 // ...
             }
         }
