@@ -130,7 +130,7 @@ namespace DevTools.Humankind.GUITools.UI
                 if (UIManagerService == null)
                     return;
 
-                UIManagerService.IsUiVisible = false;
+                UIManagerService.UpdateUIVisibility(false);
                 UIManagerService.AreTooltipsVisible = false;
                 
             }
@@ -155,7 +155,7 @@ namespace DevTools.Humankind.GUITools.UI
 
             if (UIManagerService == null) 
                 return;
-            UIManagerService.IsUiVisible = true;
+            UIManagerService.UpdateUIVisibility(true);
             UIManagerService.AreTooltipsVisible = true;
         }
 

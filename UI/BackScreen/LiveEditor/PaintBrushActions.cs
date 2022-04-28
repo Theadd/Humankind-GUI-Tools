@@ -39,6 +39,7 @@ namespace DevTools.Humankind.GUITools.UI
         public static readonly string CreateLuxuryExtractorAction = "CREATE LUXURY EXTRACTOR";
         public static readonly string CreateStrategicExtractorAction = "CREATE STRATEGIC EXTRACTOR";
         public static readonly string CreateLuxuryManufactoryAction = "UPGRADE TO LUXURY MANUFACTORY";
+        public static readonly string CreateCuriosityAction = "CREATE CURIOSITY";
 
         // TODO: PresentationArmy.TeleportToPosition // PresentationArmy.UpdatePosition(WorldPosition worldPosition)
 
@@ -127,6 +128,14 @@ namespace DevTools.Humankind.GUITools.UI
                 TileIndex = tileIndex,
                 DistrictDefinitionName = new StaticString("Extension_Wondrous_Resource" + resourceNum)
             });
+
+        public static void CreateCuriosityAt(int tileIndex, StaticString curiosityDefinitionName) =>
+            SandboxManager
+                .PostOrder(new EditorOrderCreateCuriosityAt
+                {
+                    TileIndex = tileIndex,
+                    CuriosityDefinitionName = curiosityDefinitionName
+                });
 
 
         // TRANSFORM ACTIONS
