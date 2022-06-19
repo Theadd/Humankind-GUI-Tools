@@ -456,22 +456,22 @@ namespace DevTools.Humankind.GUITools.UI
                 Amplitude.Mercury.Simulation.PathfindContext ctx = army.PathfindContext;
                 res = new List<string>() {
                     "<size=7>\n</size>" + row("Name", data.EntityName.ToString()),
-                    row("State", data.ArmyState.ToString() + " / " + data.AwakeState.ToString()), 
+                    // row("State", data.ArmyState.ToString() + " / " + data.AwakeState.ToString()), 
                     row("Movement", ArmyMovementPoints(army)),
                     row("Vision Range", ((int)data.VisionRange).ToString()),
                     "<size=5>\n\n</size>" + row("Detection Range", ((int)data.DetectionRange).ToString()),
                     row("Attack Range", ((int)data.DetectionRange).ToString()),
                     row("Combat Strength", ((float)data.DetectionRange).ToString()),
-                    "<size=5>\n\n</size>" + row("Units", data.NumberOfUnits + " / " + data.ArmyMaximumSize),
+                    "<size=5>\n\n</size>" + // row("Units", data.NumberOfUnits + " / " + data.ArmyMaximumSize),
                     row("Health", ((int)((float)data.HealthRatio * (float)data.HitPoints)).ToString() + " / " + ((int)data.HitPoints).ToString()),
                     row("Health Regen", "+" + ((int)((float)data.HealthRegen * (float)data.HitPoints)).ToString() + " / Turn"),
                     row("Upkeep", ((int)data.Upkeep).ToString()),
                     "<size=5>\n\n</size>" + row("AutoExplore", ((bool)army.AutoExplore).ToString()),
                     row("Mission", ((int)army.ArmyMissionIndex).ToString()),
-                    row("GoToActionStatus", army.GoToActionStatus.ToString()),
+                    // row("GoToActionStatus", army.GoToActionStatus.ToString()),
                     row("IsInHealingArea", ((bool)army.IsInHealingArea).ToString()),
-                    row("Flags", army.Flags.ToString()),
-                    row("Flags2", data.Flags.ToString()),
+                    // row("Flags", army.Flags.ToString()),
+                    // row("Flags2", data.Flags.ToString()),
                     row("IsTrespassing", ((bool)army.IsTrespassing).ToString()),
                     row("IsRetreating", ((bool)army.IsRetreating).ToString()),
                     row("IsLocked", ((bool)army.IsLocked).ToString()),
@@ -480,7 +480,7 @@ namespace DevTools.Humankind.GUITools.UI
                     row("HasGoToAction", ((bool)data.HasGoToAction).ToString()),
                     row("IsNomadic", ((bool)army.IsNomadic).ToString()),
                     row("IsMercenary", ((bool)army.IsMercenary).ToString()),
-                    row("AwakeState", data.AwakeState.ToString()),
+                    // row("AwakeState", data.AwakeState.ToString()),
                     row("ArmyActions", string.Join(", ", data.ArmyActions?.Select(a => a.ArmyAction.ToString()))),
                     "\n",
                 };
@@ -497,7 +497,7 @@ namespace DevTools.Humankind.GUITools.UI
 
         public static float ArmyMovementRatio(Army army) => (float) army.PathfindContext.MovementRatio;
 
-        public static bool IsRunning(Army army) => army.GoToActionStatus == Army.ActionStatus.Running;
+        public static bool IsRunning(Army army) => army.GoToAction.Status == Army.ActionStatus.Running;
     }
     
     public abstract class CustomSetting<T>

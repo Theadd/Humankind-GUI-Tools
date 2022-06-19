@@ -63,7 +63,7 @@ namespace DevTools.Humankind.GUITools.UI
                 // ADDITIONAL CONTENT PER ACTIVE TAB, IF ANY
                 if (_drawInspectorAdditionalContent)
                 {
-                    Styled.Alert("<b>WARNING:</b> Under development and at an early stage of development.\n" + 
+                    Styled.Alert("<b>WARNING:</b> This was a hidden playground for internal development only. Not hidden anymore. See BepInEx's console for more output.\n" + 
                                  "In order to inspect GameObjects with an attached UITransform component under your mouse, press [SPACE].", Colors.Khaki);
                     SceneInspectorController.Screen.Draw();
                 }
@@ -73,7 +73,7 @@ namespace DevTools.Humankind.GUITools.UI
                 }
                 else if (_drawCollectiblesAdditionalContent)
                 {
-                    Styled.Alert("<b>NOTICE:</b> This section is under development. It's only a preview so live editor actions are not yet available.");
+                    Styled.Alert("<b>NOTICE:</b> On paint and on erase actions are only available with curiosities allowed for the current era.", Colors.ForestGreen);
                 }
                 //
 
