@@ -1,4 +1,5 @@
 // IGNORE, SKIPPING CURRENT RELEASE #--ref ${BepInExRoot}/plugins/UniverseLib.Mono.dll
+
 using System;
 using Modding.Humankind.DevTools;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
@@ -11,7 +12,7 @@ namespace DevTools.Humankind.GUITools
     public static class MainTools
     {
         public static bool IsDebugModeEnabled { get; set; } = true;
-        
+
         public static MainToolbar Toolbar { get; set; }
 
         public static InGameMenuWindow InGameMenu { get; set; }
@@ -22,19 +23,20 @@ namespace DevTools.Humankind.GUITools
         // public static DistrictPainterToolWindow DistrictPainterWindow { get; set; }
         // public static SettlementToolsWindow SettlementWindow { get; set; }
         // public static StatisticsAndAchievementsToolWindow StatisticsAndAchievementsWindow { get; set; }
-        // public static FameToolWindow FameWindow { get; set; }
+        // public static ScenarioEditorToolWindow ScenarioEditorWindow { get; set; }
         public static TerrainPickingToolWindow TerrainWindow { get; set; }
         public static GameStatsWindow StatsWindow { get; set; }
         public static BackScreenWindow BackScreen { get; set; }
+
         public static EndGameStatisticsWindow EndGameWindow { get; set; }
         // public static CameraLayersToolWindow CameraLayersWindow { get; set; }
 
         public static void Main()
         {
             if (IsDebugModeEnabled) Debug();
-            
+
             ViewController.Initialize(true);
-            
+
             UIController.OnceGUIHasLoaded(() =>
             {
                 StyledGUIUtility.DefaultSkin = UIController.DefaultSkin;
@@ -43,11 +45,12 @@ namespace DevTools.Humankind.GUITools
             PopupToolWindow.Open<BackScreenWindow>(w => BackScreen = w);
             PopupToolWindow.Open<MainToolbar>(w => Toolbar = w);
             PopupToolWindow.Open<InGameMenuWindow>(w => InGameMenu = w);
-            
+            // PopupToolWindow.Open<ScenarioEditorToolWindow>(w => ScenarioEditorWindow = w);
+
             // if (IsDebugModeEnabled && IsTestingPlaygroundEnabled)
             //    TestingPlayground.Run();
         }
-        
+
         public static void ToggleHideToolbarWindow()
         {
             if (ViewController.IsGloballyDisabled) return;
@@ -55,7 +58,9 @@ namespace DevTools.Humankind.GUITools
         }
 
         public static void ToggleHideAllUIWindows() =>
-            Loggr.Log("HIDDING ALL GUI TOOLS WINDOWS IS TEMPORARILY DISABLED", ConsoleColor.Magenta); //FloatingToolWindow.HideAllGUITools = !FloatingToolWindow.HideAllGUITools);
+            Loggr.Log("HIDDING ALL GUI TOOLS WINDOWS IS TEMPORARILY DISABLED",
+                ConsoleColor
+                    .Magenta); //FloatingToolWindow.HideAllGUITools = !FloatingToolWindow.HideAllGUITools);
 
         // public static void CancelGodMode() => AccessTools.PropertySetter(typeof(GodMode), "Enabled")?.Invoke(null, new object[] { false });
 
@@ -96,7 +101,7 @@ namespace DevTools.Humankind.GUITools
 
             CloseEndGameStatisticsWindow();
         }
-        
+
         public static void CloseEndGameStatisticsWindow()
         {
             if (ViewController.IsGloballyDisabled) return;
@@ -112,10 +117,11 @@ namespace DevTools.Humankind.GUITools
 
         public static void Unload() => Unload(true);
 
-        public static void Unload(bool saveState = false) {
+        public static void Unload(bool saveState = false)
+        {
             if (FeatureFlags.WireRenderer)
                 WireRenderer.Detach();
-            
+
             Toolbar?.Close(saveState);
             InGameMenu?.Close();
             // BasicWindow?.Close();
@@ -129,9 +135,10 @@ namespace DevTools.Humankind.GUITools
             StatsWindow?.Close();
             BackScreen?.Close();
             TerrainWindow?.Close();
+            // ScenarioEditorWindow?.Close();
             ScreenLocker.Unload();
         }
-        
+
         private static void Debug()
         {
             /*var scriptsPath = Path.Combine(Paths.GameRootPath, "scripts");

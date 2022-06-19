@@ -165,7 +165,7 @@ namespace DevTools.Humankind.GUITools.UI
         public static CheckboxSetting StatisticsAndAchievementsTool =
             new CheckboxSetting("Statistics & Achievements Tool.", "", null, false);
 
-        public static CheckboxSetting FameTool = new CheckboxSetting("Fame Tool.", "", null, false);
+        public static CheckboxSetting FameTool = new CheckboxSetting("Fame Tool.");
         public static CheckboxSetting EndGameTool = new CheckboxSetting("End Game Tool.", "", null, false);
 
 
