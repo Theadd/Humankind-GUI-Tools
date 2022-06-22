@@ -4,12 +4,12 @@
     {
         public const string PLUGIN_GUID = "DevTools.Humankind.GUITools";
         public const string PLUGIN_NAME = "GUITools";
-        public const string PLUGIN_VERSION = "1.6.0.0";
+        public const string PLUGIN_VERSION = "1.6.1.0";
 
         /// <summary>
         ///     Change REVISION value to force a reset of player preferences.
         /// </summary>
-        public const int REVISION = 311;
+        public const int REVISION = 312;
 
         public const string DISPLAY_NAME = "GUI Tools";
         public const string FULL_DISPLAY_NAME = "HUMANKIND GUI Tools";

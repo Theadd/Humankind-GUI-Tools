@@ -19,7 +19,7 @@ namespace DevTools.Humankind.GUITools
 
         private void Awake()
         {
-            QuietMode = Config.Bind("Logging", "QuietMode", false,
+            QuietMode = Config.Bind("Logging", "QuietMode", true,
                 new ConfigDescription("Disables this plugin's own message logger."));
             WriteLogToDisk = Config.Bind("Logging", "WriteLogToDisk", true,
                 new ConfigDescription("Enables writing plugin's logger output to BepInEx's log file."));
