@@ -29,10 +29,12 @@ namespace DevTools.Humankind.GUITools.UI
 
         public static FreeCameraController FreeCamera { get; set; } = new FreeCameraController();
 
-        public static PresentationCameraMover CameraMover => _cameraMover ? _cameraMover 
+        public static PresentationCameraMover CameraMover => _cameraMover
+            ? _cameraMover
             : (_cameraMover = GameObject.Find("Camera")?.GetComponent<PresentationCameraMover>());
 
-        public static Camera Camera => _camera ? _camera 
+        public static Camera Camera => _camera
+            ? _camera
             : (_camera = GameObject.Find("Camera")?.GetComponent<Camera>());
 
         public static Camera ImpostorCamera => GameObject.Find("ImpostorCamera")?.GetComponent<Camera>();
@@ -62,8 +64,9 @@ namespace DevTools.Humankind.GUITools.UI
         {
             if (ViewController.IsGloballyDisabled) return;
             Presentation.PresentationFrontiersController?
-                .DisplayAllFrontiers(!Presentation.PresentationFrontiersController?.FrontiersDisplayed ??
-                                     false);
+                .SetUIAllowsFrontierRendering(
+                    !Presentation.PresentationFrontiersController?.FrontiersDisplayed ??
+                    false);
         }
 
         public static void ToggleGodMode()
@@ -89,10 +92,11 @@ namespace DevTools.Humankind.GUITools.UI
                     return true;
                 }
             }
+
             districtInfo = default(DistrictInfo);
             return false;
         }
-        
+
         private static Camera _camera = null;
         private static PresentationCameraMover _cameraMover = null;
     }
