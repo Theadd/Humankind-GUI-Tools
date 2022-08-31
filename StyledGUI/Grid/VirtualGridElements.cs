@@ -152,5 +152,7 @@ namespace StyledGUI.VirtualGridElements
     {
         public Texture Image { get; set; }
         public float Size { get; set; } = 14f;
+        public bool UseCustomTintColor { get; set; } = false;
+        public Color CustomTintColor { get; set; } = Color.white;
     }
 }
