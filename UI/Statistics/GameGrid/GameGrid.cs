@@ -34,6 +34,12 @@ namespace DevTools.Humankind.GUITools.UI
         
         private static Color _inactiveEraStarIconTintColor = new Color(0f, 0f, 0f, 0.2f);
         private static Color _eraStarIconTintColor = new Color(0.2f, 0.5f, 1f, 0.7f);
+        private static EraStarInfo _dummyEraStarInfo = new EraStarInfo()
+        {
+            GameplayOrientation = GameplayOrientation.None,
+            Level = 0,
+            PoolAllocationIndex = -9999999
+        };
 
         public GameGrid() { }
         
@@ -137,8 +143,12 @@ namespace DevTools.Humankind.GUITools.UI
                                 Title = UIController.GetLocalizedTitle(sd.Name, sd.GameplayOrientation.ToString()).ToUpper(),
                                 Cells = Snapshot.Empires.Select(e =>
                                 {
-                                    var starInfo = GetRelatedEraStarInfo(e.Index, sd.GameplayOrientation);
-                                    var sdNumLevels = sd.Levels?.Length ?? 0;
+                                    var starInfo = GetRelatedEraStarInfo(e.Index, sd.GameplayOrientation, out var found);
+                                    var sdNumLevels = found 
+                                        ? starInfo.EraStarDefinitionName == sd.Name 
+                                            ? sd.Levels?.Length ?? 0 
+                                            : starInfo.Thresholds?.Length ?? 0
+                                        : 0;
                                     
                                     return new CellGroup()
                                     {
@@ -353,27 +363,25 @@ namespace DevTools.Humankind.GUITools.UI
             };
 
         private EraStarInfo GetRelatedEraStarInfo(int empireIndex,
-            GameplayOrientation relatedTo)
+            GameplayOrientation relatedTo, out bool found)
         {
+            found = true;
             ArrayWithFrame<EraStarInfo> eraStarInfo1 =
                 Snapshots.GameSnapshot.PresentationData.EmpireInfo[empireIndex].EraStarInfo;
             var length = eraStarInfo1.Length;
             
             for (var index1 = 0; index1 < length; ++index1)
             {
-                EraStarInfo eraStarInfo2 = eraStarInfo1[index1];
-                if (eraStarInfo2.PoolAllocationIndex >= 0)
+                var eraStarInfo2 = eraStarInfo1[index1];
+                if (eraStarInfo2.PoolAllocationIndex >= 0 && eraStarInfo2.GameplayOrientation == relatedTo)
                 {
-                    if (eraStarInfo2.GameplayOrientation == relatedTo)
-                    {
-                        return eraStarInfo2;
-                    }
+                    return eraStarInfo2;
                 }
             }
 
-            Loggr.Log($"UNEXPECTED CODE EXECUTION PATH IN GameGrid.GetRelatedEraStarInfo({empireIndex}, {relatedTo.ToString()})", ConsoleColor.Magenta);
+            found = false;
             
-            return eraStarInfo1[0];
+            return _dummyEraStarInfo;
         }
     }
 }
