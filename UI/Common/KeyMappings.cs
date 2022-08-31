@@ -69,6 +69,15 @@ namespace DevTools.Humankind.GUITools.UI
                 Key = new KeyboardShortcut(KeyCode.Space),
                 GroupName = GlobalKeysGroup
             },
+            new KeyMap("ToggleScenarioEditorWindow")
+            {
+                DisplayName = "SCENARIO EDITOR WINDOW",
+                Action = MappedActions.ToggleScenarioEditorWindow,
+                Key = new KeyboardShortcut(KeyCode.F4, KeyCode.LeftShift),
+                GroupName = GlobalKeysGroup,
+                IsEditable = true,
+                IsRemovable = true
+            },
             new KeyMap("TogglePresentationFogOfWar")
             {
                 DisplayName = "PRESENTATION FOG OF WAR",

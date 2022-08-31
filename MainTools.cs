@@ -23,8 +23,7 @@ namespace DevTools.Humankind.GUITools
         // public static DistrictPainterToolWindow DistrictPainterWindow { get; set; }
         // public static SettlementToolsWindow SettlementWindow { get; set; }
         // public static StatisticsAndAchievementsToolWindow StatisticsAndAchievementsWindow { get; set; }
-        // public static ScenarioEditorToolWindow ScenarioEditorWindow { get; set; }
-        public static TerrainPickingToolWindow TerrainWindow { get; set; }
+        public static ScenarioEditorToolWindow ScenarioEditorWindow { get; set; }
         public static GameStatsWindow StatsWindow { get; set; }
         public static BackScreenWindow BackScreen { get; set; }
 
@@ -45,7 +44,6 @@ namespace DevTools.Humankind.GUITools
             PopupToolWindow.Open<BackScreenWindow>(w => BackScreen = w);
             PopupToolWindow.Open<MainToolbar>(w => Toolbar = w);
             PopupToolWindow.Open<InGameMenuWindow>(w => InGameMenu = w);
-            // PopupToolWindow.Open<ScenarioEditorToolWindow>(w => ScenarioEditorWindow = w);
 
             // if (IsDebugModeEnabled && IsTestingPlaygroundEnabled)
             //    TestingPlayground.Run();
@@ -87,6 +85,19 @@ namespace DevTools.Humankind.GUITools
 
             StatsWindow.Close();
             StatsWindow = null;
+        }
+
+        public static void ToggleScenarioEditorWindow()
+        {
+            if (ViewController.IsGloballyDisabled) return;
+            if (ScenarioEditorWindow == null)
+            {
+                PopupToolWindow.Open<ScenarioEditorToolWindow>(w => ScenarioEditorWindow = w);
+                return;
+            }
+
+            ScenarioEditorWindow.Close();
+            ScenarioEditorWindow = null;
         }
 
         public static void ToggleEndGameStatisticsWindow()
@@ -134,8 +145,7 @@ namespace DevTools.Humankind.GUITools
             EndGameWindow?.Close();
             StatsWindow?.Close();
             BackScreen?.Close();
-            TerrainWindow?.Close();
-            // ScenarioEditorWindow?.Close();
+            ScenarioEditorWindow?.Close();
             ScreenLocker.Unload();
         }
 

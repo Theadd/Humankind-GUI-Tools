@@ -15,11 +15,11 @@ namespace DevTools.Humankind.GUITools.UI
 {
   public class ScenarioEditorToolWindow : FloatingToolWindow
   {
-    public override string WindowTitle { get; set; } = " ScenarioEditorToolWindow";
+    public override string WindowTitle { get; set; } = " Scenario Editor Window";
 
     public override string WindowGUIStyle { get; set; } = "PopupWindow";
 
-    public override bool ShouldBeVisible => !GlobalSettings.ShouldHideTools;
+    public override bool ShouldBeVisible => true; // !GlobalSettings.ShouldHideTools;
 
     public override bool ShouldRestoreLastWindowPosition => true;
 
