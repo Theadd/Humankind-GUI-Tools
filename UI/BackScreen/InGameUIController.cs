@@ -33,7 +33,7 @@ namespace DevTools.Humankind.GUITools.UI
 
             if (battleScreen != null)
             {
-                var height = battleScreen.Parent.Parent.GlobalRect.height * backScreen.MinWindowRect.height /
+                var height = battleScreen.Parent.Parent.GlobalRect.height * BackScreenWindow.MinWindowRect.height /
                              Screen.height;
                 
                 battleScreen.TopAnchor = new UIBorderAnchor(true, 0, height, 0);

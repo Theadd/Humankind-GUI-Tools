@@ -154,7 +154,7 @@ namespace DevTools.Humankind.GUITools.UI
             {
                 DisplayName = "TOGGLE GOD MODE CURSOR",
                 Action = ActionController.ToggleGodMode,
-                Key = KeyboardShortcut.Empty,
+                Key = new KeyboardShortcut(KeyCode.G, KeyCode.LeftControl),
                 GroupName = InteractionKeysGroup
             },
             new KeyMap("GiveVisionAtCursorPosition")

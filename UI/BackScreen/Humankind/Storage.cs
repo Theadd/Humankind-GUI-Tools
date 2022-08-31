@@ -37,6 +37,28 @@ namespace DevTools.Humankind.GUITools.UI.Humankind
                 Name = TabbedToolbox.ViewModeGrid, Title = "<size=16></size>",
                 Description = $"<size=18><b><color={Colors.Aquamarine}>Grid Display Mode <size=16></size></color></b></size>\n\nDisplay content in a Grid View."
             },
+            new TextContent()
+            {
+                Name = BackScreenWindow.GodModeHandle, Title = "GOD MODE",
+                Description = $@"<size=18><b><color={Colors.Gold}>God Mode Cursor</color></b></size>
+
+When active, all buttons/icons that were not yet available in your game will be 
+visible and your cursor will turn pink, then, simply by clicking on them, you can:
+
+    - Unlock <b>Civics</b>
+    - Complete <b>Technologies</b>
+    - Unlock <b>Era Stars</b>
+    - Restore <b>Army Movement Points</b>
+    - Increase <b>Influence</b>, <b>Money</b>, <b>Luxury</b> and <b>Strategic Resources</b>, <b>City Cap</b>, ...
+    - In the <b>City Screen</b>:
+          - Increase <b>Population</b> and <b>Stability</b>
+          - Create <b>Units</b>
+          - Build <b>Districts</b> and <b>Infrastructures</b>
+          - Complete the construction queue
+    - And probably more
+
+All this, instantly and with no buyout cost at all."
+            },
         });
 
         public static T Get<T>(StringHandle name) where T : IStoredType => (T) Values.FirstOrDefault(k => k is T e && e.Name == name);

@@ -1,6 +1,7 @@
 ﻿using System;
 using DevTools.Humankind.GUITools.Collections;
 using Modding.Humankind.DevTools;
+using Modding.Humankind.DevTools.DeveloperTools.UI;
 using UnityEngine;
 using StyledGUI;
 
@@ -11,8 +12,11 @@ namespace DevTools.Humankind.GUITools.UI
         public override bool ShouldBeVisible => true;
         public override bool ShouldRestoreLastWindowPosition => false;
         public override string UniqueName => "BackScreenWindow";
-        public Rect MinWindowRect { get; set; } = new Rect (0, 0, Screen.width, 24f);
-        public Rect MaxWindowRect { get; set; } = new Rect (0, 0, Screen.width, Screen.height);
+        public static Rect MinWindowRect { get; set; } = new Rect (0, 0, Screen.width, 24f);
+        public static Rect MaxWindowRect { get; set; } = new Rect (0, 0, Screen.width, Screen.height);
+        public static bool ShouldBeCollapsed { get; set; } = true;
+        public static bool ForceExpandToFitTooltipOverlay { get; set; } = false;
+        public static bool IsCollapsed { get; private set; } = true;
         
         protected bool IsToolboxVisible = false;
 
@@ -28,6 +32,10 @@ namespace DevTools.Humankind.GUITools.UI
         private int _lastScreenWidth;
         private int _lastScreenHeight;
         
+        private static readonly Color _screenTagColorActive = new Color32(42, 42, 192, 240);
+        
+        public static readonly StringHandle GodModeHandle = new StringHandle(nameof (GodModeHandle));
+
 
         protected virtual void Initialize()
         {
@@ -129,10 +137,12 @@ namespace DevTools.Humankind.GUITools.UI
 
                             if (IsToolboxVisible)
                             {
+                                ShouldBeCollapsed = false;
                                 OnExpand();
                             }
                             else
                             {
+                                ShouldBeCollapsed = true;
                                 OnCollapse();
                             }
                         }
@@ -157,11 +167,20 @@ namespace DevTools.Humankind.GUITools.UI
                     _drawInGame = IsInGame && ViewController.View == ViewType.InGame;
                     _hexPainterVisible = _drawOnLiveEditorEnabled &&
                                          LiveEditorMode.EditorMode == EditorModeType.TilePainter;
+
+                    if (ForceExpandToFitTooltipOverlay && IsCollapsed)
+                    {
+                        OnExpand();
+                    }
+                    else if (!ForceExpandToFitTooltipOverlay && !IsCollapsed && ShouldBeCollapsed)
+                    {
+                        OnCollapse();
+                    }
                 }
 
-                if (GUI.tooltip.Length > 0)
+                if (GUI.tooltip.Length > 0) 
                     TooltipOverlay.SetTooltip(StringHandle.Parse(GUI.tooltip));
-                
+
                 TooltipOverlay.Run();
             }
         }
@@ -175,6 +194,9 @@ namespace DevTools.Humankind.GUITools.UI
         private static string _onEraseTitle = string.Empty;
         private static string _brushTypeTitle = string.Empty;
         private static string _toolbarTitle = string.Empty;
+        private static GUIContent _godModeTitle = GUIContent.none;
+        private static string _scenarioEditorTitle = string.Empty;
+        
         private void UpdateDirtyStuff()
         {
             _normalModeTitle = (KeyMappings.TryGetKeyDisplayValue(
@@ -204,14 +226,26 @@ namespace DevTools.Humankind.GUITools.UI
                 "ToggleHideToolbarWindow", out var toolbarKeyText) ? 
                 toolbarKeyText + " " : "") + "<b>TOOLBAR</b>";
             
+            _godModeTitle = GodModeHandle.ToGUIContent((KeyMappings.TryGetKeyDisplayValue(
+                "ToggleGodMode", out var godModeKeyText) ? 
+                godModeKeyText + " " : "") + "<b>GOD MODE</b>");
+            
+/*            _godModeTitle = new GUIContent((KeyMappings.TryGetKeyDisplayValue(
+                "ToggleGodMode", out var godModeKeyText) ? 
+                godModeKeyText + " " : "") + "<b>GOD MODE</b>", "SAMPLE tooltip for global toggle button!!");*/
+            _scenarioEditorTitle = (KeyMappings.TryGetKeyDisplayValue(
+                "ToggleScenarioEditorWindow", out var scenarioEditorKeyText) ? 
+                scenarioEditorKeyText + " " : "") + "<b>SCENARIO EDITOR</b>";
+            
+            
+            
             IsDirty = false;
         }
         
         private void ViewModeToggleButton(string actionName, string displayText, ViewModeType viewMode)
         {
-            var activeColor = (Color) new Color32(42, 42, 192, 240);
             var active = ViewController.ViewMode == viewMode;
-            GUI.backgroundColor = active ? activeColor : Color.black;
+            GUI.backgroundColor = active ? _screenTagColorActive : Color.black;
             if (GUILayout.Toggle(active, displayText, ScreenTagToggleButton) != active)
             {
                 KeyMappings.Trigger(actionName);
@@ -274,7 +308,26 @@ namespace DevTools.Humankind.GUITools.UI
                 {
                     GUILayout.BeginHorizontal();
                     {
-                        GUILayout.Label(_toolbarTitle, ScreenTag);
+                        var isToolbarActive = !GlobalSettings.HideToolbarWindow.Value;
+                        GUI.backgroundColor = isToolbarActive ? _screenTagColorActive : Color.black;
+                        if (GUILayout.Toggle(isToolbarActive, _toolbarTitle, ScreenTagToggleButton) != isToolbarActive)
+                        {
+                            KeyMappings.Trigger("ToggleHideToolbarWindow");
+                        }
+
+                        var isGodModeActive = UIController.GodMode;
+                        GUI.backgroundColor = isGodModeActive ? _screenTagColorActive : Color.black;
+                        if (GUILayout.Toggle(isGodModeActive, _godModeTitle, ScreenTagToggleButton) != isGodModeActive)
+                        {
+                            KeyMappings.Trigger("ToggleGodMode");
+                        }
+                        
+                        var isScenarioEditorActive = MainTools.IsScenarioEditorWindowEnabled;
+                        GUI.backgroundColor = isScenarioEditorActive ? _screenTagColorActive : Color.black;
+                        if (GUILayout.Toggle(isScenarioEditorActive, _scenarioEditorTitle, ScreenTagToggleButton) != isScenarioEditorActive)
+                        {
+                            KeyMappings.Trigger("ToggleScenarioEditorWindow");
+                        }
                     }
                     GUILayout.EndHorizontal();
                 }
@@ -356,12 +409,14 @@ namespace DevTools.Humankind.GUITools.UI
         {
             GUI.BringWindowToBack(WindowID);
             WindowRect = MinWindowRect;
+            IsCollapsed = true;
         }
 
         public void OnExpand()
         {
             GUI.BringWindowToFront(WindowID);
             WindowRect = MaxWindowRect;
+            IsCollapsed = false;
         }
 
     }

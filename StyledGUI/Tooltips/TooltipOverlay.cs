@@ -1,8 +1,4 @@
-﻿using System;
-using Amplitude;
-using DevTools.Humankind.GUITools.Collections;
-using DevTools.Humankind.GUITools.UI.Humankind;
-using Modding.Humankind.DevTools;
+﻿using DevTools.Humankind.GUITools.Collections;
 using StyledGUI;
 using UnityEngine;
 
@@ -37,7 +33,13 @@ namespace DevTools.Humankind.GUITools.UI
             dt += Time.deltaTime / CurrentValue.DelayIn;
 
             if (Event.current.type == EventType.Repaint)
-                IsVisible = _shouldBeVisible;
+            {
+                if (IsVisible != _shouldBeVisible)
+                {
+                    IsVisible = _shouldBeVisible;
+                    BackScreenWindow.ForceExpandToFitTooltipOverlay = IsVisible;
+                }
+            }
         }
         
         private static void Render()
@@ -68,7 +70,7 @@ namespace DevTools.Humankind.GUITools.UI
                     // TODO: async
                     TooltipValue = tooltip.GetLocalizedDescription();
 
-                    var stored = Storage.Get<TextContent>(CurrentValue.Value);
+                    // TODO: var stored = Storage.Get<TextContent>(CurrentValue.Value);
                     
                     // Loggr.Log(stored);
                     // Loggr.Log(JsonUtility.ToJson(stored));
