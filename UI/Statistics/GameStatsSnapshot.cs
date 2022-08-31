@@ -168,6 +168,7 @@ namespace DevTools.Humankind.GUITools.UI
         public string TradeNodesCount => Values[25];
         public string PollutionStock => Values[26];
         public string PollutionNet => Values[27];
+        public string FameStock => Values[28];
     }
 
     public static class EmpireSnapshotUtils
@@ -215,6 +216,8 @@ namespace DevTools.Humankind.GUITools.UI
                 $"{empire.TradeNodesCount}",
                 $"{(int)empireInfo.PollutionStock}",
                 $"{(int)empireInfo.PollutionNet}",
+                
+                $"{(int)empireInfo.FameStock}",
             };
         }
     }

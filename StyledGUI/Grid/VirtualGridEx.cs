@@ -308,8 +308,8 @@ namespace StyledGUI.VirtualGridElements
         public static void Render(this ImageElement self, VirtualGrid grid)
         {
             GUI.DrawTexture(GUILayoutUtility.GetRect(self.Size, self.Size),
-                self.Image, ScaleMode.StretchToFill, true,
-                1f, grid.Grid.IconTintColor, 0, 0);
+                self.Image, ScaleMode.StretchToFill, true, 1f, 
+                self.UseCustomTintColor ? self.CustomTintColor : grid.Grid.IconTintColor, 0, 0);
         }
         
         public static readonly FieldInfo GUILayoutOptionValue = 

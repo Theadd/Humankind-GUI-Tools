@@ -2,11 +2,14 @@
 using StyledGUI;
 using StyledGUI.VirtualGridElements;
 using System;
+using System.Collections.Generic;
 using Modding.Humankind.DevTools;
 using Amplitude.Mercury.Interop;
 using Amplitude.Mercury.Sandbox;
 using Amplitude.Framework;
 using Amplitude.Framework.Networking;
+using Amplitude.Mercury.Data.Simulation;
+using Modding.Humankind.DevTools.DeveloperTools.UI;
 using UnityEngine;
 
 namespace DevTools.Humankind.GUITools.UI
@@ -22,6 +25,15 @@ namespace DevTools.Humankind.GUITools.UI
         public const string PerTurn = "<color=#000000FF><size=8>/</size><size=7> TURN</size></color>";
 
         protected IStyledGrid Grid;
+        protected IEnumerable<EraStarDefinition> EraStarDefinitions;
+
+        private static IElement[] _emptyIElementsArray = new IElement[]
+        {
+            new TextElement() { Text = " " }
+        };
+        
+        private static Color _inactiveEraStarIconTintColor = new Color(0f, 0f, 0f, 0.2f);
+        private static Color _eraStarIconTintColor = new Color(0.2f, 0.5f, 1f, 0.7f);
 
         public GameGrid() { }
         
@@ -36,6 +48,8 @@ namespace DevTools.Humankind.GUITools.UI
         public void Update()
         {
             Grid = VirtualGrid.Grid;
+
+            EraStarDefinitions = Databases.GetDatabase<EraStarDefinition>().GetValues();
             ComputeVirtualGrid();
 
             IsDirty = false;
@@ -84,11 +98,6 @@ namespace DevTools.Humankind.GUITools.UI
                                 new TextElement() { Text = e.Stability },
                                 new ImageElement() { Image = Utils.StabilityTexture },
                             }})},
-                        new Row() { Title = "ERA LEVEL, SUM OF ERA STARS", 
-                            Cells = Snapshot.Empires.Select(e => new CellGroup() { Cells = new ICell[] {
-                                new Cell() { Text = e.EraLevel, Span = Grid.CellSpan1},
-                                new Cell() { Text = e.SumOfEraStars, Span = Grid.CellSpan3},
-                            }})},
                         new Row() { Title = "CITIZENS, EMPIRE POPULATION", 
                             Cells = Snapshot.Empires.Select(e => new CellGroup() { Cells = new ICell[] {
                                 new Cell() { Text = e.SettlementsPopulation, Span = Grid.CellSpan2},
@@ -101,6 +110,66 @@ namespace DevTools.Humankind.GUITools.UI
                                                     e.PollutionNet + " " + PerTurn, Span = Grid.CellSpan2},
                             }})}
                     }
+                },
+                new Section()
+                {
+                    Title = "<size=12><b>STARS & FAME</b></size>",
+                    Rows = new[]
+                    {
+                        new Row() { Title = "ERA LEVEL, SUM OF ERA STARS", 
+                            Cells = Snapshot.Empires.Select(e => new CellGroup() { Cells = new ICell[] {
+                                new Cell() { Text = e.EraLevel, Span = Grid.CellSpan1},
+                                new Cell() { Text = e.SumOfEraStars, Span = Grid.CellSpan3},
+                            }})},
+                        new Row() { Title = "FAME", 
+                            Cells = Snapshot.Empires.Select(e => new CellGroup() { Cells = new ICell[] {
+                                new CompositeCell() { Span = Grid.CellSpan2, Elements = new IElement[] {
+                                    new TextElement() { Text = e.FameStock },
+                                    new ImageElement() { Image = Utils.FaithTexture }}},
+                                new ClickableCell() { Span = Grid.CellSpan1, Text = "<size=10>-25</size>", Action = OnRemove25Fame, Enabled = e.Index == Snapshot.LocalEmpireIndex },
+                                new ClickableCell() { Span = Grid.CellSpan1, Text = "<size=10>+300</size>", Action = OnAdd300Fame, Enabled = e.Index == Snapshot.LocalEmpireIndex }
+                            }})},
+                    }
+                        .Concat(EraStarDefinitions
+                            .Where(eraStarDef => !eraStarDef.name.Contains("EraStar_Prehistoric_"))
+                            .Select(sd => new Row()
+                            {
+                                Title = UIController.GetLocalizedTitle(sd.Name, sd.GameplayOrientation.ToString()).ToUpper(),
+                                Cells = Snapshot.Empires.Select(e =>
+                                {
+                                    var starInfo = GetRelatedEraStarInfo(e.Index, sd.GameplayOrientation);
+                                    var sdNumLevels = sd.Levels?.Length ?? 0;
+                                    
+                                    return new CellGroup()
+                                    {
+                                        Cells = new ICell[]
+                                        {
+                                            new CompositeCell()
+                                            {
+                                                Span = Grid.CellSpan3, 
+                                                Elements = sdNumLevels > 0 
+                                                    ? Enumerable
+                                                        .Range(0, sdNumLevels)
+                                                        .Select(i => new ImageElement() { 
+                                                            Image = Utils.InfluenceTexture, 
+                                                            UseCustomTintColor = true,
+                                                            CustomTintColor = i < starInfo.Level ? _eraStarIconTintColor : _inactiveEraStarIconTintColor
+                                                        }).ToArray<IElement>() 
+                                                    : _emptyIElementsArray
+                                            },
+                                            new ClickableCell()
+                                            {
+                                                Span = Grid.CellSpan1, Text = "<size=10>+1</size>",
+                                                Action = eIndex => OnAddEraStar(eIndex, starInfo),
+                                                Enabled = e.Index == Snapshot.LocalEmpireIndex && (starInfo.Level < sdNumLevels)
+                                            }
+                                        }
+                                    };
+                                })
+                            })
+                            //.ToArray()
+                        )
+                        .ToArray()
                 },
                 new Section()
                 {
@@ -224,6 +293,25 @@ namespace DevTools.Humankind.GUITools.UI
 
         private void OnAdd5kResearch(int empireIndex) => 
             Trigger(() => HumankindGame.Empires[empireIndex].ResearchStock = 5000);
+        
+        private void OnAdd300Fame(int empireIndex) => 
+            Trigger(() => SandboxManager.PostOrder((Order)new OrderForceGainFame()
+            {
+                Gain = 300
+            }));
+
+        private void OnRemove25Fame(int empireIndex) => 
+            Trigger(() => SandboxManager.PostOrder((Order)new OrderForceGainFame()
+            {
+                Gain = -25
+            }));
+        
+        private void OnAddEraStar(int empireIndex, EraStarInfo starInfo) => 
+            Trigger(() => SandboxManager.PostOrder((Order)new OrderForceGainEraStarScore()
+            {
+                EraStarName = starInfo.EraStarDefinitionName,
+                Gain = (int) (starInfo.Thresholds[starInfo.Level] - starInfo.Score)
+            }));
 
         private void OnSwitchEmpire(int empireIndex)
         {
@@ -263,5 +351,29 @@ namespace DevTools.Humankind.GUITools.UI
                     Text = builder.Invoke(empire)
                 })
             };
+
+        private EraStarInfo GetRelatedEraStarInfo(int empireIndex,
+            GameplayOrientation relatedTo)
+        {
+            ArrayWithFrame<EraStarInfo> eraStarInfo1 =
+                Snapshots.GameSnapshot.PresentationData.EmpireInfo[empireIndex].EraStarInfo;
+            var length = eraStarInfo1.Length;
+            
+            for (var index1 = 0; index1 < length; ++index1)
+            {
+                EraStarInfo eraStarInfo2 = eraStarInfo1[index1];
+                if (eraStarInfo2.PoolAllocationIndex >= 0)
+                {
+                    if (eraStarInfo2.GameplayOrientation == relatedTo)
+                    {
+                        return eraStarInfo2;
+                    }
+                }
+            }
+
+            Loggr.Log($"UNEXPECTED CODE EXECUTION PATH IN GameGrid.GetRelatedEraStarInfo({empireIndex}, {relatedTo.ToString()})", ConsoleColor.Magenta);
+            
+            return eraStarInfo1[0];
+        }
     }
 }
