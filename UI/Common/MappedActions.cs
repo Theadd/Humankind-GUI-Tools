@@ -30,6 +30,11 @@ namespace DevTools.Humankind.GUITools.UI
             }
         }
         
+        public static void ToggleScenarioEditorWindow()
+        {
+            MainTools.ToggleScenarioEditorWindow();
+        }
+        
         public static void TogglePresentationFogOfWar()
         {
             if (ViewController.View == ViewType.InGame 
