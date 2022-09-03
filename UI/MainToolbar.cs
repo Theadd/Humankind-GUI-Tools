@@ -68,40 +68,53 @@ namespace DevTools.Humankind.GUITools.UI
             if (GlobalSettings.EndGameTool.Value && WasVisible<EndGameToolWindow>()) Open<EndGameToolWindow>(window => EndGameTool = window);
         
         }
-
-        public static Texture2D TintableWhiteTexture { get; set; } =
-            Utils.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.8f));
-
-        public GUIStyle TintableBackgroundStyle { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Row"))
+        
+        protected override void Awake()
         {
-            padding = new RectOffset(0, 0, 0, 0),
-            margin = new RectOffset(0, 0, 0, 0),
-            border = new RectOffset(0, 0, 0, 0),
-            overflow = new RectOffset(0, 0, 0, 0),
-            normal = new GUIStyleState() {
-                background = TintableWhiteTexture,
-                textColor = Color.white
-            },
-            hover = new GUIStyleState() {
-                background = TintableWhiteTexture,
-                textColor = Color.white
-            },
-            active = new GUIStyleState() {
-                background = TintableWhiteTexture,
-                textColor = Color.white
-            },
-            onNormal = new GUIStyleState() {
-                background = TintableWhiteTexture,
-                textColor = Color.white
-            }
-        };
+            base.Awake();
+            Initialize();
+        }
 
-        public GUIStyle BackgroundContainerStyle { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Sidebar.Heading"))
+        private static void Initialize()
         {
-            margin = new RectOffset(0, 0, 0, 0),
-        };
+            TintableWhiteTexture = Utils.CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0.8f));
+            BackgroundTintColor = new Color32(205, 196, 174, 244);
+            BackgroundContainerStyle = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Sidebar.Heading"))
+            {
+                margin = new RectOffset(0, 0, 0, 0),
+            };
+            TintableBackgroundStyle = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Row"))
+            {
+                padding = new RectOffset(0, 0, 0, 0),
+                margin = new RectOffset(0, 0, 0, 0),
+                border = new RectOffset(0, 0, 0, 0),
+                overflow = new RectOffset(0, 0, 0, 0),
+                normal = new GUIStyleState() {
+                    background = TintableWhiteTexture,
+                    textColor = Color.white
+                },
+                hover = new GUIStyleState() {
+                    background = TintableWhiteTexture,
+                    textColor = Color.white
+                },
+                active = new GUIStyleState() {
+                    background = TintableWhiteTexture,
+                    textColor = Color.white
+                },
+                onNormal = new GUIStyleState() {
+                    background = TintableWhiteTexture,
+                    textColor = Color.white
+                }
+            };
+        }
 
-        public static Color BackgroundTintColor { get; set; } = new Color32(205, 196, 174, 244);
+        public static Texture2D TintableWhiteTexture { get; set; }
+
+        public static GUIStyle TintableBackgroundStyle { get; set; }
+
+        public static GUIStyle BackgroundContainerStyle { get; set; }
+
+        public static Color BackgroundTintColor { get; set; }
 
         public override void OnDrawUI()
         {

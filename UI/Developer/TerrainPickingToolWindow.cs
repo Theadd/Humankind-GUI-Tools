@@ -37,6 +37,24 @@ namespace DevTools.Humankind.GUITools.UI
         private Color bgColor = new Color32(255, 255, 255, 230);
         private Color bgColorOpaque = new Color32(255, 255, 255, 255);
 
+        private static GUIStyle GridHeaderStyle { get; set; }
+        
+        protected override void Awake()
+        {
+            base.Awake();
+            
+            GridHeaderStyle = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Grid"))
+            {
+                alignment = TextAnchor.LowerRight,
+                padding = new RectOffset(0, 4, 4, 4),
+                normal = new GUIStyleState()
+                {
+                    background = null,
+                    textColor = Color.white
+                }
+            };
+        }
+        
         public override void OnGUIStyling()
         {
             base.OnGUIStyling();
@@ -62,18 +80,6 @@ namespace DevTools.Humankind.GUITools.UI
 
         [SerializeField] private bool moreTileInfo;
         [SerializeField] private bool moreDistrictInfo;
-
-        private GUIStyle GridHeaderStyle { get; set; } =
-            new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Grid"))
-            {
-                alignment = TextAnchor.LowerRight,
-                padding = new RectOffset(0, 4, 4, 4),
-                normal = new GUIStyleState()
-                {
-                    background = null,
-                    textColor = Color.white
-                }
-            };
 
         private static float cellWidth = 34f;
         private static float cellSpace = 1f;

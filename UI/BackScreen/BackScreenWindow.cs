@@ -36,6 +36,25 @@ namespace DevTools.Humankind.GUITools.UI
         
         public static readonly StringHandle GodModeHandle = new StringHandle(nameof (GodModeHandle));
 
+        protected override void Awake()
+        {
+            base.Awake();
+            
+            ScreenTag = new GUIStyle(Styles.ColorableCellStyle)
+            {
+                margin = new RectOffset(2, 0, 0, 0),
+                padding = new RectOffset(8, 8, 4, 4),
+                fontSize = 10
+            };
+        
+            ScreenTagToggleButton = new GUIStyle(Styles.ColorableCellToggleStyle)
+            {
+                margin = new RectOffset(2, 0, 0, 0),
+                padding = new RectOffset(8, 8, 4, 4),
+                fontSize = 10
+            };
+        }
+        
 
         protected virtual void Initialize()
         {
@@ -62,19 +81,9 @@ namespace DevTools.Humankind.GUITools.UI
             ToolboxController.SetDocked(true);
         }
 
-        public GUIStyle ScreenTag { get; set; } = new GUIStyle(Styles.ColorableCellStyle)
-        {
-            margin = new RectOffset(2, 0, 0, 0),
-            padding = new RectOffset(8, 8, 4, 4),
-            fontSize = 10
-        };
+        public static GUIStyle ScreenTag { get; set; }
         
-        public GUIStyle ScreenTagToggleButton { get; set; } = new GUIStyle(Styles.ColorableCellToggleStyle)
-        {
-            margin = new RectOffset(2, 0, 0, 0),
-            padding = new RectOffset(8, 8, 4, 4),
-            fontSize = 10
-        };
+        public static GUIStyle ScreenTagToggleButton { get; set; }
 
         private bool _drawOnLiveEditorEnabled = false;
         private bool _drawInGame = false;
