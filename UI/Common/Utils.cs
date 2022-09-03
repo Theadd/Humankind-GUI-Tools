@@ -6,9 +6,9 @@ namespace DevTools.Humankind.GUITools.UI
 {
     public static class Utils
     {
-        public static Texture2D WhiteTexture = CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 1f));
-        public static Texture2D BlackTexture = CreateSinglePixelTexture2D(new Color(0, 0, 0, 1f));
-        public static Texture2D TransparentTexture = CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0f));
+        public static Texture2D WhiteTexture { get; set; } = CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 1f));
+        public static Texture2D BlackTexture { get; set; } = CreateSinglePixelTexture2D(new Color(0, 0, 0, 1f));
+        public static Texture2D TransparentTexture { get; set; } = CreateSinglePixelTexture2D(new Color(1f, 1f, 1f, 0f));
         
         public static Texture2D CreateSinglePixelTexture2D(Color color)
         {
