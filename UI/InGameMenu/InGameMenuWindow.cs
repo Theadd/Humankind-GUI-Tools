@@ -32,36 +32,43 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
         
         public static bool VersionFound { get; private set; }
 
-        private GUIStyle CenteredLink { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("Link")) {
-            alignment = TextAnchor.MiddleCenter,
-            margin = new RectOffset(4, 4, 4, 0),
-            padding = new RectOffset(4, 4, 3, 0),
-            normal = new GUIStyleState()
-            {
-                background = UIController.DefaultSkin.FindStyle("Link").normal.background,
-                textColor = Color.white
-            }
-        };
-        private GUIStyle CenteredText { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("Link")) {
-            alignment = TextAnchor.MiddleCenter,
-            margin = new RectOffset(4, 4, 0, 4),
-            padding = new RectOffset(4, 4, 0, 3)
-        };
+        private static GUIStyle CenteredLink { get; set; }
+        private static GUIStyle CenteredText { get; set; }
+        private static GUIStyle CustomTooltip { get; set; }
 
-        private GUIStyle CustomTooltip { get; set; } = new GUIStyle(UIController.DefaultSkin.FindStyle("Tooltip")) {
-            alignment = TextAnchor.LowerCenter,
-            stretchHeight = true,
-            fixedHeight = 32f,
-            normal = new GUIStyleState() {
-                background = null,
-                textColor = Color.white
-            }
-        };
+        private static void Initialize()
+        {
+            CenteredLink = new GUIStyle(UIController.DefaultSkin.FindStyle("Link")) {
+                alignment = TextAnchor.MiddleCenter,
+                margin = new RectOffset(4, 4, 4, 0),
+                padding = new RectOffset(4, 4, 3, 0),
+                normal = new GUIStyleState()
+                {
+                    background = UIController.DefaultSkin.FindStyle("Link").normal.background,
+                    textColor = Color.white
+                }
+            };
+            CenteredText = new GUIStyle(UIController.DefaultSkin.FindStyle("Link")) {
+                alignment = TextAnchor.MiddleCenter,
+                margin = new RectOffset(4, 4, 0, 4),
+                padding = new RectOffset(4, 4, 0, 3)
+            };
+            CustomTooltip = new GUIStyle(UIController.DefaultSkin.FindStyle("Tooltip")) {
+                alignment = TextAnchor.LowerCenter,
+                stretchHeight = true,
+                fixedHeight = 32f,
+                normal = new GUIStyleState() {
+                    background = null,
+                    textColor = Color.white
+                }
+            };
+        }
 
         protected override void Awake()
         {
             base.Awake();
             OnReadPlayerPreferences();
+            Initialize();
             MainTools.Toolbar.RestoreVisibleWindows();
         }
 

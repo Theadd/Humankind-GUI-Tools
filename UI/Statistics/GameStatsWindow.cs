@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UnityEngine;
 using Modding.Humankind.DevTools;
@@ -33,31 +34,13 @@ namespace DevTools.Humankind.GUITools.UI
         public CommonHeadersGrid HeadersGrid { get; set; }
         public KeyboardShortcutsGrid ShortcutsGrid { get; set; }
 
-        private GUIStyle bgStyle = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Sidebar.Highlight")) {
-            normal = new GUIStyleState() {
-                background = Utils.CreateSinglePixelTexture2D(new Color(0, 0, 0, 0.8f)),
-                textColor = Color.white
-            },
-            hover = new GUIStyleState() {
-                background = null,
-                textColor = Color.white
-            }
-        };
+        private static GUIStyle bgStyle { get; set; }
         
-        private GUIStyle bgStyleAlt = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Sidebar.Highlight")) {
-            normal = new GUIStyleState() {
-                background = Utils.CreateSinglePixelTexture2D(new Color(0.85f, 0.75f, 0f, 0.45f)),
-                textColor = Color.white
-            },
-            hover = new GUIStyleState() {
-                background = null,
-                textColor = Color.white
-            }
-        };
+        private static GUIStyle bgStyleAlt { get; set; }
 
-        private GUIStyle backButtonStyle = new GUIStyle(UIController.DefaultSkin.toggle) {
-            margin = new RectOffset(1, 1, 1, 1)
-        };
+        private static GUIStyle backButtonStyle { get; set; }
+        
+        private static GUIStyle TabButtonStyle { get; set; }
 
         private static bool initialized = false;
         private static bool isValidSnapshot = false;
@@ -66,6 +49,70 @@ namespace DevTools.Humankind.GUITools.UI
         private static bool forceUpdate = false;
 
         private Amplitude.Mercury.UI.UIManager UIManagerService;
+        
+        protected override void Awake()
+        {
+            base.Awake();
+
+            bgStyle = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Sidebar.Highlight")) {
+                normal = new GUIStyleState() {
+                    background = Utils.CreateSinglePixelTexture2D(new Color(0, 0, 0, 0.8f)),
+                    textColor = Color.white
+                },
+                hover = new GUIStyleState() {
+                    background = null,
+                    textColor = Color.white
+                }
+            };
+            bgStyleAlt = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.Sidebar.Highlight")) {
+                normal = new GUIStyleState() {
+                    background = Utils.CreateSinglePixelTexture2D(new Color(0.85f, 0.75f, 0f, 0.45f)),
+                    textColor = Color.white
+                },
+                hover = new GUIStyleState() {
+                    background = null,
+                    textColor = Color.white
+                }
+            };
+            backButtonStyle = new GUIStyle(UIController.DefaultSkin.toggle) {
+                margin = new RectOffset(1, 1, 1, 1)
+            };
+            TabButtonStyle = new GUIStyle(UIController.DefaultSkin.FindStyle("TabButton")) {
+                fixedHeight = 28f,
+                fontSize = 14,
+                fontStyle = FontStyle.Bold,
+                padding = new RectOffset(22, 22, 0, 5),
+                normal = new GUIStyleState() {
+                    background = Utils.CreateSinglePixelTexture2D(new Color(0.85f, 0.75f, 0f, 0.45f)),
+                    textColor = Color.white
+                },
+                onNormal = new GUIStyleState()
+                {
+                    background = Utils.TransparentTexture,
+                    textColor = new Color32(85, 136, 254, 255)
+                },
+                onHover = new GUIStyleState()
+                {
+                    background = null,
+                    textColor = Color.white
+                },
+                onActive = new GUIStyleState()
+                {
+                    background = null,
+                    textColor = Color.white
+                },
+                active = new GUIStyleState()
+                {
+                    background = Utils.TransparentTexture,
+                    textColor = new Color32(85, 136, 254, 255)
+                },
+                hover = new GUIStyleState()
+                {
+                    background = Utils.CreateSinglePixelTexture2D(new Color32(85, 136, 254, 155)),
+                    textColor = Color.white
+                }
+            };
+        }
 
         public override void OnGUIStyling()
         {
@@ -264,44 +311,6 @@ namespace DevTools.Humankind.GUITools.UI
                 GUILayout.ExpandHeight(true));
         }
 
-        
-
-        private GUIStyle TabButtonStyle = new GUIStyle(UIController.DefaultSkin.FindStyle("TabButton")) {
-            fixedHeight = 28f,
-            fontSize = 14,
-            fontStyle = FontStyle.Bold,
-            padding = new RectOffset(22, 22, 0, 5),
-            normal = new GUIStyleState() {
-                background = Utils.CreateSinglePixelTexture2D(new Color(0.85f, 0.75f, 0f, 0.45f)),
-                textColor = Color.white
-            },
-            onNormal = new GUIStyleState()
-            {
-                background = Utils.TransparentTexture,
-                textColor = new Color32(85, 136, 254, 255)
-            },
-            onHover = new GUIStyleState()
-            {
-                background = null,
-                textColor = Color.white
-            },
-            onActive = new GUIStyleState()
-            {
-                background = null,
-                textColor = Color.white
-            },
-            active = new GUIStyleState()
-            {
-                background = Utils.TransparentTexture,
-                textColor = new Color32(85, 136, 254, 255)
-            },
-            hover = new GUIStyleState()
-            {
-                background = Utils.CreateSinglePixelTexture2D(new Color32(85, 136, 254, 155)),
-                textColor = Color.white
-            }
-        };
-        
         private void DrawCommonContent()
         {
             GUILayout.BeginHorizontal(bgStyleAlt);

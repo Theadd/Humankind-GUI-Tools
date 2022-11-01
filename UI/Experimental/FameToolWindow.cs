@@ -9,8 +9,6 @@ using Amplitude;
 using System;
 using System.Text;
 using UnityEngine;
-using Modding.Humankind.DevTools;
-using Modding.Humankind.DevTools.Core;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
 
 namespace DevTools.Humankind.GUITools.UI
@@ -30,6 +28,23 @@ namespace DevTools.Humankind.GUITools.UI
         private Color bgColor = new Color32(255, 255, 255, 230);
         private Color bgColorOpaque = new Color32(255, 255, 255, 255);
 
+        private static GUIStyle ScrollViewStyle { get; set; }
+        
+        protected override void Awake()
+        {
+            base.Awake();
+            
+            ScrollViewStyle = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.ListGrid"))
+            {
+                margin = new RectOffset(0, 3, 0, 3),
+                hover = new GUIStyleState()
+                {
+                    background = null,
+                    textColor = Color.white
+                }
+            };
+        }
+        
         public override void OnGUIStyling()
         {
             base.OnGUIStyling();
@@ -43,17 +58,6 @@ namespace DevTools.Humankind.GUITools.UI
 
             OnDrawWindowClientArea(0);
         }
-
-        private GUIStyle ScrollViewStyle =
-            new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.ListGrid"))
-            {
-                margin = new RectOffset(0, 3, 0, 3),
-                hover = new GUIStyleState()
-                {
-                    background = null,
-                    textColor = Color.white
-                }
-            };
 
         private StringBuilder stringBuilder = new StringBuilder();
         private IDatabase<DeedDefinition> deedDefinitionDatabase;

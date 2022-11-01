@@ -34,6 +34,17 @@ namespace DevTools.Humankind.GUITools.UI
         private Color bgColor = new Color32(255, 255, 255, 230);
         private Color bgColorOpaque = new Color32(255, 255, 255, 255);
 
+        private static GUIStyle CivicHeader { get; set; }
+        
+        protected override void Awake()
+        {
+            base.Awake();
+            
+            CivicHeader = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.SectionHeader")) {
+                margin = new RectOffset(0, 0, 0, 0)
+            };
+        }
+        
         public override void OnGUIStyling()
         {
             base.OnGUIStyling();
@@ -48,8 +59,7 @@ namespace DevTools.Humankind.GUITools.UI
             OnDrawWindowContent();
 
         }
-
-
+        
         protected override void OnBecomeInvisible()
         {
             base.OnBecomeInvisible();
@@ -57,10 +67,6 @@ namespace DevTools.Humankind.GUITools.UI
                 Snapshots.CivicsScreenSnapshot.Stop(CivicsScreenSnapshot.ActivationFlags.FloatingWindow);
             this.currentEmpireIndex = byte.MaxValue;
         }
-
-        private GUIStyle CivicHeader = new GUIStyle(UIController.DefaultSkin.FindStyle("PopupWindow.SectionHeader")) {
-            margin = new RectOffset(0, 0, 0, 0)
-        };
 
         protected void OnDrawWindowContent()
         {

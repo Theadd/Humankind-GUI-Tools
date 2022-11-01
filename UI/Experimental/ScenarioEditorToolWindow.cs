@@ -72,6 +72,9 @@ namespace DevTools.Humankind.GUITools.UI
     private Vector2 _scenarioDefinitionScrollPosition;
     private Vector2 _toolbarScrollPosition;
 
+    //Play CustomMap
+    private int empireCount = 2;
+    private string mapName = "Default";
     public ScenarioEditorToolWindow()
     {
       _editroTabsNames = new string[_editroTabs.Length];
@@ -133,8 +136,13 @@ namespace DevTools.Humankind.GUITools.UI
 
     private void DrawOutGame()
     {
-      using (new GUILayout.VerticalScope("Widget.ClientArea", GUILayout.Height(400f)))
+      using (new GUILayout.VerticalScope("Widget.ClientArea", GUILayout.Height(580f)))
       {
+        // Draw CustomMap UI
+        DrawOutGamePlayCustomMap();
+        GUILayout.Space(5f);
+        
+        // Draw ScenarioManagement UI
         GUILayout.Label("Scenarios :");
         GUILayout.Space(5f);
         if (_scenarios == null)
@@ -164,6 +172,25 @@ namespace DevTools.Humankind.GUITools.UI
         GUILayout.EndScrollView();
       }
       GUI.enabled = true;
+    }
+    
+    protected void DrawOutGamePlayCustomMap()
+    {
+      GUILayout.BeginHorizontal();
+      GUILayout.Label(string.Format("EmpireCount {0}", (object) this.empireCount));
+      if (GUILayout.Button("-", GUILayout.MaxWidth(32f)))
+        this.empireCount = System.Math.Max(this.empireCount - 1, 2);
+      if (GUILayout.Button("+", GUILayout.MaxWidth(32f)))
+        this.empireCount = System.Math.Min(this.empireCount + 1, 8);
+      GUILayout.EndHorizontal();
+      this.mapName = GUILayout.TextField(this.mapName);
+      if (!GUILayout.Button("Play"))
+        return;
+      Amplitude.Framework.Runtime.IRuntimeService service = Services.GetService<Amplitude.Framework.Runtime.IRuntimeService>();
+      if (service == null || !(service.Runtime.FiniteStateMachine.CurrentState.GetType() == typeof (RuntimeState_OutGame)))
+        return;
+      RuntimeStateParameter runtimeStateParameter = (RuntimeStateParameter) new RuntimeStateCustomMapParameter(this.mapName, this.empireCount);
+      service.Runtime.FiniteStateMachine.PostStateChange(typeof (RuntimeState_Staging), (object) runtimeStateParameter);
     }
 
     private void DrawInGame()

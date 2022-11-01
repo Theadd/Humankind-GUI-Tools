@@ -125,6 +125,7 @@ namespace DevTools.Humankind.GUITools
 
         public static bool IsGameOverviewEnabled => StatsWindow != null;
         public static bool IsEndGameWindowEnabled => EndGameWindow != null;
+        public static bool IsScenarioEditorWindowEnabled => ScenarioEditorWindow != null;
 
         public static void Unload() => Unload(true);
 
