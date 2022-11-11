@@ -63,8 +63,6 @@ namespace DevTools.Humankind.GUITools.UI
         protected override void OnBecomeInvisible()
         {
             base.OnBecomeInvisible();
-            if (Snapshots.CivicsScreenSnapshot != null)
-                Snapshots.CivicsScreenSnapshot.Stop(CivicsScreenSnapshot.ActivationFlags.FloatingWindow);
             this.currentEmpireIndex = byte.MaxValue;
         }
 
@@ -98,7 +96,7 @@ namespace DevTools.Humankind.GUITools.UI
                 using (new GUILayout.VerticalScope((GUIStyle)"Widget.ClientArea", Array.Empty<GUILayoutOption>()))
                     GUILayout.Label("Waiting for the presentation...");
             }
-            else if (Snapshots.GameSnapshot == null || Snapshots.CivicsScreenSnapshot == null)
+            else if (Snapshots.GameSnapshot == null || Snapshots.CivicSnapshot == null)
             {
                 using (new GUILayout.VerticalScope((GUIStyle)"Widget.ClientArea", Array.Empty<GUILayoutOption>()))
                     GUILayout.Label("Waiting for snapshots...");
@@ -108,7 +106,6 @@ namespace DevTools.Humankind.GUITools.UI
                 if ((int)this.currentEmpireIndex != (int)Snapshots.GameSnapshot.PresentationData.LocalEmpireInfo.EmpireIndex)
                 {
                     this.currentEmpireIndex = Snapshots.GameSnapshot.PresentationData.LocalEmpireInfo.EmpireIndex;
-                    Snapshots.CivicsScreenSnapshot.Start(CivicsScreenSnapshot.ActivationFlags.FloatingWindow);
                 }
                 using (new GUILayout.VerticalScope((GUIStyle)"Widget.ClientArea", new GUILayoutOption[1]
                 {
@@ -124,11 +121,11 @@ namespace DevTools.Humankind.GUITools.UI
                     }
 
                     IDatabase<CivicDefinition> database = Databases.GetDatabase<CivicDefinition>();
-                    CivicInfo[] civicInfo1 = Snapshots.CivicsScreenSnapshot.PresentationData.CivicInfo;
+                    CivicInfo[] civicInfo1 = Snapshots.CivicSnapshot.PresentationData.CivicInfo;
                     int length1 = civicInfo1.Length;
                     using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
                     {
-                        GUILayout.Label(string.Format("<size=11><b>NUMBER OF VOTABLE CIVICS: {0}</b></size>", (object)Snapshots.CivicsScreenSnapshot.PresentationData.NumberOfVotableCivicsPerMajorEmpire[(int)this.currentEmpireIndex]));
+                        GUILayout.Label(string.Format("<size=11><b>NUMBER OF VOTABLE CIVICS: {0}</b></size>", (object)Snapshots.CivicSnapshot.PresentationData.NumberOfVotableCivicsPerMajorEmpire[(int)this.currentEmpireIndex]));
                         GUILayout.FlexibleSpace();
                         if (GUILayout.Button("<size=11><b>UNLOCK ALL</b></size>", (GUIStyle)"PopupWindow.ToolbarButton", GUILayout.Width(90f)))
                         {

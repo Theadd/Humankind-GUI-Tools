@@ -227,6 +227,7 @@ namespace DevTools.Humankind.GUITools.UI
                     GUI.enabled = true;
                     this.scrollPosition =
                         GUILayout.BeginScrollView(this.scrollPosition, GUILayout.MinHeight(150f));
+                    FixedPoint zero = FixedPoint.Zero;
                     if (presentationData2.EmpireIndex >= presentationData1.NumberOfMajorEmpires)
                     {
                         if (!Snapshots.MinorPatronageSnapshot.Enabled)
@@ -237,8 +238,9 @@ namespace DevTools.Humankind.GUITools.UI
                         ref PatronageRelationWithMajor local7 =
                             ref presentationData3.RelationWithMajors[
                                 (int) presentationData1.LocalEmpireInfo.EmpireIndex];
-                        GUILayout.Label(string.Format("Patronage level with minor {0}",
-                            (object) local7.GaugeLevel));
+                        GUILayout.Label(
+                            string.Format("Patronage level with minor {0} - Total patronage stock: ",
+                                (object) local7.PatronageLevelApplied) + zero.ToString());
                         GUILayout.Label("Ranked empire patronage");
                         int length = presentationData3.RankedMajorEmpirePatron.Length;
                         for (int index1 = length - 1; index1 >= 0; --index1)
