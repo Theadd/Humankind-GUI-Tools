@@ -27,7 +27,7 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
             {
                 Container = container;
                 PauseMenuWindow = Container.transform.GetComponent<PauseMenuModalWindow>();
-                Background = Container.transform.Find("BackgroundColor")?.GetComponent<UIImage>();
+                Background = Container.transform.Find("Background")?.GetComponent<UIImage>();
 
                 EndGameWindowUITransform = endGameContainer.transform.GetComponent<UITransform>();
 
@@ -46,7 +46,7 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
                 PauseMenuWindow.VisibilityChange += OnVisibilityChange;
             }
         }
-        
+
         private static void OnVisibilityChange(
             UIAbstractShowable showable,
             UIAbstractShowable.VisibilityState oldState,
@@ -66,25 +66,28 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
 
         private static void OnShowingEvent()
         {
-            PreviousBackgroundColor = Background.Color;
-            
+            if (Background != null)
+                PreviousBackgroundColor = Background.Color;
+
             ViewController.ViewMode = ViewModeType.GameMenu;
             // Do something here
             //SetBackgroundColor(new Color(0.7f, 0.65f, 0.1f, 0.45f));
 
             BackgroundFader.StartAnimation();
         }
-        
+
         private static void OnHidingEvent()
         {
             // Do something here
 
-            Background.Color = PreviousBackgroundColor;
+            if (Background != null)
+                Background.Color = PreviousBackgroundColor;
         }
 
         public static void SetBackgroundColor(Color backgroundColor)
         {
-            Background.Color = backgroundColor;
+            if (Background != null)
+                Background.Color = backgroundColor;
         }
     }
 }
