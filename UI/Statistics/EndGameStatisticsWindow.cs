@@ -32,15 +32,23 @@ namespace DevTools.Humankind.GUITools.UI
 
         public UITransform QuitButtonUITransform { get; private set; }
 
-        private GUIStyle bgStyle = new GUIStyle(UIToolsManager.DefaultSkin.FindStyle("PopupWindow.Sidebar.Highlight")) {
-
-        };
-        private GUIStyle backButtonStyle = new GUIStyle(UIToolsManager.DefaultSkin.toggle) {
-            margin = new RectOffset(1, 1, 1, 1)
-        };
+        private GUIStyle bgStyle;
+        private GUIStyle backButtonStyle;
 
         public static EndGameWindow EndGameWindow => endGameWindow ?? (endGameWindow = WindowsUtils.GetWindow<EndGameWindow>());
         private static EndGameWindow endGameWindow;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            
+            bgStyle = new GUIStyle(UIToolsManager.DefaultSkin.FindStyle("PopupWindow.Sidebar.Highlight")) {
+
+            };
+            backButtonStyle = new GUIStyle(UIToolsManager.DefaultSkin.toggle) {
+                margin = new RectOffset(1, 1, 1, 1)
+            };
+        }
 
         public override void OnDrawUI()
         {

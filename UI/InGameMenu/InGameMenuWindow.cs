@@ -35,6 +35,7 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
         private static GUIStyle CenteredLink { get; set; }
         private static GUIStyle CenteredText { get; set; }
         private static GUIStyle CustomTooltip { get; set; }
+        private static Color MainBackgroundColor { get; set; }
 
         private static void Initialize()
         {
@@ -62,6 +63,7 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
                     textColor = Color.white
                 }
             };
+            MainBackgroundColor = new Color32(255, 255, 255, 230);
         }
 
         protected override void Awake()
@@ -155,7 +157,7 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
         public override void OnGUIStyling()
         {
             base.OnGUIStyling();
-            GUI.backgroundColor = new Color32(255, 255, 255, 230);
+            GUI.backgroundColor = MainBackgroundColor;
             WindowRect = new Rect(Screen.width - FixedWidth, 0, FixedWidth, Screen.height);
         }
 
@@ -186,8 +188,9 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
             }
             // Already done in ShouldBeVisible: if (PauseMenuController.IsVisible)
             BackgroundFader.OnAnimateBackgroundColor();
-            
-            GUILayout.BeginHorizontal();
+            GUI.backgroundColor = Color.black;
+            GUILayout.BeginHorizontal(StyledGUI.Styles.Alpha65WhiteBackgroundStyle);
+                GUI.backgroundColor = MainBackgroundColor;
                 GUILayout.Space(IsBigScreen ? 20f : 6f);
             
                 GUILayout.BeginVertical(GUILayout.ExpandHeight(true));
@@ -218,13 +221,16 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
 
                     GUILayout.EndScrollView();
                     
+                    OnDrawTooltip();
+                    
                 GUILayout.EndVertical();
 
-                GUILayout.Space(IsBigScreen ? 20f : 12f);
+                GUILayout.Space(IsBigScreen ? 20f : 6f);
+            
+            
+            
+                
             GUILayout.EndHorizontal();
-            
-            
-            OnDrawTooltip();
         }
 
         private bool _drawLatestVersion = false;

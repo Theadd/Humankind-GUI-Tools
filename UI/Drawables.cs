@@ -77,12 +77,14 @@ namespace DevTools.Humankind.GUITools.UI
         {
         }
 
-        public int Draw<T>() where T : GUIContent
+        public int Draw<T>() where T : GUIContent => Draw<T>(ContainerStyle, Style);
+
+        public int Draw<T>(GUIStyle containerStyle, GUIStyle style) where T : GUIContent
         {
-            GUILayout.BeginHorizontal(ContainerStyle);
+            GUILayout.BeginHorizontal(containerStyle);
             var prev = GUI.backgroundColor;
             GUI.backgroundColor = BackgroundColor;
-            SelectedIndex = GUILayout.SelectionGrid(SelectedIndex, Items as T[], ItemsPerRow, Style);
+            SelectedIndex = GUILayout.SelectionGrid(SelectedIndex, Items as T[], ItemsPerRow, style);
             GUI.backgroundColor = prev;
             GUILayout.EndHorizontal();
 

@@ -55,6 +55,7 @@ namespace DevTools.Humankind.GUITools.UI
         public static ISessionService SessionService => Services.GetService<ISessionService>();
         public static bool IsOnlineGame => SessionService?.Session?.SessionMode == SessionMode.Online;
         public static bool IsGloballyDisabled { get; private set; } = false;
+        public static bool HideMainNavBar { get; set; } = false;
 
         private static void UpdateGloballyDisabled() => IsGloballyDisabled = IsOnlineGame &&
             (!InGameMenuWindow.VersionFound || InGameMenuWindow.LatestVersion != PluginInfo.PLUGIN_VERSION);

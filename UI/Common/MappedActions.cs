@@ -14,6 +14,11 @@ namespace DevTools.Humankind.GUITools.UI
             }
         }
         
+        public static void ToggleMainNavBar()
+        {
+            ViewController.HideMainNavBar = !ViewController.HideMainNavBar;
+        }
+        
         public static void BackToNormalModeInGameView()
         {
             if (ViewController.View == ViewType.InGame)
