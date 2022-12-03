@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Amplitude.Framework;
 using Amplitude.Framework.Runtime;
 using Amplitude.Mercury.Data.Scenario;
@@ -6,8 +7,12 @@ using Amplitude.Mercury.Interop;
 using Amplitude.Mercury.Overlay.Scenario;
 using Amplitude.Mercury.Presentation;
 using Amplitude.Mercury.Runtime;
+using Modding.Humankind.DevTools;
+using Modding.Humankind.DevTools.Core;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
+using StyledGUI;
 using UnityEngine;
+using Graphics = StyledGUI.Graphics;
 using IRuntimeService = Amplitude.Framework.Runtime.IRuntimeService;
 // ReSharper disable BitwiseOperatorOnEnumWithoutFlags
 
@@ -44,7 +49,7 @@ namespace DevTools.Humankind.GUITools.UI
 
     private bool _isIngameStarted;
     private GameScenarioDefinition[] _scenarios;
-    private EditorTab[] _editroTabs = new EditorTab[]
+    private EditorTab[] _editorTabs = new EditorTab[]
     {
       new ScenarioEditorTab(),
       new EmpireEditorTab(),
@@ -58,7 +63,7 @@ namespace DevTools.Humankind.GUITools.UI
       new PathCuriosityEditorTab(),
       new VisionEditorTab()
     };
-    private string[] _editroTabsNames;
+    private string[] _editorTabNames;
     private int _currentTabIndex = -1;
     private string[] _majorEmpireNames = new string[0];
     private int[] _minorEmpireIndexes = new int[0];
@@ -72,14 +77,28 @@ namespace DevTools.Humankind.GUITools.UI
     private Vector2 _scenarioDefinitionScrollPosition;
     private Vector2 _toolbarScrollPosition;
 
+    private StaticGrid _editorTabsGrid;
+    private GUIStyle CustomContainerStyle { get; set; }
+    private GUIStyle ContentContainerStyle { get; set; }
+    private GUIStyle TabsGridContainerStyle { get; set; }
+    private GUIStyle TabsGridStyle { get; set; }
+    private bool _initializedStyles;
+
     //Play CustomMap
     private int empireCount = 2;
     private string mapName = "Default";
     public ScenarioEditorToolWindow()
     {
-      _editroTabsNames = new string[_editroTabs.Length];
-      for (int index = 0; index < _editroTabs.Length; ++index)
-        _editroTabsNames[index] = _editroTabs[index].Name;
+      _editorTabNames = new string[_editorTabs.Length];
+      for (int index = 0; index < _editorTabs.Length; ++index)
+        _editorTabNames[index] = _editorTabs[index].Name;
+      
+      _editorTabsGrid= new StaticGrid() {
+        ItemsPerRow = 1,
+        Items = _editorTabNames.Select((e) => new GUIContent(e.ToUpper())).ToArray(),
+        SelectedIndex = 4,
+        BackgroundColor = Color.white
+      };
     }
 
     protected IRuntimeService RuntimeService { get; private set; }
@@ -225,27 +244,37 @@ namespace DevTools.Humankind.GUITools.UI
           {
             bool wordWrap = GUI.skin.label.wordWrap;
             GUI.skin.label.wordWrap = false;
-            using (new GUILayout.VerticalScope("Widget.ClientArea", GUILayout.Height(600f)))
+            if (!_initializedStyles)
+              InitializeStyles();
+
+            using (new GUILayout.VerticalScope("Widget.ClientArea", GUILayout.Height(500f)))
             {
-              GUILayout.Label("Scenario : " + Snapshots.ScenarioSnapshot.PresentationData.ScenarioDefinitionName);
-              GUILayout.Space(5f);
-              _toolbarScrollPosition = GUILayout.BeginScrollView(_toolbarScrollPosition, GUILayout.Height(48f));
-              int newTabIndex = GUILayout.Toolbar(_currentTabIndex, _editroTabsNames, "PopupWindow.ToolbarButton", GUILayout.Width(_editroTabsNames.Length * 94));
-              GUILayout.EndScrollView();
-              if (newTabIndex != _currentTabIndex)
-                SetNewSelectedEditorTab(newTabIndex);
-              GUILayout.Space(5f);
-              DrawEmpireSelection();
-              GUILayout.Space(5f);
-              EditorTab editroTab = _editroTabs[_currentTabIndex];
-              TextAnchor alignment = GUI.skin.label.alignment;
-              GUI.skin.label.alignment = TextAnchor.MiddleCenter;
-              GUILayout.Label("------------------------------------------------ " + editroTab.Name + " ------------------------------------------------");
-              GUI.skin.label.alignment = alignment;
-              if ((editroTab.AllowedEmpireTypeFlags & EmpireTypeFlags.NoEmpire) == EmpireTypeFlags.None && _currentEmpireIndex < 0)
-                GUILayout.Label("No empire selected.");
-              else
-                editroTab.Draw();
+
+              GUILayout.BeginHorizontal();
+              {
+                DrawEditorTabSelection();
+                GUILayout.BeginVertical(GUILayout.Width(28f));
+                GUILayout.FlexibleSpace();
+                GUILayout.EndVertical();
+
+                GUILayout.BeginVertical();
+                {
+                  var scenarioName = "" +
+                                     Snapshots.ScenarioSnapshot.PresentationData.ScenarioDefinitionName;
+                  if (scenarioName.Length > 0) 
+                    GUILayout.Label(scenarioName);
+                  
+                  GUILayout.Space(5f);
+                  //if (GUILayout.Button("DEBUG ME")) HandleClickOnDebugMe();
+                  DrawEmpireSelection();
+                  GUI.color = Color.white;
+                  GUILayout.Space(5f);
+                  DrawEditorTabContent();
+                }
+                GUILayout.EndVertical();
+              }
+              GUILayout.EndHorizontal();
+              
             }
             GUI.skin.label.wordWrap = wordWrap;
             GUI.enabled = true;
@@ -266,7 +295,7 @@ namespace DevTools.Humankind.GUITools.UI
     {
       if (_currentTabIndex >= 0)
       {
-        _editroTabs[_currentTabIndex].Stop();
+        _editorTabs[_currentTabIndex].Stop();
         _currentTabIndex = -1;
       }
       ClearEmpireInfo();
@@ -278,30 +307,145 @@ namespace DevTools.Humankind.GUITools.UI
     private void SetNewSelectedEditorTab(int newTabIndex)
     {
       if (_currentTabIndex >= 0)
-        _editroTabs[_currentTabIndex].Stop();
-      EditorTab editroTab = _editroTabs[newTabIndex];
+        _editorTabs[_currentTabIndex].Stop();
+      EditorTab editroTab = _editorTabs[newTabIndex];
       UpdateCurrentEmpireIndexFor(editroTab);
       editroTab.SetEmpireIndex(_currentEmpireType, _currentEmpireIndex, _currentAnimalGroupIndex);
       editroTab.Start();
       _currentTabIndex = newTabIndex;
     }
 
+    private void DrawEditorTabSelection()
+    {
+      GUILayout.BeginVertical(GUILayout.Width((150f)));
+      GUILayout.BeginVertical(CustomContainerStyle);
+      GUILayout.Space(28f);
+      var tabIndex = _editorTabsGrid.Draw<GUIContent>(TabsGridContainerStyle, TabsGridStyle);
+      if (tabIndex != _currentTabIndex)
+        SetNewSelectedEditorTab(tabIndex);
+      GUILayout.FlexibleSpace();
+      GUILayout.EndVertical();
+      GUILayout.Space(3f);
+      GUILayout.EndVertical();
+    }
+
+    private void InitializeStyles()
+    {
+      TabsGridContainerStyle = new GUIStyle(StyledGUIUtility.DefaultSkin.FindStyle("PopupWindow.GridContainer"))
+      {
+        margin = new RectOffset(1, 1, 1, 1)
+      };
+
+      CustomContainerStyle = new GUIStyle(Styles.Alpha50BlackBackgroundStyle)
+      {
+        margin = new RectOffset(0, 0, 0, 0),
+        overflow = new RectOffset(0, 0, 4, 0)
+      };
+      
+      ContentContainerStyle = new GUIStyle()
+      {
+        normal = new GUIStyleState()
+        {
+          background = Styles.Alpha35BlackPixel,
+          textColor = Color.white
+        },
+        margin = new RectOffset(0, 0, 0, 0),
+        overflow = new RectOffset(0, -3, 0, -3),
+        padding = new RectOffset(12, 16, 10, 12)
+      };
+
+      var normalStyleState = new GUIStyleState()
+      {
+        background = Graphics.TransparentTexture,
+        textColor = Color.white
+      };
+      var activeStyleState = new GUIStyleState()
+      {
+        background = Styles.ButtonNormalPixel,
+        textColor = Color.white
+      };
+      
+      TabsGridStyle = new GUIStyle(StyledGUIUtility.DefaultSkin.FindStyle("PopupWindow.Grid"))
+      {
+        margin = new RectOffset(0, 0, 0, 1),
+        padding = new RectOffset(4, 10, 10, 10),
+        fontSize = 10,
+        alignment = TextAnchor.MiddleRight,
+        normal = normalStyleState,
+        hover = new GUIStyleState()
+        {
+          background = Styles.RowHoverPixel,
+          textColor = Color.white
+        },
+        active = activeStyleState,
+        onNormal = activeStyleState,
+        onHover = activeStyleState,
+        onActive = normalStyleState,
+        overflow = new RectOffset(1, 8, 0, 0)
+      };
+      
+      _initializedStyles = true;
+    }
+
+    private void HandleClickOnDebugMe()
+    {
+      Loggr.Log("\n\nSTYLES");
+      Loggr.Log(UIController.DefaultSkin.FindStyle("RightAlignedLabel"));
+      Loggr.Log(UIController.DefaultSkin.customStyles);
+    }
+
+    private void DrawEditorTabContent()
+    {
+      GUILayout.BeginHorizontal(ContentContainerStyle);
+      {
+        GUILayout.BeginVertical(GUILayout.Width(1f));
+        {
+          GUILayout.FlexibleSpace();
+        }
+        GUILayout.EndVertical();
+        GUILayout.BeginVertical();
+        {
+          GUILayout.Space(5f);
+          EditorTab editroTab = _editorTabs[_currentTabIndex];
+
+          if ((editroTab.AllowedEmpireTypeFlags & EmpireTypeFlags.NoEmpire) == EmpireTypeFlags.None &&
+              _currentEmpireIndex < 0)
+            GUILayout.Label("No empire selected.");
+          else
+            editroTab.Draw();
+        }
+        GUILayout.EndVertical();
+      }
+      GUILayout.EndHorizontal();
+    }
+
+    private void DrawGenericLabel(string text)
+    {
+      //GUI.color = Color.white;
+      GUI.contentColor = Styles.DarkishTextColor;
+      GUILayout.Label(R.Text.Bold(R.Text.Size(text + " :", 9)), "RightAlignedLabel", GUILayout.Width(120f));
+      GUI.contentColor = Color.white;
+      GUI.color = Styles.DarkTextColor;
+    }
+
     private void DrawEmpireSelection()
     {
-      EditorTab editroTab = _editroTabs[_currentTabIndex];
+      EditorTab editroTab = _editorTabs[_currentTabIndex];
       UpdateEmpireIndexes();
       int allowedEmpireTypeFlags = (int) editroTab.AllowedEmpireTypeFlags;
       bool flag1 = (uint) (allowedEmpireTypeFlags & 2) > 0U;
       bool flag2 = (uint) (allowedEmpireTypeFlags & 4) > 0U;
       bool flag3 = (uint) (allowedEmpireTypeFlags & 8) > 0U;
-      if (flag1)
+      
+      using (new GUILayout.HorizontalScope(GUILayout.ExpandWidth(false)))
       {
-        using (new GUILayout.HorizontalScope(GUILayout.ExpandWidth(false)))
+        DrawGenericLabel("MAJOR EMPIRES");
+        GUILayout.Space(5f);
+        if (flag1)
         {
-          GUILayout.Label("Major Empires:", GUILayout.ExpandWidth(false));
-          GUILayout.Space(5f);
           int selected = _currentEmpireIndex < _majorEmpireNames.Length ? _currentEmpireIndex : -1;
-          int num = GUILayout.Toolbar(selected, _majorEmpireNames, "PopupWindow.ToolbarButton", GUILayout.ExpandWidth(false));
+          int num = GUILayout.Toolbar(selected, _majorEmpireNames, "PopupWindow.ToolbarButton",
+            GUILayout.ExpandWidth(false));
           if (num != selected)
           {
             _currentEmpireType = EmpireTypeFlags.MajorEmpire;
@@ -312,16 +456,19 @@ namespace DevTools.Humankind.GUITools.UI
           }
         }
       }
-      if (flag2)
+      
+
+      using (new GUILayout.HorizontalScope(GUILayout.ExpandWidth(false)))
       {
-        using (new GUILayout.HorizontalScope(GUILayout.ExpandWidth(false)))
+        DrawGenericLabel("MINOR EMPIRES");
+        GUILayout.Space(5f);
+        if (flag2)
         {
-          GUILayout.Label("Minor Empires:", GUILayout.ExpandWidth(false));
-          GUILayout.Space(5f);
           if (_minorEmpireIndexes.Length != 0)
           {
             int selected = Array.IndexOf(_minorEmpireIndexes, _currentEmpireIndex);
-            int index = GUILayout.Toolbar(selected, _minorEmpireNames, "PopupWindow.ToolbarButton", GUILayout.ExpandWidth(false));
+            int index = GUILayout.Toolbar(selected, _minorEmpireNames, "PopupWindow.ToolbarButton",
+              GUILayout.ExpandWidth(false));
             if (index != selected)
             {
               _currentEmpireType = EmpireTypeFlags.MinorEmpire;
@@ -335,26 +482,29 @@ namespace DevTools.Humankind.GUITools.UI
             GUILayout.Label("(No minor empires spawned)", GUILayout.ExpandWidth(false));
         }
       }
-      if (!flag3)
-        return;
+      
       using (new GUILayout.HorizontalScope(GUILayout.ExpandWidth(false)))
       {
-        GUILayout.Label("Animal group:", GUILayout.ExpandWidth(false));
+        DrawGenericLabel("ANIMAL GROUP");
         GUILayout.Space(5f);
-        if (_animalGroupNames.Length != 0)
+        if (flag3)
         {
-          int selected = Array.IndexOf(_animalGroupIndexes, _currentAnimalGroupIndex);
-          int num = GUILayout.Toolbar(selected, _animalGroupNames, "PopupWindow.ToolbarButton", GUILayout.ExpandWidth(false));
-          if (num == selected)
-            return;
-          _currentEmpireType = EmpireTypeFlags.LesserEmpire;
-          _currentEmpireIndex = _lesserEmpireIndex;
-          _currentAnimalGroupIndex = num;
-          editroTab.SetEmpireIndex(_currentEmpireType, _currentEmpireIndex, _currentAnimalGroupIndex);
-          FocusCameraOnAnimalGroup(_currentAnimalGroupIndex);
+          if (_animalGroupNames.Length != 0)
+          {
+            int selected = Array.IndexOf(_animalGroupIndexes, _currentAnimalGroupIndex);
+            int num = GUILayout.Toolbar(selected, _animalGroupNames, "PopupWindow.ToolbarButton",
+              GUILayout.ExpandWidth(false));
+            if (num == selected)
+              return;
+            _currentEmpireType = EmpireTypeFlags.LesserEmpire;
+            _currentEmpireIndex = _lesserEmpireIndex;
+            _currentAnimalGroupIndex = num;
+            editroTab.SetEmpireIndex(_currentEmpireType, _currentEmpireIndex, _currentAnimalGroupIndex);
+            FocusCameraOnAnimalGroup(_currentAnimalGroupIndex);
+          }
+          else
+            GUILayout.Label("(No animal group spawned)", GUILayout.ExpandWidth(false));
         }
-        else
-          GUILayout.Label("(No animal group spawned)", GUILayout.ExpandWidth(false));
       }
     }
 
@@ -398,7 +548,7 @@ namespace DevTools.Humankind.GUITools.UI
       }
       if (!flag)
         return;
-      EditorTab editroTab = _editroTabs[_currentTabIndex];
+      EditorTab editroTab = _editorTabs[_currentTabIndex];
       UpdateCurrentEmpireIndexFor(editroTab);
       editroTab.SetEmpireIndex(_currentEmpireType, _currentEmpireIndex, _currentAnimalGroupIndex);
     }
