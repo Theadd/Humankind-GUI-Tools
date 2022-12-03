@@ -31,6 +31,7 @@ namespace StyledGUI
         public static Color WhiteTextColor { get; set; } = (Color) new Color32(250, 250, 250, 255);
         public static Color WhitePearlTextColor { get; set; } = (Color) new Color32(200, 200, 200, 255);
         public static Color DarkTextColor { get; set; } = (Color) new Color32(10, 10, 10, 190);
+        public static Color DarkishTextColor { get; set; } = (Color) new Color32(10, 10, 10, 150);
         public static Color BlueTextColor { get; set; } = (Color) new Color32(40, 86, 240, 255);
         public static Color GoldTextColor { get; set; } = new Color(0.85f, 0.75f, 0f, 0.85f);
 
