@@ -53,6 +53,15 @@ namespace DevTools.Humankind.GUITools.UI
                 IsEditable = false,
                 IsRemovable = false
             },
+            new KeyMap("ToggleMainNavBar")
+            {
+                DisplayName = "TOGGLE MAIN NAVBAR",
+                Action = MappedActions.ToggleMainNavBar,
+                Key = KeyboardShortcut.Empty,
+                GroupName = GlobalKeysGroup,
+                IsEditable = true,
+                IsRemovable = true
+            },
             new KeyMap("BackToNormalModeInGameView")
             {
                 DisplayName = "DEFAULT VIEW MODE (IN GAME)",

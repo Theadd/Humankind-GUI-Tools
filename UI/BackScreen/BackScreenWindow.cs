@@ -266,82 +266,96 @@ namespace DevTools.Humankind.GUITools.UI
         private bool _drawLiveEditorTags = false;
         private bool _drawDefaultModeTags = false;
         private bool _drawOnToolboxVisible = false;
+        private bool _drawMainNavBar = true;
         
         private void DrawStatusBar()
         {
             GUILayout.Space(8f);
-            if (_drawNotInGameTags)
+            if (_drawMainNavBar)
             {
-                GUILayout.BeginHorizontal();
-                {
-                    GUILayout.Label("<b>" + ViewController.View.ToString().ToUpper() + "</b>", ScreenTag);
-                }
-                GUILayout.EndHorizontal();
-            }
-            if (_drawInGameTags)
-            {
-                GUILayout.BeginHorizontal();
-                {
-                    ViewModeToggleButton("BackToNormalModeInGameView", _normalModeTitle, ViewModeType.Normal);
-                    ViewModeToggleButton("ToggleFreeCameraMode", _freeCamModeTitle, ViewModeType.FreeCamera);
-                    ViewModeToggleButton("ToggleLiveEditor", _liveEditorModeTitle, ViewModeType.LiveEditor);
-                    ViewModeToggleButton("ToggleGameOverviewWindow", _overviewModeTitle, ViewModeType.Overview);
-                    GUI.backgroundColor = Color.black;
-                }
-                GUILayout.EndHorizontal();
-                if (!_drawOnToolboxVisible)
-                    GUILayout.Space(12f);
-                
-                if (_drawLiveEditorTags)
-                {
-                    if (_drawOnToolboxVisible)
-                        GUILayout.FlexibleSpace();
-                    
-                    GUILayout.BeginHorizontal();
-                    {
-                        if (!_drawOnToolboxVisible)
-                            GUILayout.Label(
-                                _brushTypeTitle + "<b>" + LiveEditorMode.BrushType.ToString().ToUpper() + "</b>", ScreenTag);
-                        var onPaintText = PaintBrush.ActionNameOnCreate != string.Empty
-                            ? _onPaintTitle + "<b>" + PaintBrush.ActionNameOnCreate + "</b>"
-                            : "NO EFFECT ON PAINT";
-                        var onEraseText = PaintBrush.ActionNameOnDestroy != string.Empty
-                            ? _onEraseTitle + "<b>" + PaintBrush.ActionNameOnDestroy + "</b>"
-                            : "NO EFFECT ON ERASE";
-                        GUILayout.Label(onPaintText, ScreenTag);
-                        GUILayout.Label(onEraseText, ScreenTag);
-                    }
-                    GUILayout.EndHorizontal();
-                }
-                else if (_drawDefaultModeTags)
+                if (_drawNotInGameTags)
                 {
                     GUILayout.BeginHorizontal();
                     {
-                        var isToolbarActive = !GlobalSettings.HideToolbarWindow.Value;
-                        GUI.backgroundColor = isToolbarActive ? _screenTagColorActive : Color.black;
-                        if (GUILayout.Toggle(isToolbarActive, _toolbarTitle, ScreenTagToggleButton) != isToolbarActive)
-                        {
-                            KeyMappings.Trigger("ToggleHideToolbarWindow");
-                        }
-
-                        var isGodModeActive = UIController.GodMode;
-                        GUI.backgroundColor = isGodModeActive ? _screenTagColorActive : Color.black;
-                        if (GUILayout.Toggle(isGodModeActive, _godModeTitle, ScreenTagToggleButton) != isGodModeActive)
-                        {
-                            KeyMappings.Trigger("ToggleGodMode");
-                        }
-                        
-                        var isScenarioEditorActive = MainTools.IsScenarioEditorWindowEnabled;
-                        GUI.backgroundColor = isScenarioEditorActive ? _screenTagColorActive : Color.black;
-                        if (GUILayout.Toggle(isScenarioEditorActive, _scenarioEditorTitle, ScreenTagToggleButton) != isScenarioEditorActive)
-                        {
-                            KeyMappings.Trigger("ToggleScenarioEditorWindow");
-                        }
+                        GUILayout.Label("<b>" + ViewController.View.ToString().ToUpper() + "</b>", ScreenTag);
                     }
                     GUILayout.EndHorizontal();
                 }
-            }
 
+                if (_drawInGameTags)
+                {
+                    GUILayout.BeginHorizontal();
+                    {
+                        ViewModeToggleButton("BackToNormalModeInGameView", _normalModeTitle,
+                            ViewModeType.Normal);
+                        ViewModeToggleButton("ToggleFreeCameraMode", _freeCamModeTitle,
+                            ViewModeType.FreeCamera);
+                        ViewModeToggleButton("ToggleLiveEditor", _liveEditorModeTitle,
+                            ViewModeType.LiveEditor);
+                        ViewModeToggleButton("ToggleGameOverviewWindow", _overviewModeTitle,
+                            ViewModeType.Overview);
+                        GUI.backgroundColor = Color.black;
+                    }
+                    GUILayout.EndHorizontal();
+                    if (!_drawOnToolboxVisible)
+                        GUILayout.Space(12f);
+
+                    if (_drawLiveEditorTags)
+                    {
+                        if (_drawOnToolboxVisible)
+                            GUILayout.FlexibleSpace();
+
+                        GUILayout.BeginHorizontal();
+                        {
+                            if (!_drawOnToolboxVisible)
+                                GUILayout.Label(
+                                    _brushTypeTitle + "<b>" + LiveEditorMode.BrushType.ToString().ToUpper() +
+                                    "</b>", ScreenTag);
+                            var onPaintText = PaintBrush.ActionNameOnCreate != string.Empty
+                                ? _onPaintTitle + "<b>" + PaintBrush.ActionNameOnCreate + "</b>"
+                                : "NO EFFECT ON PAINT";
+                            var onEraseText = PaintBrush.ActionNameOnDestroy != string.Empty
+                                ? _onEraseTitle + "<b>" + PaintBrush.ActionNameOnDestroy + "</b>"
+                                : "NO EFFECT ON ERASE";
+                            GUILayout.Label(onPaintText, ScreenTag);
+                            GUILayout.Label(onEraseText, ScreenTag);
+                        }
+                        GUILayout.EndHorizontal();
+                    }
+                    else if (_drawDefaultModeTags)
+                    {
+                        GUILayout.BeginHorizontal();
+                        {
+                            var isToolbarActive = !GlobalSettings.HideToolbarWindow.Value;
+                            GUI.backgroundColor = isToolbarActive ? _screenTagColorActive : Color.black;
+                            if (GUILayout.Toggle(isToolbarActive, _toolbarTitle, ScreenTagToggleButton) !=
+                                isToolbarActive)
+                            {
+                                KeyMappings.Trigger("ToggleHideToolbarWindow");
+                            }
+
+                            var isGodModeActive = UIController.GodMode;
+                            GUI.backgroundColor = isGodModeActive ? _screenTagColorActive : Color.black;
+                            if (GUILayout.Toggle(isGodModeActive, _godModeTitle, ScreenTagToggleButton) !=
+                                isGodModeActive)
+                            {
+                                KeyMappings.Trigger("ToggleGodMode");
+                            }
+
+                            var isScenarioEditorActive = MainTools.IsScenarioEditorWindowEnabled;
+                            GUI.backgroundColor =
+                                isScenarioEditorActive ? _screenTagColorActive : Color.black;
+                            if (GUILayout.Toggle(isScenarioEditorActive, _scenarioEditorTitle,
+                                    ScreenTagToggleButton) != isScenarioEditorActive)
+                            {
+                                KeyMappings.Trigger("ToggleScenarioEditorWindow");
+                            }
+                        }
+                        GUILayout.EndHorizontal();
+                    }
+                }
+            }
+            
             if (Event.current.type == EventType.Repaint)
             {
                 _drawNotInGameTags = ViewController.View != ViewType.InGame;
@@ -349,6 +363,7 @@ namespace DevTools.Humankind.GUITools.UI
                 _drawLiveEditorTags = IsInGame && LiveEditorMode.Enabled;
                 _drawDefaultModeTags = ViewController.ViewMode == ViewModeType.Normal;
                 _drawOnToolboxVisible = IsToolboxVisible;
+                _drawMainNavBar = !ViewController.HideMainNavBar;
             }
             GUILayout.Space(8f);
         }
