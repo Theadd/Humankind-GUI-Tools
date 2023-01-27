@@ -4,7 +4,7 @@
     {
         public const string PLUGIN_GUID = "DevTools.Humankind.GUITools";
         public const string PLUGIN_NAME = "GUITools";
-        public const string PLUGIN_VERSION = "2.2.0.0";
+        public const string PLUGIN_VERSION = "2.2.1.0";
 
         /// <summary>
         ///     Change REVISION value to force a reset of player preferences.
