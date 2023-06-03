@@ -109,13 +109,13 @@ namespace DevTools.Humankind.GUITools.UI
             GC.Collect();
             int sceneCount = SceneManager.sceneCount;
             for (int index = 0; index < sceneCount; ++index)
-                this.memoryAnalyzer.StartAnalyze((object)SceneManager.GetSceneAt(index));
+                this.memoryAnalyzer.AddRootObject((object)SceneManager.GetSceneAt(index));
             WeakReference[] objects;
             Profiler.GetObjectsForMemoryAnalysis(out objects);
             foreach (WeakReference weakReference in objects)
             {
                 if (weakReference.IsAlive)
-                    this.memoryAnalyzer.StartAnalyze(weakReference.Target);
+                    this.memoryAnalyzer.AddRootObject(weakReference.Target);
             }
             this.capturing = true;
             GC.Collect();

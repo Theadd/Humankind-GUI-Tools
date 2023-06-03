@@ -75,7 +75,7 @@ namespace DevTools.Humankind.GUITools.UI
     private int _currentEmpireIndex = -1;
     private int _currentAnimalGroupIndex = -1;
     private Vector2 _scenarioDefinitionScrollPosition;
-    private Vector2 _toolbarScrollPosition;
+    // private Vector2 _toolbarScrollPosition;
 
     private StaticGrid _editorTabsGrid;
     private GUIStyle CustomContainerStyle { get; set; }
