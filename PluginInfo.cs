@@ -4,7 +4,7 @@
     {
         public const string PLUGIN_GUID = "DevTools.Humankind.GUITools";
         public const string PLUGIN_NAME = "GUITools";
-        public const string PLUGIN_VERSION = "2.2.1.0";
+        public const string PLUGIN_VERSION = "2.2.2.0";
 
         /// <summary>
         ///     Change REVISION value to force a reset of player preferences.
@@ -13,7 +13,7 @@
 
         public const string DISPLAY_NAME = "GUI Tools";
         public const string FULL_DISPLAY_NAME = "HUMANKIND GUI Tools";
-        public const string MOD_IO_URL_TEXT = "humankind.mod.io/gui-tools";
+        public const string MOD_IO_URL_TEXT = "mod.io/g/humankind/m/gui-tools";
         public const string MOD_IO_URL = "https://mod.io/g/humankind/m/gui-tools";
     }
 }
