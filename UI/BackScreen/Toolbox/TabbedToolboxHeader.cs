@@ -160,7 +160,7 @@ namespace DevTools.Humankind.GUITools.UI
                 
                 if (text != textFilter || (!_didInputFilterGetFocus && Event.current.keyCode == KeyCode.Backspace))
                 {
-                    textFilter = text.ToUpper();
+                    textFilter = text.ToUpperInvariant();
                     TypeDefinitionsGrid.FilterBy = textFilter;
 
                     if (!_didInputFilterGetFocus)

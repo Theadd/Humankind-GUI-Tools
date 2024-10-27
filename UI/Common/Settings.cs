@@ -112,16 +112,16 @@ namespace DevTools.Humankind.GUITools.UI
         );*/
 
         public static CheckboxSetting CheatingTools =
-            new CheckboxSetting(R.Text.Bold("Cheating Tools section".ToUpper()));
+            new CheckboxSetting(R.Text.Bold("Cheating Tools section".ToUpperInvariant()));
 
         public static CheckboxSetting ProfilingTools =
-            new CheckboxSetting(R.Text.Bold("Profiling Tools section".ToUpper()), "", null, false);
+            new CheckboxSetting(R.Text.Bold("Profiling Tools section".ToUpperInvariant()), "", null, false);
 
         public static CheckboxSetting DeveloperTools =
-            new CheckboxSetting(R.Text.Bold("Developer Tools section".ToUpper()));
+            new CheckboxSetting(R.Text.Bold("Developer Tools section".ToUpperInvariant()));
 
         public static CheckboxSetting ExperimentalTools =
-            new CheckboxSetting(R.Text.Bold("Experimental Tools section".ToUpper()));
+            new CheckboxSetting(R.Text.Bold("Experimental Tools section".ToUpperInvariant()));
 
         public static CheckboxSetting MilitaryTool = new CheckboxSetting("Military Tool.");
         public static CheckboxSetting ArmyTool = new CheckboxSetting("Army Tools.");

@@ -139,7 +139,7 @@ namespace DevTools.Humankind.GUITools.UI
         private void DrawValue(string title, string value)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("<size=11><b>" + title.ToUpper() + "</b></size>");
+            GUILayout.Label("<size=11><b>" + title.ToUpperInvariant() + "</b></size>");
             GUILayout.FlexibleSpace();
             GUILayout.Label(value, "RightAlignedLabel");
             GUILayout.EndHorizontal();
@@ -172,10 +172,10 @@ namespace DevTools.Humankind.GUITools.UI
             GUILayout.Label(
                 ("<size=4>\n</size><size=10><b>  Showcasing</b> a fully featured demo of an " +
                  "<b>in-game<size=3>\n\n</size>  Tool</b> made with <color=#1199EECC><b>Humankind Modding DevTools</b></color>" +
-                 "</size><size=3>\n</size>").ToUpper(), "Text");
+                 "</size><size=3>\n</size>").ToUpperInvariant(), "Text");
             GUILayout.FlexibleSpace();
             GUI.color = new Color(1f, 1f, 1f, 0.5f);
-            GUILayout.Label(R.Text.Size(R.Text.Bold("GUITooltip.ToUpper()"), 9), "Tooltip");
+            GUILayout.Label(R.Text.Size(R.Text.Bold("GUITooltip.ToUpperInvariant()"), 9), "Tooltip");
             GUI.color = Color.white;
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();

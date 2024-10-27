@@ -10,7 +10,7 @@ using StyledGUI;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public class GameStatsWindow : FloatingToolWindow
+    public class GameStatsWindow : FloatingToolWindow, IFixedSizeWindow
     {
         public override bool ShouldBeVisible => ViewController.View == ViewType.InGame;   // PauseMenu.InGameMenuController.IsEndGameWindowVisible;
         public override bool ShouldRestoreLastWindowPosition => false;

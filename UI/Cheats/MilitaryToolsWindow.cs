@@ -111,7 +111,7 @@ namespace DevTools.Humankind.GUITools.UI
                 }
 
                 string unitNameFilter1 = this.unitNameFilter;
-                this.unitNameFilter = GUILayout.TextField(this.unitNameFilter).ToLower();
+                this.unitNameFilter = GUILayout.TextField(this.unitNameFilter).ToLowerInvariant();
                 string unitNameFilter2 = this.unitNameFilter;
                 if (unitNameFilter1 != unitNameFilter2)
                 {
@@ -121,7 +121,7 @@ namespace DevTools.Humankind.GUITools.UI
                     unitDefinitionsFiltered = !string.IsNullOrEmpty(unitNameFilter)
                         ? (unitDefinitions)
                         .Where((name =>
-                           name.ToLower().Contains(unitNameFilter))).ToArray()
+                           name.ToLowerInvariant().Contains(unitNameFilter))).ToArray()
                         : (unitDefinitions).ToArray();
                     this.selectedUnit = -1;
                     for (int index = 0; index < unitDefinitionsFiltered.Length; ++index)

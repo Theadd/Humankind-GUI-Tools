@@ -87,7 +87,7 @@ namespace DevTools.Humankind.GUITools.UI
                                         }
                                         using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
                                         {
-                                            GUILayout.Label("Wonder cultural stock".ToUpper());
+                                            GUILayout.Label("Wonder cultural stock".ToUpperInvariant());
                                             GUILayout.FlexibleSpace();
                                             if (GUILayout.Button("<size=11><b>+1000</b></size>", (GUIStyle)"PopupWindow.ToolbarButton", GUILayout.Width(56f)))
                                                 SandboxManager.PostOrder((Order)new OrderGainInfluence()
@@ -98,7 +98,7 @@ namespace DevTools.Humankind.GUITools.UI
                                         }
                                         using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
                                         {
-                                            GUILayout.Label("Resources".ToUpper());
+                                            GUILayout.Label("Resources".ToUpperInvariant());
                                             GUILayout.FlexibleSpace();
                                             if (GUILayout.Button("<size=11><b>+100</b></size>", (GUIStyle)"PopupWindow.ToolbarButton", GUILayout.Width(80f)))
                                                 SandboxManager.PostOrder((Order)new OrderGiveGodResource()
@@ -107,18 +107,20 @@ namespace DevTools.Humankind.GUITools.UI
                                                     GiveGodAccess = true,
                                                     QuantityOfAccess = 100U
                                                 });
-                                            if (GUILayout.Button("<size=10><b>Remove All</b></size>".ToUpper(), (GUIStyle)"PopupWindow.ToolbarButton", GUILayout.Width(90f)))
+                                            if (GUILayout.Button("<size=10><b>Remove All</b></size>".ToUpperInvariant(), (GUIStyle)"PopupWindow.ToolbarButton", GUILayout.Width(90f)))
                                                 SandboxManager.PostOrder((Order)new OrderGiveGodResource()
                                                 {
                                                     ResourceType = ResourceType.Count,
                                                     GiveGodAccess = false
                                                 });
-                                            if (GUILayout.Button("<size=10><b>Discover All</b></size>".ToUpper(), (GUIStyle)"PopupWindow.ToolbarButton", GUILayout.Width(95f)))
-                                                SandboxManager.PostOrder((Order)new OrderForceDiscoverResource()
-                                                {
-                                                    ResourceType = ResourceType.Count
-                                                });
-                                            if (GUILayout.Button("<size=10><b>Unlock All</b></size>".ToUpper(), (GUIStyle)"PopupWindow.ToolbarButton", GUILayout.Width(90f)))
+                                            if (GUILayout.Button(
+                                                    "<size=10><b>(DISABLED)</b></size>".ToUpperInvariant(),
+                                                    (GUIStyle) "PopupWindow.ToolbarButton",
+                                                    GUILayout.Width(95f)))
+                                            {
+                                                
+                                            }
+                                            if (GUILayout.Button("<size=10><b>Unlock All</b></size>".ToUpperInvariant(), (GUIStyle)"PopupWindow.ToolbarButton", GUILayout.Width(90f)))
                                                 SandboxManager.PostOrder((Order)new OrderForceUnlockResourceTechnology()
                                                 {
                                                     ResourceType = ResourceType.Count
@@ -142,7 +144,7 @@ namespace DevTools.Humankind.GUITools.UI
                                                 using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
                                                 {
                                                     string localizedTitle = R.Text.GetLocalizedTitle(resourceDefinition.Name);
-                                                    GUILayout.Label("<size=11><b>" + localizedTitle.ToUpper() + "</b>  <color=#99999988>(" + resourceDefinition.Name + ")</color></size>");
+                                                    GUILayout.Label("<size=11><b>" + localizedTitle.ToUpperInvariant() + "</b>  <color=#99999988>(" + resourceDefinition.Name + ")</color></size>");
                                                     GUILayout.FlexibleSpace();
                                                     GUILayout.Label("<size=11><b>" + ((int)resourceInfo.AccessCount).ToString() + "</b></size>", (GUIStyle)"PopupWindow.MonospacedLabel");
                                                     if (GUILayout.Button("<size=11><b>+1</b></size>", (GUIStyle)"PopupWindow.ToolbarButton"))
@@ -160,11 +162,11 @@ namespace DevTools.Humankind.GUITools.UI
                                                             GiveGodAccess = false
                                                         });
                                                     GUI.enabled = !resourceInfo.IsDiscovered;
-                                                    if (GUILayout.Button("<size=10><b>DISCOVER</b></size>", (GUIStyle)"PopupWindow.ToolbarButton"))
-                                                        SandboxManager.PostOrder((Order)new OrderForceDiscoverResource()
-                                                        {
-                                                            ResourceType = resourceType
-                                                        });
+                                                    if (GUILayout.Button("<size=10><b>(DISABLED)</b></size>",
+                                                            (GUIStyle) "PopupWindow.ToolbarButton"))
+                                                    {
+                                                        
+                                                    }
                                                     GUI.enabled = !resourceInfo.IsExtractionUnlocked;
                                                     if (GUILayout.Button("<size=10><b>UNLOCK</b></size>", (GUIStyle)"PopupWindow.ToolbarButton"))
                                                         SandboxManager.PostOrder((Order)new OrderForceUnlockResourceTechnology()

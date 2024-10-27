@@ -140,7 +140,7 @@ namespace DevTools.Humankind.GUITools.UI
                             .Where(eraStarDef => !eraStarDef.name.Contains("EraStar_Prehistoric_"))
                             .Select(sd => new Row()
                             {
-                                Title = UIController.GetLocalizedTitle(sd.Name, sd.GameplayOrientation.ToString()).ToUpper(),
+                                Title = UIController.GetLocalizedTitle(sd.Name, sd.GameplayOrientation.ToString()).ToUpperInvariant(),
                                 Cells = Snapshot.Empires.Select(e =>
                                 {
                                     var starInfo = GetRelatedEraStarInfo(e.Index, sd.GameplayOrientation, out var found);
