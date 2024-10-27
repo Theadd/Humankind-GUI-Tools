@@ -277,7 +277,7 @@ namespace DevTools.Humankind.GUITools.UI
                 {
                     GUILayout.BeginHorizontal();
                     {
-                        GUILayout.Label("<b>" + ViewController.View.ToString().ToUpper() + "</b>", ScreenTag);
+                        GUILayout.Label("<b>" + ViewController.View.ToString().ToUpperInvariant() + "</b>", ScreenTag);
                     }
                     GUILayout.EndHorizontal();
                 }
@@ -309,7 +309,7 @@ namespace DevTools.Humankind.GUITools.UI
                         {
                             if (!_drawOnToolboxVisible)
                                 GUILayout.Label(
-                                    _brushTypeTitle + "<b>" + LiveEditorMode.BrushType.ToString().ToUpper() +
+                                    _brushTypeTitle + "<b>" + LiveEditorMode.BrushType.ToString().ToUpperInvariant() +
                                     "</b>", ScreenTag);
                             var onPaintText = PaintBrush.ActionNameOnCreate != string.Empty
                                 ? _onPaintTitle + "<b>" + PaintBrush.ActionNameOnCreate + "</b>"

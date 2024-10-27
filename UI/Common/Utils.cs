@@ -37,14 +37,14 @@ namespace DevTools.Humankind.GUITools.UI
 
         public static void DrawH1(string title, bool paddingBottom = true)
         {
-            GUILayout.Label("<size=20><b><color=#FFFFFFFF>" + title.ToUpper() + "</color></b></size>");
+            GUILayout.Label("<size=20><b><color=#FFFFFFFF>" + title.ToUpperInvariant() + "</color></b></size>");
             DrawHorizontalLine();
             if (paddingBottom) GUILayout.Space(12f);
         }
         
         public static void DrawH2(string title)
         {
-            GUILayout.Label("<size=16><b><color=#FFFFFFCC>" + title.ToUpper() + "</color></b></size>");
+            GUILayout.Label("<size=16><b><color=#FFFFFFCC>" + title.ToUpperInvariant() + "</color></b></size>");
             DrawHorizontalLine(0.3f);
             GUILayout.Space(8f);
         }

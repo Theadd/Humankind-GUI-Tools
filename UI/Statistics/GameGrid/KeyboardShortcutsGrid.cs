@@ -108,7 +108,7 @@ namespace DevTools.Humankind.GUITools.UI
                 Rows = Entries.Where(entry => entry.KeyMap.GroupName == sectionName).Select(entry => new Row()
                 {
                     Style = Styles.StaticRowStyle,
-                    Title = entry.KeyMap.DisplayName.ToUpper(),
+                    Title = entry.KeyMap.DisplayName.ToUpperInvariant(),
                     Cells = new ICell[]
                     {
                         new CellGroup()

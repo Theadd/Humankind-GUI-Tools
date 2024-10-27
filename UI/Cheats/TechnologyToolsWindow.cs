@@ -95,9 +95,9 @@ namespace DevTools.Humankind.GUITools.UI
             for (int index = 0; index < length; ++index)
             {
                 TechnologyInfo technologyInfo2 = technologyInfo1[index];
-                string localizedTitle = R.Text.GetLocalizedTitle(technologyInfo2.TechnologyDefinitionName).ToUpper();
-                string techDefinitionName = technologyInfo2.TechnologyDefinitionName.ToString().Substring(11).ToUpper();
-                string techState = technologyInfo2.TechnologyState.ToString().ToUpper();
+                string localizedTitle = R.Text.GetLocalizedTitle(technologyInfo2.TechnologyDefinitionName).ToUpperInvariant();
+                string techDefinitionName = technologyInfo2.TechnologyDefinitionName.ToString().Substring(11).ToUpperInvariant();
+                string techState = technologyInfo2.TechnologyState.ToString().ToUpperInvariant();
 
                 if (techFilter.Length > 0)
                 {
@@ -187,7 +187,7 @@ namespace DevTools.Humankind.GUITools.UI
 
             GUI.enabled = true;
             GUI.color = new Color(1f, 1f, 1f, 0.5f);
-            GUILayout.Label(R.Text.Size(R.Text.Bold(GUI.tooltip.ToUpper()), 10), TooltipDown);
+            GUILayout.Label(R.Text.Size(R.Text.Bold(GUI.tooltip.ToUpperInvariant()), 10), TooltipDown);
             GUILayout.Space(12f);
             GUI.color = Color.white;
         }
@@ -243,7 +243,7 @@ namespace DevTools.Humankind.GUITools.UI
                 GUILayout.Label("<b>FILTER: </b>", "PopupWindow.Title");
                 if (listedTechsCount == 0)
                     GUI.color = Color.red;
-                techFilter = GUILayout.TextField(techFilter, GUILayout.Width(160f)).ToUpper();
+                techFilter = GUILayout.TextField(techFilter, GUILayout.Width(160f)).ToUpperInvariant();
                 GUI.color = Color.white;
 
                 if (GUILayout.Button("<size=11><b>UNLOCK ALL</b></size>", "PopupWindow.ToolbarButton"))

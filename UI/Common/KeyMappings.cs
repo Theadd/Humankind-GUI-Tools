@@ -225,7 +225,34 @@ namespace DevTools.Humankind.GUITools.UI
                 IsEditable = false,
                 SaveAndRestore = false,
             },
-            
+            new KeyMap("IncreaseToolWindowsWidth")
+            {
+                DisplayName = "INCREASE VISIBLE FLOATING TOOL WINDOWS WIDTH",
+                Action = ActionController.IncreaseToolWindowsWidth,
+                Key = new KeyboardShortcut(KeyCode.RightArrow, KeyCode.LeftControl, KeyCode.LeftShift, KeyCode.LeftAlt),
+                GroupName = UserInterfacesKeysGroup
+            },
+            new KeyMap("DecreaseToolWindowsWidth")
+            {
+                DisplayName = "DECREASE VISIBLE FLOATING TOOL WINDOWS WIDTH",
+                Action = ActionController.DecreaseToolWindowsWidth,
+                Key = new KeyboardShortcut(KeyCode.LeftArrow, KeyCode.LeftControl, KeyCode.LeftShift, KeyCode.LeftAlt),
+                GroupName = UserInterfacesKeysGroup
+            },
+            new KeyMap("IncreaseToolWindowsHeight")
+            {
+                DisplayName = "INCREASE VISIBLE FLOATING TOOL WINDOWS HEIGHT",
+                Action = ActionController.IncreaseToolWindowsHeight,
+                Key = new KeyboardShortcut(KeyCode.DownArrow, KeyCode.LeftControl, KeyCode.LeftShift, KeyCode.LeftAlt),
+                GroupName = UserInterfacesKeysGroup
+            },
+            new KeyMap("DecreaseToolWindowsHeight")
+            {
+                DisplayName = "DECREASE VISIBLE FLOATING TOOL WINDOWS HEIGHT",
+                Action = ActionController.DecreaseToolWindowsHeight,
+                Key = new KeyboardShortcut(KeyCode.UpArrow, KeyCode.LeftControl, KeyCode.LeftShift, KeyCode.LeftAlt),
+                GroupName = UserInterfacesKeysGroup
+            },
         };
 
         public static void Apply()

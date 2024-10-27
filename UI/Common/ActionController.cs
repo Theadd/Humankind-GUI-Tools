@@ -1,4 +1,6 @@
-﻿using Amplitude.Mercury.Interop;
+﻿using System;
+using System.Linq;
+using Amplitude.Mercury.Interop;
 using Amplitude.Mercury.Presentation;
 using Amplitude.Mercury.Sandbox;
 using Modding.Humankind.DevTools.DeveloperTools.UI;
@@ -7,6 +9,7 @@ using Amplitude;
 using Amplitude.Framework;
 using Amplitude.Mercury;
 using Amplitude.Mercury.Simulation;
+using Modding.Humankind.DevTools;
 
 namespace DevTools.Humankind.GUITools.UI
 {
@@ -80,7 +83,71 @@ namespace DevTools.Humankind.GUITools.UI
             if (ViewController.IsGloballyDisabled) return;
             LiveEditorMode.Enabled = !LiveEditorMode.Enabled;
         }
-
+        
+        public static void IncreaseToolWindowsWidth()
+        {
+            var floatingTools = Modding.Humankind.DevTools.DevTools
+                .GetGameObject()?
+                .GetComponents<FloatingToolWindow>()?
+                .ToList();
+            if (floatingTools == null) return;
+            foreach (var tool in floatingTools)
+            {
+                if (!tool || tool is IFixedSizeWindow || !tool.IsVisible) continue;
+                var r = tool.GetWindowRect();
+                r.width = r.width + 100f;
+                tool.SetWindowRect(r);
+            }
+        }
+        
+        public static void DecreaseToolWindowsWidth()
+        {
+            var floatingTools = Modding.Humankind.DevTools.DevTools
+                .GetGameObject()?
+                .GetComponents<FloatingToolWindow>()?
+                .ToList();
+            if (floatingTools == null) return;
+            foreach (var tool in floatingTools)
+            {
+                if (!tool || tool is IFixedSizeWindow || !tool.IsVisible) continue;
+                var r = tool.GetWindowRect();
+                r.width = r.width - 20f;
+                tool.SetWindowRect(r);
+            }
+        }
+        
+        public static void IncreaseToolWindowsHeight()
+        {
+            var floatingTools = Modding.Humankind.DevTools.DevTools
+                .GetGameObject()?
+                .GetComponents<FloatingToolWindow>()?
+                .ToList();
+            if (floatingTools == null) return;
+            foreach (var tool in floatingTools)
+            {
+                if (!tool || tool is IFixedSizeWindow || !tool.IsVisible) continue;
+                var r = tool.GetWindowRect();
+                r.height = r.height + 100f;
+                tool.SetWindowRect(r);
+            }
+        }
+        
+        public static void DecreaseToolWindowsHeight()
+        {
+            var floatingTools = Modding.Humankind.DevTools.DevTools
+                .GetGameObject()?
+                .GetComponents<FloatingToolWindow>()?
+                .ToList();
+            if (floatingTools == null) return;
+            foreach (var tool in floatingTools)
+            {
+                if (!tool || tool is IFixedSizeWindow || !tool.IsVisible) continue;
+                var r = tool.GetWindowRect();
+                r.height = r.height - 20f;
+                tool.SetWindowRect(r);
+            }
+        }
+        
         public static bool TryGetDistrictInfoAt(WorldPosition position, out DistrictInfo districtInfo)
         {
             DistrictInfo[] array = Snapshots.GameSnapshot.PresentationData.LocalEmpireInfo.DistrictInfo;

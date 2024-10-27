@@ -95,7 +95,7 @@ namespace DevTools.Humankind.GUITools.UI
       
       _editorTabsGrid= new StaticGrid() {
         ItemsPerRow = 1,
-        Items = _editorTabNames.Select((e) => new GUIContent(e.ToUpper())).ToArray(),
+        Items = _editorTabNames.Select((e) => new GUIContent(e.ToUpperInvariant())).ToArray(),
         SelectedIndex = 4,
         BackgroundColor = Color.white
       };
@@ -387,13 +387,8 @@ namespace DevTools.Humankind.GUITools.UI
       _initializedStyles = true;
     }
 
-    private void HandleClickOnDebugMe()
-    {
-      Loggr.Log("\n\nSTYLES");
-      Loggr.Log(UIController.DefaultSkin.FindStyle("RightAlignedLabel"));
-      Loggr.Log(UIController.DefaultSkin.customStyles);
-    }
-
+    private Vector2 m_ViewportScrollPos = Vector2.zero;
+    
     private void DrawEditorTabContent()
     {
       GUILayout.BeginHorizontal(ContentContainerStyle);
@@ -412,7 +407,11 @@ namespace DevTools.Humankind.GUITools.UI
               _currentEmpireIndex < 0)
             GUILayout.Label("No empire selected.");
           else
+          {
+            m_ViewportScrollPos = GUILayout.BeginScrollView(m_ViewportScrollPos);
             editroTab.Draw();
+            GUILayout.EndScrollView();
+          }
         }
         GUILayout.EndVertical();
       }

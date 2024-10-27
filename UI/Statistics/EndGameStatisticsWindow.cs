@@ -15,7 +15,7 @@ using Amplitude.UI;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public class EndGameStatisticsWindow : FloatingToolWindow
+    public class EndGameStatisticsWindow : FloatingToolWindow, IFixedSizeWindow
     {
         public override bool ShouldBeVisible => ViewController.View == ViewType.InGame;   // PauseMenu.InGameMenuController.IsEndGameWindowVisible;
         public override bool ShouldRestoreLastWindowPosition => false;

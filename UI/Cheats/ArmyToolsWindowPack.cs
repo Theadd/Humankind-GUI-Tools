@@ -122,10 +122,10 @@ namespace DevTools.Humankind.GUITools.UI
                     GUILayout.Label(
                         ("<size=4>\n</size><size=10><b>  Showcasing</b> a fully featured demo of an " + 
                         "<b>in-game<size=3>\n\n</size>  Tool</b> made with <color=#1199EECC><b>Humankind Modding DevTools</b></color>" + 
-                        "</size><size=3>\n</size>").ToUpper(), "Text");
+                        "</size><size=3>\n</size>").ToUpperInvariant(), "Text");
                     GUILayout.FlexibleSpace();
                     GUI.color = new Color(1f, 1f, 1f, 0.5f);
-                    GUILayout.Label(R.Text.Size(R.Text.Bold(GUITooltip.ToUpper()), 9), "Tooltip");
+                    GUILayout.Label(R.Text.Size(R.Text.Bold(GUITooltip.ToUpperInvariant()), 9), "Tooltip");
                     GUI.color = Color.white;
                 GUILayout.EndVertical();
             GUILayout.EndHorizontal();
@@ -427,7 +427,7 @@ namespace DevTools.Humankind.GUITools.UI
     {
         public static string ArmyUnitNames(Army army) => string.Join(", ", army.Units.Select(UnitName)
             .GroupBy(name => name).Select(g => (g.Count() > 1 ? StyledUI.Tag.Hot(g.Count() + "x") : "") 
-                + g.Key.ToUpper()).ToArray());
+                + g.Key.ToUpperInvariant()).ToArray());
 
         public static string UnitName(Amplitude.Mercury.Interop.AI.Data.Unit unit) => (ArmyToolSettings.Instance.LocalizedTitles.Value ? 
             R.Text.GetLocalizedTitle(unit.UnitDefinition.Name) : unit.UnitDefinition.Name.ToString().Split('_').LastOrDefault());
@@ -452,7 +452,7 @@ namespace DevTools.Humankind.GUITools.UI
         }
 
         private static string row(string name, string value) => 
-            name.ToUpper() + ": " + R.Text.Color(value, "ACAC77FF");
+            name.ToUpperInvariant() + ": " + R.Text.Color(value, "ACAC77FF");
 
         public static string SummaryOfSelectedArmy(Army army)
         {
@@ -537,7 +537,7 @@ namespace DevTools.Humankind.GUITools.UI
      public static class StyledUI
     {
         public static string GridItem(HumankindEmpire e) => R.Text.Color(
-            R.Text.Bold(e.EmpireIndex.ToString() + ". " + e.PersonaName.ToUpper()), e.PrimaryColor);
+            R.Text.Bold(e.EmpireIndex.ToString() + ". " + e.PersonaName.ToUpperInvariant()), e.PrimaryColor);
 
         public static string GridItem(Army army) => Tag.Badge(army.Units.Length.ToString()) + Tag.Separator +
             Tag.ListItem(ArmyUtils.ArmyUnitNames(army)) + Tag.Separator + 
@@ -546,13 +546,13 @@ namespace DevTools.Humankind.GUITools.UI
         public static class Tag
         {
             public static string Separator = "  ";
-            public static string State(string text) => R.Text.Color(text.ToUpper(), "#FFD700A5");
-            public static string Common(string text) => R.Text.Color(text.ToUpper(), "#00000090");
+            public static string State(string text) => R.Text.Color(text.ToUpperInvariant(), "#FFD700A5");
+            public static string Common(string text) => R.Text.Color(text.ToUpperInvariant(), "#00000090");
             public static string Success(string text) => R.Text.Color(text, "#009D13CC");
             public static string Warn(string text) => R.Text.Color(text, "#FF333399");
             public static string Hot(string text) => R.Text.Bold(R.Text.Color(text, "#E1E500BF"));
-            public static string Class(string text) => R.Text.Color(text.ToUpper(), "#4169E1FF");
-            public static string Link(string text) => R.Text.Color(text.ToUpper(), "#337AB7FF");
+            public static string Class(string text) => R.Text.Color(text.ToUpperInvariant(), "#4169E1FF");
+            public static string Link(string text) => R.Text.Color(text.ToUpperInvariant(), "#337AB7FF");
             public static string ListItem(string text) => R.Text.Color(text, "#8CDAFFAA");
             public static string BarelyVisible(string text) => R.Text.Color(text, "#FFFFFF40");
             public static string Badge(string text) => "<b><size=14><color=#FFFFFF20>" + text + "</color></size></b> ";

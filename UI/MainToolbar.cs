@@ -6,7 +6,7 @@ using Amplitude.Framework.Overlay;
 
 namespace DevTools.Humankind.GUITools.UI
 {
-    public class MainToolbar : FloatingToolWindow
+    public class MainToolbar : FloatingToolWindow, IFixedSizeWindow
     {
         public override bool ShouldBeVisible => !GlobalSettings.ShouldHideTools && !GlobalSettings.HideToolbarWindow.Value;
         public override bool ShouldRestoreLastWindowPosition => true;
@@ -295,7 +295,7 @@ namespace DevTools.Humankind.GUITools.UI
             GUI.color = Color.white;
 
             // The show/hide tool button toggle
-            var shouldBeVisible = (GUILayout.Toggle(visible, displayName.ToUpper(), "PopupWindow.Sidebar.Toggle"));
+            var shouldBeVisible = (GUILayout.Toggle(visible, displayName.ToUpperInvariant(), "PopupWindow.Sidebar.Toggle"));
             if (created && visible != shouldBeVisible)
                 window.ShowWindow(shouldBeVisible);
             
@@ -323,7 +323,7 @@ namespace DevTools.Humankind.GUITools.UI
                 GUI.color = Color.white;
 
                 // The show/hide tool button toggle
-                var shouldBeVisible = (GUILayout.Toggle(visible, tool.ToUpper(), "PopupWindow.Sidebar.Toggle"));
+                var shouldBeVisible = (GUILayout.Toggle(visible, tool.ToUpperInvariant(), "PopupWindow.Sidebar.Toggle"));
                 if (visible != shouldBeVisible)
                 {
                     UIController.ShowWindow<T>(shouldBeVisible);

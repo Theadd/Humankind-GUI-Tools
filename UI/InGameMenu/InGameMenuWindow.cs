@@ -9,8 +9,7 @@ using UnityEngine.Networking;
 
 namespace DevTools.Humankind.GUITools.UI.PauseMenu
 {
-    
-    public class InGameMenuWindow : FloatingToolWindow
+    public class InGameMenuWindow : FloatingToolWindow, IFixedSizeWindow
     {
 
         public override string WindowTitle { get; set; } = "GAME MENU";
@@ -286,10 +285,10 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
                 _drawLatestVersionInfo = _drawLatestVersion && _newVersionAvailable && VersionInfo.Length > 10;
                 _drawOtherInfo = _drawLatestVersion && OtherInfo.Length > 10;
                 _versionLabelText = !_newVersionAvailable
-                    ? BlueText("<size=9>" + PluginInfo.FULL_DISPLAY_NAME.ToUpper() + " IS UP TO DATE</size>")
+                    ? BlueText("<size=9>" + PluginInfo.FULL_DISPLAY_NAME.ToUpperInvariant() + " IS UP TO DATE</size>")
                     : GreenText("<size=15><b>NEW VERSION AVAILABLE</b></size>") + 
                       "\n<size=9><b>GET IT FROM " + 
-                      PluginInfo.MOD_IO_URL_TEXT.ToUpper() + "</b></size>";
+                      PluginInfo.MOD_IO_URL_TEXT.ToUpperInvariant() + "</b></size>";
             }
         }
 
@@ -447,7 +446,7 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
 
             GUI.backgroundColor = Color.black;
             GUILayout.BeginVertical("PopupWindow.Sidebar.Heading", GUILayout.ExpandHeight(false));
-            if (GUILayout.Button(("<size=10>Check out " + BlueText("<b>Humankind GUI Tools</b>") + " on <b>GitHub</b>!</size>").ToUpper(), CenteredLink))
+            if (GUILayout.Button(("<size=10>Check out " + BlueText("<b>Humankind GUI Tools</b>") + " on <b>GitHub</b>!</size>").ToUpperInvariant(), CenteredLink))
             {
                 Application.OpenURL("https://github.com/Theadd/Humankind-GUI-Tools");
             }
@@ -455,7 +454,7 @@ namespace DevTools.Humankind.GUITools.UI.PauseMenu
             GUILayout.EndVertical();
             GUI.backgroundColor = Color.white;
 
-            GUILayout.Label(R.Text.Size((GUI.tooltip ?? "").ToUpper(), 9), CustomTooltip);
+            GUILayout.Label(R.Text.Size((GUI.tooltip ?? "").ToUpperInvariant(), 9), CustomTooltip);
             GUI.color = Color.white;
             GUILayout.EndVertical();
         }

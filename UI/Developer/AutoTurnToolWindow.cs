@@ -105,7 +105,7 @@ namespace DevTools.Humankind.GUITools.UI
             GUILayout.Space(8f);
             GUILayout.BeginHorizontal();
             GUILayout.Space(8f);
-            GUILayout.Label("<size=10><b>Number of turns</b></size>".ToUpper());
+            GUILayout.Label("<size=10><b>NUMBER OF TURNS</b></size>");
             GUILayout.Space(1f);
             // GUILayout.FlexibleSpace();
             int index1 = GUILayout.SelectionGrid(this.lastTurnEntryIndex, AutoTurnToolWindow.TurnSelectionGridEntries, 
@@ -154,7 +154,7 @@ namespace DevTools.Humankind.GUITools.UI
             GUILayout.Space(12f);
             GUILayout.BeginHorizontal();
             GUILayout.Space(8f);
-            GUILayout.Label("<size=10><b>Min turn duration</b></size>".ToUpper());
+            GUILayout.Label("<size=10><b>MIN TURN DURATION</b></size>");
             GUILayout.Space(12f);
             GUILayout.FlexibleSpace();
             int index2 = GUILayout.SelectionGrid(this.lastDurationEntryIndex, AutoTurnToolWindow.DurationSelectionGridEntries, 4, (GUIStyle)"PopupWindow.ToolbarButton", GUILayout.ExpandWidth(false));

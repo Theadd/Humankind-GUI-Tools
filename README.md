@@ -46,6 +46,7 @@ When decompiling the Humankind assemblies back to source code we found **100+ hi
 Many of them are **a must have for mod developers** in order to test their mod in many different scenarios since they allow us to advance to a desired game state in no time.
 
 From those 100+ hidden tools we only had the time to test 20-25 of them, of which only ~15 of them are successfully adapted and available right now. There are still many tools to check!
+
 <h5>
 <details><summary><strong>NAMES OF THE 100+ HIDDEN TOOLS FOUND</strong></summary>
 <blockquote>

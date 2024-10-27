@@ -141,7 +141,7 @@ namespace DevTools.Humankind.GUITools.UI
 
         private void OnDrawAIWindow()
         {
-            var stateNames = controlledByHumanBindingNames.Select(sn => R.Text.Bold(R.Text.Size(R.Text.SplitCamelCase(sn).ToUpper(), 11)));
+            var stateNames = controlledByHumanBindingNames.Select(sn => R.Text.Bold(R.Text.Size(R.Text.SplitCamelCase(sn).ToUpperInvariant(), 11)));
             
             GUILayout.BeginHorizontal();
             GUILayout.Space(8f);
@@ -155,12 +155,12 @@ namespace DevTools.Humankind.GUITools.UI
             GUILayout.Space(8f);
             GUILayout.EndHorizontal();
             Amplitude.Mercury.AI.Preferences.PreventAttackMissions = GUILayout.Toggle(
-                Amplitude.Mercury.AI.Preferences.PreventAttackMissions, "<size=11><b>Prevent Attack Missions</b></size>".ToUpper(),
+                Amplitude.Mercury.AI.Preferences.PreventAttackMissions, "<size=11><b>Prevent Attack Missions</b></size>".ToUpperInvariant(),
                 (GUIStyle) "PopupWindow.Button");
             GUILayout.BeginHorizontal();
             GUILayout.Label("Debug");
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("<size=11><b>Force decision</b></size>".ToUpper()))
+            if (GUILayout.Button("<size=11><b>Force decision</b></size>".ToUpperInvariant()))
             {
                 string address = "http://localhost:1477/api/ai-controller";
                 string data =
@@ -170,7 +170,7 @@ namespace DevTools.Humankind.GUITools.UI
             }
 
             GUI.enabled = false;
-            if (GUILayout.Button("<size=11><b>Open Inspector</b></size>".ToUpper()))
+            if (GUILayout.Button("<size=11><b>Open Inspector</b></size>".ToUpperInvariant()))
                 UnityEngine.Application.OpenURL("http://localhost:1477/");
             GUI.enabled = true;
             GUILayout.Space(8f);

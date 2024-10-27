@@ -92,8 +92,8 @@ namespace DevTools.Humankind.GUITools.UI
 
                         GUILayout.Label("<size=10><b>" + relationSummaryInfo.OtherEmpireIndex + "</b></size>", GUILayout.Width(15f));
                         GUILayout.Label("<size=10><b>" + R.Text.Color(empire.PersonaName, empire.PrimaryColor) + "</b></size>", "RightAlignedLabel", GUILayout.Width(85f));
-                        GUILayout.Label("<size=10><b>" + relationSummaryInfo.CurrentState.ToString().ToUpper() + "</b></size>", GUILayout.Width(100f));
-                        GUILayout.Label("<size=10><b>" + relationSummaryInfo.TreatyInfo.PropositionInfo.Status.ToString().ToUpper() + "</b></size>", GUILayout.Width(100f));
+                        GUILayout.Label("<size=10><b>" + relationSummaryInfo.CurrentState.ToString().ToUpperInvariant() + "</b></size>", GUILayout.Width(100f));
+                        GUILayout.Label("<size=10><b>" + relationSummaryInfo.TreatyInfo.PropositionInfo.Status.ToString().ToUpperInvariant() + "</b></size>", GUILayout.Width(100f));
                         
                         GUILayout.FlexibleSpace();
 

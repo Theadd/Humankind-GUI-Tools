@@ -105,10 +105,10 @@ namespace DevTools.Humankind.GUITools.UI
                     new Clickable4xCell()
                     {
                         Id = c.DefinitionName.Handle,
-                        Title = "<size=11><b>" + c.Title.ToUpper() + "</b></size>",
+                        Title = "<size=11><b>" + c.Title.ToUpperInvariant() + "</b></size>",
                         Subtitle = c.Name,
                         UniqueName = c.DefinitionName.ToString(),
-                        Category = c.Category == "None" ? "" : "<size=9>" + c.Category.ToUpper() + "</size>",
+                        Category = c.Category == "None" ? "" : "<size=9>" + c.Category.ToUpperInvariant() + "</size>",
                         Tags = c.Era > 0 ? "<size=10>ERA " + c.Era + "</size>" : "",
                         Image = c.Image
                         // Span = Grid.CellSpan8
@@ -134,10 +134,10 @@ namespace DevTools.Humankind.GUITools.UI
                         Cells = group.Select(c => new ClickableImageCell()
                         {
                             Id = c.DefinitionName.Handle,
-                            Title = c.Title.ToUpper(),
+                            Title = c.Title.ToUpperInvariant(),
                             Subtitle = c.Name,
                             UniqueName = c.DefinitionName.ToString(),
-                            Category = c.Category == "" ? "" : "" + c.Category.ToUpper(),
+                            Category = c.Category == "" ? "" : "" + c.Category.ToUpperInvariant(),
                             Tags = c.Era > 0 ? "<size=10>ERA " + c.Era + "</size>" : "",
                             Image = c.Image,
                             // Style = Styles.CellImageStyle,
@@ -161,7 +161,7 @@ namespace DevTools.Humankind.GUITools.UI
                 .Where(group => group.Values.Length > 0)
                 .Select(group => new Section()
                 {
-                    Title = "<size=13><b>" + group.Title.ToUpper() + "</b></size>",
+                    Title = "<size=13><b>" + group.Title.ToUpperInvariant() + "</b></size>",
                     View = 0,
                     Rows = Grid.DisplayMode == VirtualGridDisplayMode.Grid 
                         ? GetRowsInGridMode(group.Values) 
@@ -173,7 +173,7 @@ namespace DevTools.Humankind.GUITools.UI
                         .Where(group => group.Values.Length > 0)
                         .Select(group => new Section() 
                         {
-                            Title = "<size=13><b>" + group.Title.ToUpper() + "</b></size>", 
+                            Title = "<size=13><b>" + group.Title.ToUpperInvariant() + "</b></size>", 
                             View = 1, 
                             Rows = Grid.DisplayMode == VirtualGridDisplayMode.Grid 
                                 ? GetRowsInGridMode(group.Values) 
@@ -185,7 +185,7 @@ namespace DevTools.Humankind.GUITools.UI
                         .Where(group => group.Values.Length > 0)
                         .Select(group => new Section() 
                         {
-                            Title = "<size=13><b>" + group.Title.ToUpper() + "</b></size>", 
+                            Title = "<size=13><b>" + group.Title.ToUpperInvariant() + "</b></size>", 
                             View = 2, 
                             Rows = Grid.DisplayMode == VirtualGridDisplayMode.Grid 
                                 ? GetRowsInGridMode(group.Values) 

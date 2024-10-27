@@ -116,7 +116,7 @@ namespace DevTools.Humankind.GUITools.UI
                     using (new GUILayout.HorizontalScope(Array.Empty<GUILayoutOption>()))
                     {
                         string str = !StaticString.IsNullOrEmpty(empireInfo.EmpireStabilityDefinitionName) ? R.Text.GetLocalizedTitle(empireInfo.EmpireStabilityDefinitionName) : "no city";
-                        GUILayout.Label(string.Format("<size=11><b>EMPIRE STABILITY: {0}% ({1})</b></size>", (object)((int)empireInfo.EmpireStability), (object)str.ToUpper()));
+                        GUILayout.Label(string.Format("<size=11><b>EMPIRE STABILITY: {0}% ({1})</b></size>", (object)((int)empireInfo.EmpireStability), (object)str.ToUpperInvariant()));
                         GUILayout.FlexibleSpace();
                     }
 
@@ -152,7 +152,7 @@ namespace DevTools.Humankind.GUITools.UI
                         CivicInfo civicInfo3 = civicInfo1[index1];
                         CivicStatuses civicStatuses = civicInfo3.CivicStatusPerMajorEmpire[(int)this.currentEmpireIndex];
                         CivicDefinition civicDefinition = database.GetValue(civicInfo3.CivicDefinitionName);
-                        string civicStatusText = civicStatuses.ToString().ToUpper();
+                        string civicStatusText = civicStatuses.ToString().ToUpperInvariant();
 
                         switch (civicStatusText)
                         {
@@ -173,7 +173,7 @@ namespace DevTools.Humankind.GUITools.UI
                             string title = (string)null;
                             if (!R.Text.DataUtils.TryGetLocalizedTitle(civicDefinition.Name, out title))
                                 title = "Missing UIMapper";
-                            GUILayout.Label("<size=10><b>" + title.ToUpper() + "</b></size>");
+                            GUILayout.Label("<size=10><b>" + title.ToUpperInvariant() + "</b></size>");
                             GUILayout.Label("<size=10><color=#EAEAEA77>" + civicDefinition.Name + "</color></size>");
                             // GUILayout.Label(string.Format("{0}", (object)civicDefinition.Name));
                             GUILayout.FlexibleSpace();
@@ -206,7 +206,7 @@ namespace DevTools.Humankind.GUITools.UI
                                 if (!R.Text.DataUtils.TryGetLocalizedTitle(choice.Name, out title))
                                     title = "Missing UIMapper";
                                 
-                                GUILayout.Label(str + " <size=10><b>" + title.ToUpper() + "</b></size>");
+                                GUILayout.Label(str + " <size=10><b>" + title.ToUpperInvariant() + "</b></size>");
                                 GUILayout.Label("<size=10><color=#EAEAEA77>" + choice.Name + "</color></size>");
                                 // GUILayout.Label(string.Format("{0} {1} ({2})", (object)str, (object)choice.Name, (object)title));
                                 GUILayout.FlexibleSpace();

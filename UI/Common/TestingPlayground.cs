@@ -182,7 +182,7 @@ namespace DevTools.Humankind.GUITools.UI
             Categories = charInfo.Keys.ToArray().Select(k => new CollapsibleCategory<UnicodeCategory>()
             {
                 Key = k,
-                Title = "<b>" + R.Text.SplitCamelCase(k.ToString()).ToUpper() + "</b> <size=12> (" + charInfo[k].Count() + " chars)</size>"
+                Title = "<b>" + R.Text.SplitCamelCase(k.ToString()).ToUpperInvariant() + "</b> <size=12> (" + charInfo[k].Count() + " chars)</size>"
             }).ToArray();
 
             foreach (var key in keys)

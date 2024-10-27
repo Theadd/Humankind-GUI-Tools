@@ -11,7 +11,7 @@ namespace StyledGUI
         {
             return string.Join(" + ", key
                 .Serialize()
-                .ToUpper()
+                .ToUpperInvariant()
                 .Replace("CONTROL", "CTRL")
                 .Replace("RIGHT", "R")
                 .Replace("LEFT", "L")
@@ -68,7 +68,7 @@ namespace StyledGUI
         public bool Draw(GUIStyle style, params GUILayoutOption[] options)
         {
             GUI.color = Color.white;
-            var shouldCapture = GUILayout.Toggle(IsCapturing, DisplayText.ToUpper(), style ?? Style, options);
+            var shouldCapture = GUILayout.Toggle(IsCapturing, DisplayText.ToUpperInvariant(), style ?? Style, options);
             if (shouldCapture && !IsCapturing)
             {
                 // Start capturing
